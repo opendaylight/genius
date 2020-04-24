@@ -8,7 +8,6 @@
 package org.opendaylight.genius.testutils.interfacemanager;
 
 import java.util.Collections;
-
 import org.opendaylight.controller.md.sal.binding.api.DataBroker;
 import org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType;
 import org.opendaylight.controller.md.sal.common.api.data.ReadFailedException;
@@ -30,7 +29,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
 public final class InterfaceHelper {
-
     private static final String DEFAULT_GW = "0.0.0.0";
 
     private InterfaceHelper() {

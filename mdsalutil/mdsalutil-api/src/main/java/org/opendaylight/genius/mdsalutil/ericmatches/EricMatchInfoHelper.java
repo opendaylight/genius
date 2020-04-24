@@ -10,7 +10,6 @@ package org.opendaylight.genius.mdsalutil.ericmatches;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.opendaylight.genius.mdsalutil.MatchInfo;
 import org.opendaylight.genius.utils.SuperTypeUtil;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.flow.MatchBuilder;
@@ -24,7 +23,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ge
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.general.rev140714.general.extension.list.grouping.ExtensionListBuilder;
 import org.opendaylight.yangtools.concepts.Builder;
 import org.opendaylight.yangtools.yang.binding.DataObject;
-
 
 public abstract class EricMatchInfoHelper<T extends DataObject, B extends Builder<T>> extends MatchInfo {
     private final Class<B> builderClass;

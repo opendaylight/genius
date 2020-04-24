@@ -13,7 +13,6 @@ import static org.hamcrest.Matchers.is;
 
 import java.util.function.Supplier;
 import javax.inject.Inject;
-
 import org.awaitility.Awaitility;
 import org.awaitility.core.ConditionTimeoutException;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinatorMonitor;
@@ -21,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public abstract class AbstractTestableJobCoordinatorEventsWaiter {
-
     private static final Logger LOG = LoggerFactory.getLogger(AbstractTestableJobCoordinatorEventsWaiter.class);
 
     protected final JobCoordinatorMonitor jobCoordinatorMonitor;

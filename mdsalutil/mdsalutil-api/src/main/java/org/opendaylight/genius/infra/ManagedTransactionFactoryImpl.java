@@ -14,7 +14,6 @@ import com.google.common.util.concurrent.MoreExecutors;
 import edu.umd.cs.findbugs.annotations.CheckReturnValue;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
-
 import org.opendaylight.controller.md.sal.binding.api.ReadOnlyTransaction;
 import org.opendaylight.controller.md.sal.binding.api.TransactionFactory;
 import org.opendaylight.controller.md.sal.binding.api.WriteTransaction;
