@@ -1,0 +1,7 @@
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+2: Robert Varga <nite@hq.sk>
+Submitted-by: Robert Varga <nite@hq.sk>
+Submitted-at: Sat, 25 Apr 2020 11:19:07 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/c/genius/+/89364
+Project: genius
+Branch: refs/heads/stable/magnesium
