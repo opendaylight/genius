@@ -106,6 +106,7 @@ public interface DataTreeEventCallbackRegistrar {
             BiFunction<@Nullable T, T, NextAction> callback,
             Duration timeoutDuration, Consumer<DataTreeIdentifier<T>> timedOutCallback);
 
+
     /**
      * Call back when expected instance was added or updated, with NextAction support.
      * @param store the expected data store
@@ -113,15 +114,19 @@ public interface DataTreeEventCallbackRegistrar {
      * @param callback the callback as {@link BiFunction}, where the first argument is the data before the update
      *             or null in case of an add, the second argument is the data after the update (or add; never null),
      *             and the returned value determines whether to keep listening for changes or not anymore.
+     * @param <T> DataObject subclass
      */
     <T extends DataObject> void onAddOrUpdate(LogicalDatastoreType store, InstanceIdentifier<T> path,
                                               BiFunction<@Nullable T, T, NextAction> callback);
 
     /**
-     * Call back when expected instance was added or updated, with implicit {@link NextAction#UNREGISTER}.
-     * See {@link #onAddOrUpdate(LogicalDatastoreType, InstanceIdentifier, BiFunction)} for more details.
-     * @param <T>
-     *            DataObject subclass
+     * Call back when expected instance was added or updated, with NextAction support.
+     * @param store the expected data store
+     * @param path the path to watch for changes on
+     * @param callback the callback as {@link BiFunction}, where the first argument is the data before the update
+     *             or null in case of an add, the second argument is the data after the update (or add; never null),
+     *             and the returned value determines whether to keep listening for changes or not anymore.
+     * @param <T> DataObject subclass
      */
     default <T extends DataObject> void onAddOrUpdate(LogicalDatastoreType store, InstanceIdentifier<T> path,
                                                  BiConsumer<@Nullable T, T> callback) {

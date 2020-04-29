@@ -228,7 +228,7 @@ public final class ItmUtils {
     /**
      * Asynchronous non-blocking bulk delete to data store.
      *
-     * @deprecated Use {@link ManagedNewTransactionRunner} instead of this.
+     * @deprecated Use {@link org.opendaylight.genius.infra.ManagedNewTransactionRunner} instead of this.
      */
     /*@Deprecated
     public static <T extends DataObject> void asyncBulkRemove(final DataBroker broker,

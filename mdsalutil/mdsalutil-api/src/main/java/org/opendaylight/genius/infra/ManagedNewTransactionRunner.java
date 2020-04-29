@@ -42,7 +42,7 @@ public interface ManagedNewTransactionRunner extends ManagedTransactionFactory {
      *
      * <p>The consumer should not (cannot) itself use
      * {@link WriteTransaction#cancel()}, or
-     * {@link WriteTransaction#submit()} (it will throw an {@link UnsupportedOperationException}).
+     *  (it will throw an {@link UnsupportedOperationException}).
      *
      * <p>This is an asynchronous API, like {@link DataBroker}'s own;
      * when returning from this method, the operation of the Transaction may well still be ongoing in the background,
@@ -55,8 +55,9 @@ public interface ManagedNewTransactionRunner extends ManagedTransactionFactory {
      * (but better NOT by using the blocking {@link Future#get()} on it).
      *
      * @param txConsumer the {@link CheckedConsumer} that needs a new write only transaction
-     * @return the {@link ListenableFuture} returned by {@link WriteTransaction#submit()},
+     * @return the {@link ListenableFuture} returned by ,
      *     or a failed future with an application specific exception (not from submit())
+     * @param <E> Exception subclass
      */
     @CheckReturnValue
     @Deprecated
@@ -72,7 +73,7 @@ public interface ManagedNewTransactionRunner extends ManagedTransactionFactory {
      *
      * <p>The consumer should not (cannot) itself use
      * {@link ReadWriteTransaction#cancel()}, or
-     * {@link ReadWriteTransaction#submit()} (it will throw an {@link UnsupportedOperationException}).
+     *  (it will throw an {@link UnsupportedOperationException}).
      *
      * <p>This is an asynchronous API, like {@link DataBroker}'s own;
      * when returning from this method, the operation of the Transaction may well still be ongoing in the background,
@@ -85,8 +86,9 @@ public interface ManagedNewTransactionRunner extends ManagedTransactionFactory {
      * (but better NOT by using the blocking {@link Future#get()} on it).
      *
      * @param txConsumer the {@link CheckedConsumer} that needs a new read-write transaction
-     * @return the {@link ListenableFuture} returned by {@link ReadWriteTransaction#submit()},
+     * @return the {@link ListenableFuture} returned by ,
      *     or a failed future with an application specific exception (not from submit())
+     * @param <E> Exception subclass
      */
     @CheckReturnValue
     @Deprecated
