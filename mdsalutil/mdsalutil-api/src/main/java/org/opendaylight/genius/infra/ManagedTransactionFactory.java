@@ -44,6 +44,9 @@ public interface ManagedTransactionFactory {
      *
      * @throws E if an error occurs.
      * @throws InterruptedException if the transaction is interrupted.
+     * @param <D> DataObject subclass
+     * @param <E> Exception subclass
+     * @param <R> The type of result returned by the function.
      */
     <D extends Datastore, E extends Exception, R> R applyWithNewReadOnlyTransactionAndClose(Class<D> datastoreType,
         InterruptibleCheckedFunction<TypedReadTransaction<D>, R, E> txFunction) throws E, InterruptedException;
@@ -56,7 +59,7 @@ public interface ManagedTransactionFactory {
      *
      * <p>The function must not itself use
      * {@link ReadWriteTransaction#cancel()}, or
-     * {@link ReadWriteTransaction#submit()} (it will throw an {@link UnsupportedOperationException}).
+     *  (it will throw an {@link UnsupportedOperationException}).
      *
      * <p>The provided transaction is specific to the given logical datastore type and cannot be used for any
      * other.
@@ -74,8 +77,11 @@ public interface ManagedTransactionFactory {
      * @param datastoreType the {@link Datastore} type that will be accessed
      * @param txFunction the {@link InterruptibleCheckedFunction} that needs a new read-write transaction
      *
-     * @return the {@link ListenableFuture} returned by {@link ReadWriteTransaction#submit()},
+     * @return the {@link ListenableFuture} returned by ,
      *         or a failed future with an application specific exception (not from submit())
+     * @param <D> DataObject subclass
+     * @param <E> Exception subclass
+     * @param <R> The type of result returned by the function.
      */
     @CheckReturnValue
     <D extends Datastore, E extends Exception, R>
@@ -98,6 +104,8 @@ public interface ManagedTransactionFactory {
      *
      * @throws E if an error occurs.
      * @throws InterruptedException if the transaction is interrupted.
+     * @param <D> DataObject subclass
+     * @param <E> Exception subclass
      */
     <D extends Datastore, E extends Exception> void callWithNewReadOnlyTransactionAndClose(Class<D> datastoreType,
         InterruptibleCheckedConsumer<TypedReadTransaction<D>, E> txConsumer) throws E, InterruptedException;
@@ -110,7 +118,7 @@ public interface ManagedTransactionFactory {
      *
      * <p>The consumer should not (cannot) itself use
      * {@link ReadWriteTransaction#cancel()}, or
-     * {@link ReadWriteTransaction#submit()} (it will throw an {@link UnsupportedOperationException}).
+     *  (it will throw an {@link UnsupportedOperationException}).
      *
      * <p>The provided transaction is specific to the given logical datastore type and cannot be used for any
      * other.
@@ -127,8 +135,10 @@ public interface ManagedTransactionFactory {
      *
      * @param datastoreType the {@link Datastore} type that will be accessed
      * @param txConsumer the {@link InterruptibleCheckedConsumer} that needs a new read-write transaction
-     * @return the {@link ListenableFuture} returned by {@link ReadWriteTransaction#submit()},
+     * @return the {@link ListenableFuture} returned by ,
      *     or a failed future with an application specific exception (not from submit())
+     * @param <D> DataObject subclass
+     * @param <E> Exception subclass
      */
     @CheckReturnValue
     <D extends Datastore, E extends Exception>
@@ -143,7 +153,7 @@ public interface ManagedTransactionFactory {
      *
      * <p>The consumer should not (cannot) itself use
      * {@link WriteTransaction#cancel()}, or
-     * {@link WriteTransaction#submit()} (it will throw an {@link UnsupportedOperationException}).
+     *  (it will throw an {@link UnsupportedOperationException}).
      *
      * <p>The provided transaction is specific to the given logical datastore type and cannot be used for any
      * other.
@@ -160,8 +170,10 @@ public interface ManagedTransactionFactory {
      *
      * @param datastoreType the {@link Datastore} type that will be accessed
      * @param txConsumer the {@link InterruptibleCheckedConsumer} that needs a new write only transaction
-     * @return the {@link ListenableFuture} returned by {@link WriteTransaction#submit()},
+     * @return the {@link ListenableFuture} returned by ,
      *     or a failed future with an application specific exception (not from submit())
+     * @param <D> DataObject subclass
+     * @param <E> Exception subclass
      */
     @CheckReturnValue
     <D extends Datastore, E extends Exception>
