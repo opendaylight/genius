@@ -27,7 +27,9 @@ public interface IMdsalApiManager {
     /**
      * Adds a flow.
      *
+     * @param flowEntity
      * @deprecated Use {@link #addFlow(TypedWriteTransaction, FlowEntity)}.
+     * @return
      */
     @Deprecated
     FluentFuture<Void> installFlow(FlowEntity flowEntity);
@@ -35,7 +37,10 @@ public interface IMdsalApiManager {
     /**
      * Adds a flow.
      *
+     * @param dpId
+     * @param flowEntity
      * @deprecated Use {@link #addFlow(TypedWriteTransaction, Uint64, Flow)}.
+     * @return
      */
     @Deprecated
     FluentFuture<Void> installFlow(Uint64 dpId, Flow flowEntity);
@@ -43,7 +48,10 @@ public interface IMdsalApiManager {
     /**
      * Adds a flow.
      *
+     * @param dpId
+     * @param flowEntity
      * @deprecated Use {@link #addFlow(TypedWriteTransaction, FlowEntity)}.
+     * @return
      */
     @Deprecated
     FluentFuture<Void> installFlow(Uint64 dpId, FlowEntity flowEntity);
@@ -68,7 +76,11 @@ public interface IMdsalApiManager {
     /**
      * Removes a flow.
      *
+     * @param dpId
+     * @param tableId
+     * @param flowId
      * @deprecated Use {@link #removeFlow(TypedReadWriteTransaction, Uint64, String, short)}.
+     * @return
      */
     @Deprecated
     ListenableFuture<Void> removeFlow(Uint64 dpId, short tableId, FlowId flowId);
@@ -76,7 +88,9 @@ public interface IMdsalApiManager {
     /**
      * Removes a flow.
      *
+     * @param flowEntity
      * @deprecated Use {@link #removeFlow(TypedReadWriteTransaction, FlowEntity)}.
+     * @return
      */
     @Deprecated
     FluentFuture<Void> removeFlow(FlowEntity flowEntity);
@@ -95,6 +109,8 @@ public interface IMdsalApiManager {
      * @param tx The transaction to use.
      * @param dpId The DPN identifier.
      * @param flow The flow.
+     * @throws ExecutionException
+     * @throws InterruptedException
      */
     void removeFlow(TypedReadWriteTransaction<Configuration> tx, Uint64 dpId, Flow flow)
         throws ExecutionException, InterruptedException;
@@ -104,6 +120,8 @@ public interface IMdsalApiManager {
      *
      * @param tx The transaction to use.
      * @param flowEntity The flow entity.
+     * @throws ExecutionException
+     * @throws InterruptedException
      */
     void removeFlow(TypedReadWriteTransaction<Configuration> tx, FlowEntity flowEntity)
         throws ExecutionException, InterruptedException;
@@ -115,6 +133,8 @@ public interface IMdsalApiManager {
      * @param dpId The DPN identifier.
      * @param flowKey The flow key.
      * @param tableId The table identifier.
+     * @throws ExecutionException
+     * @throws InterruptedException
      */
     void removeFlow(TypedReadWriteTransaction<Configuration> tx, Uint64 dpId, FlowKey flowKey, short tableId)
         throws ExecutionException, InterruptedException;
@@ -126,6 +146,8 @@ public interface IMdsalApiManager {
      * @param dpId The DPN identifier.
      * @param flowId The flow identifier.
      * @param tableId The table identifier.
+     * @throws ExecutionException
+     * @throws InterruptedException
      */
     void removeFlow(TypedReadWriteTransaction<Configuration> tx, Uint64 dpId, String flowId, short tableId)
         throws ExecutionException, InterruptedException;
@@ -150,6 +172,7 @@ public interface IMdsalApiManager {
     /**
      * Remove a group.
      *
+     * @param groupEntity
      * @deprecated Use {@link #removeGroup(TypedReadWriteTransaction, GroupEntity)}
      */
     @Deprecated
@@ -160,6 +183,8 @@ public interface IMdsalApiManager {
      *
      * @param tx The transaction to use.
      * @param groupEntity The group to remove.
+     * @throws ExecutionException
+     * @throws InterruptedException
      */
     void removeGroup(TypedReadWriteTransaction<Configuration> tx, GroupEntity groupEntity)
         throws ExecutionException, InterruptedException;
@@ -170,6 +195,8 @@ public interface IMdsalApiManager {
      * @param tx The transaction to use.
      * @param dpId The DPN identifier.
      * @param group The group to remove.
+     * @throws ExecutionException
+     * @throws InterruptedException
      */
     void removeGroup(TypedReadWriteTransaction<Configuration> tx, Uint64 dpId, Group group)
         throws ExecutionException, InterruptedException;
@@ -180,6 +207,8 @@ public interface IMdsalApiManager {
      * @param tx The transaction to use.
      * @param dpId The DPN identifier.
      * @param groupId The group identifier of the group to remove.
+     * @throws ExecutionException
+     * @throws InterruptedException
      */
     void removeGroup(TypedReadWriteTransaction<Configuration> tx, Uint64 dpId, long groupId)
         throws ExecutionException, InterruptedException;
@@ -200,6 +229,8 @@ public interface IMdsalApiManager {
      * API to remove the flow on Data Plane Node synchronously. It internally waits for
      * Flow Change Notification to confirm flow delete request is being sent with-in delayTime.
      *
+     * @param flowEntity
+     * @param delayTime
      * @deprecated Use {@link #removeFlow(TypedReadWriteTransaction, FlowEntity)}.
      */
     @Deprecated
@@ -208,6 +239,7 @@ public interface IMdsalApiManager {
     /**
      * Removes a flow.
      *
+     * @param flowEntity
      * @deprecated Use {@link #removeFlow(TypedReadWriteTransaction, FlowEntity)}.
      */
     @Deprecated
@@ -216,6 +248,8 @@ public interface IMdsalApiManager {
     /**
      * Install a flow.
      *
+     * @param flowEntity
+     * @param delayTime
      * @deprecated Use {@link #addFlow(TypedWriteTransaction, FlowEntity)}.
      */
     @Deprecated
@@ -224,6 +258,7 @@ public interface IMdsalApiManager {
     /**
      * Installs a flow.
      *
+     * @param flowEntity 
      * @deprecated Use {@link #addFlow(TypedWriteTransaction, FlowEntity)}.
      */
     @Deprecated
