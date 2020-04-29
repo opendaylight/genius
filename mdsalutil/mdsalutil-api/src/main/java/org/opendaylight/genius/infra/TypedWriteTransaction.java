@@ -9,6 +9,7 @@ package org.opendaylight.genius.infra;
 
 import org.opendaylight.mdsal.binding.api.Transaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -24,8 +25,7 @@ public interface TypedWriteTransaction<D extends Datastore> extends
     /**
      * Writes an object to the given path.
      *
-     * @see WriteTransaction#put(org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType,
-     * InstanceIdentifier, DataObject)
+     * @see WriteTransaction#put(LogicalDatastoreType, InstanceIdentifier, DataObject) )
      *
      * @param path The path to write to.
      * @param data The object to write.
@@ -36,8 +36,7 @@ public interface TypedWriteTransaction<D extends Datastore> extends
     /**
      * Writes an object to the given path, creating missing parents if requested.
      *
-     * @see WriteTransaction#put(org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType,
-     * InstanceIdentifier, DataObject, boolean)
+     * @see WriteTransaction#put(LogicalDatastoreType, InstanceIdentifier, DataObject)
      *
      * @param path The path to write to.
      * @param data The object to write.
@@ -50,8 +49,7 @@ public interface TypedWriteTransaction<D extends Datastore> extends
     /**
      * Merges an object with the data already present at the given path.
      *
-     * @see WriteTransaction#merge(org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType,
-     * InstanceIdentifier, DataObject)
+     * @see WriteTransaction#merge(LogicalDatastoreType, InstanceIdentifier, DataObject)
      *
      * @param path The path to write to.
      * @param data The object to merge.
@@ -62,8 +60,7 @@ public interface TypedWriteTransaction<D extends Datastore> extends
     /**
      * Merges an object with the data already present at the given path, creating missing parents if requested.
      *
-     * @see WriteTransaction#merge(org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType,
-     * InstanceIdentifier, DataObject, boolean)
+     * @see WriteTransaction#merge(LogicalDatastoreType, InstanceIdentifier, DataObject)
      *
      * @param path The path to write to.
      * @param data The object to merge.
@@ -76,8 +73,7 @@ public interface TypedWriteTransaction<D extends Datastore> extends
     /**
      * Deletes the object present at the given path.
      *
-     * @see WriteTransaction#delete(org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType,
-     * InstanceIdentifier)
+     * @see WriteTransaction#delete(LogicalDatastoreType, InstanceIdentifier) 
      *
      * @param path The path to delete.
      */

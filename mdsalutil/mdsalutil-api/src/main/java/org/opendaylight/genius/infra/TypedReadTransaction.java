@@ -11,6 +11,7 @@ import com.google.common.util.concurrent.FluentFuture;
 import java.util.Optional;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.Transaction;
+import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
@@ -28,8 +29,7 @@ public interface TypedReadTransaction<D extends Datastore>
     /**
      * Reads an object from the given path.
      *
-     * @see ReadTransaction#read(org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType,
-     * InstanceIdentifier)
+     * @see ReadTransaction#read(LogicalDatastoreType, InstanceIdentifier)
      *
      * @param path The path to read from.
      * @param <T> The type of the expected object.
@@ -40,8 +40,7 @@ public interface TypedReadTransaction<D extends Datastore>
     /**
      * Determines if an object exists at the given path.
      *
-     * @see ReadTransaction#exists(org.opendaylight.controller.md.sal.common.api.data.LogicalDatastoreType,
-     * InstanceIdentifier)
+     * @see ReadTransaction#exists(LogicalDatastoreType, InstanceIdentifier)
      *
      * @param path The path to read from.
      * @return A future providing access to the result of the check, when it’s available, or any error encountered.

@@ -25,7 +25,7 @@ public interface DataBrokerFailures {
      * Fails all future reads.
      *
      * @param exception a {@link ReadFailedException} to throw from a
-     * {@link ReadOnlyTransaction#read(LogicalDatastoreType, InstanceIdentifier)} call.
+     * {@link ReadWriteTransaction#read(LogicalDatastoreType, InstanceIdentifier)} call.
      */
     void failReads(ReadFailedException exception);
 
@@ -35,7 +35,7 @@ public interface DataBrokerFailures {
      * @param howManyTimes how many times to throw the passed exception, until it resets.
      *
      * @param exception a {@link ReadFailedException} to throw from a
-     * {@link ReadOnlyTransaction#read(LogicalDatastoreType, InstanceIdentifier)} call.
+     * {@link ReadWriteTransaction#read(LogicalDatastoreType, InstanceIdentifier)} call.
      */
     void failReads(int howManyTimes, ReadFailedException exception);
 
@@ -43,8 +43,8 @@ public interface DataBrokerFailures {
      * Fails all future Transaction submits.
      *
      * @param exception
-     *            an Exception to throw from a {@link WriteTransaction#submit()}
-     *            (also {@link ReadWriteTransaction#submit()}) method
+     *            an Exception to throw from a {@link WriteTransaction#commit()}
+     *            (also {@link ReadWriteTransaction#commit()} ) method
      */
     void failSubmits(TransactionCommitFailedException exception);
 
@@ -55,8 +55,8 @@ public interface DataBrokerFailures {
      *               how many times to throw the passed exception, until it resets
      *
      * @param exception
-     *            an Exception to throw from a {@link WriteTransaction#submit()}
-     *            (also {@link ReadWriteTransaction#submit()}) method
+     *            an Exception to throw from a {@link WriteTransaction#commit()}
+     *            (also {@link ReadWriteTransaction#commit()}  method
      */
     void failSubmits(int howManyTimes, TransactionCommitFailedException exception);
 

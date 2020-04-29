@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
+import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.mdsalutil.actions.ActionDrop;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -542,8 +543,13 @@ public class MDSALUtil {
 
     /**
      * Deprecated read.
+     * @param datastoreType the {@link Datastore} type that will be accessed
+     * @param path The path to write to.
+     * @param broker the broker
      * @deprecated Use {@link SingleTransactionDataBroker#syncReadOptionalAndTreatReadFailedExceptionAsAbsentOptional(
      * DataBroker, LogicalDatastoreType, InstanceIdentifier)}
+     * @return returns an Optional object containing the data
+     * @param <T>  DataObject subclass
      */
     @Deprecated
     public static <T extends DataObject> Optional<T> read(LogicalDatastoreType datastoreType,
@@ -554,8 +560,15 @@ public class MDSALUtil {
 
     /**
      * Deprecated read.
+     * @param broker the broker
+     * @param datastoreType the {@link Datastore} type that will be accessed
+     * @param path The path to write to.
      * @deprecated Use {@link SingleTransactionDataBroker#syncReadOptional(
      * DataBroker, LogicalDatastoreType, InstanceIdentifier)}
+     * @return returns an Optional object containing the data
+     * @param <T> DataObject subclass
+     * @throws ExecutionException in case of a technical (!) error while reading
+     * @throws InterruptedException if the transaction is interrupted
      */
     @Deprecated
     public static <T extends DataObject> Optional<T> read(DataBroker broker, LogicalDatastoreType datastoreType,
@@ -566,9 +579,14 @@ public class MDSALUtil {
     /**
      * Deprecated write.
      *
+     * @param broker the broker
+     * @param datastoreType the {@link Datastore} type that will be accessed
+     * @param path The path to write to.
+     * @param data The object to write.
      * @deprecated Use
      *             {@link SingleTransactionDataBroker#syncWrite(
      *                     DataBroker, LogicalDatastoreType, InstanceIdentifier, DataObject)}
+     * @param <T> DataObject subclass
      */
     @Deprecated
     public static <T extends DataObject> void syncWrite(DataBroker broker,
@@ -585,9 +603,14 @@ public class MDSALUtil {
     /**
      * Deprecated update.
      *
+     * @param broker the broker
+     * @param datastoreType the {@link Datastore} type that will be accessed
+     * @param path The path to write to.
+     * @param data The object to write.
      * @deprecated Use
      *             {@link SingleTransactionDataBroker#syncUpdate(
      *                          DataBroker, LogicalDatastoreType, InstanceIdentifier, DataObject)}
+     * @param <T> DataObject subclass
      */
     @Deprecated
     public static <T extends DataObject> void syncUpdate(DataBroker broker,
@@ -604,8 +627,12 @@ public class MDSALUtil {
     /**
      * Deprecated delete.
      *
+     * @param broker the broker
+     * @param datastoreType the {@link Datastore} type that will be accessed
+     * @param path The path to write to.
      * @deprecated Use
      *             {@link SingleTransactionDataBroker#syncDelete(DataBroker, LogicalDatastoreType, InstanceIdentifier)}
+     * @param <T> DataObject subclass
      */
     @Deprecated
     public static <T extends DataObject> void syncDelete(DataBroker broker,

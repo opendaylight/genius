@@ -134,6 +134,7 @@ public final class HwvtepUtils {
      *
      * @param transaction
      *            the transaction
+     * @param logicalDatastoreType the LogicalDatastoreType
      * @param nodeId
      *            the node id
      * @param logicalSwitch
@@ -200,12 +201,16 @@ public final class HwvtepUtils {
     /**
      * Gets the logical switch.
      *
+     * @param broker the broker
+     * @param datastoreType the datastore type
      * @param nodeId
      *            the node id
      * @param logicalSwitchName
      *            the logical switch name
      * @return the logical switch
      * @deprecated Use {@link #getLogicalSwitch(TypedReadTransaction, NodeId, String)}.
+     * @throws ExecutionException in case of a technical (!) error while reading
+     * @throws InterruptedException if the transaction is interrupted.
      */
     @Deprecated
     public static LogicalSwitches getLogicalSwitch(DataBroker broker, LogicalDatastoreType datastoreType, NodeId nodeId,
@@ -247,6 +252,8 @@ public final class HwvtepUtils {
      * @param portName
      *          port name under physical switch node id
      * @return the physical port termination point
+     * @throws ExecutionException in case of a technical (!) error while reading
+     * @throws InterruptedException if the transaction is interrupted.
      */
     public static TerminationPoint getPhysicalPortTerminationPoint(DataBroker broker,
             LogicalDatastoreType datastoreType, NodeId nodeId, String portName) throws ExecutionException,
@@ -266,6 +273,8 @@ public final class HwvtepUtils {
      * @param vni
      *            virtual network id
      * @return the logical switches
+     * @throws ExecutionException in case of a technical (!) error while reading
+     * @throws InterruptedException if the transaction is interrupted.
      */
     public static LogicalSwitches getLogicalSwitches(DataBroker broker, String hwVtepNodeId, String vni)
             throws ExecutionException, InterruptedException {
@@ -329,6 +338,8 @@ public final class HwvtepUtils {
      * @param phyLocatorIp
      *            the phy locator ip
      * @return the physical locator
+     * @throws ExecutionException in case of a technical (!) error while reading
+     * @throws InterruptedException if the transaction is interrupted.
      */
     public static HwvtepPhysicalLocatorAugmentation getPhysicalLocator(DataBroker broker,
             LogicalDatastoreType datastoreType, NodeId nodeId, final IpAddress phyLocatorIp) throws
@@ -438,6 +449,7 @@ public final class HwvtepUtils {
      *            the broker
      * @param nodeId
      *            the node id
+     * @param logicalSwitchName the logical switch name
      * @param mac
      *            the mac
      * @return the listenable future
@@ -458,6 +470,7 @@ public final class HwvtepUtils {
      *            the transaction
      * @param nodeId
      *            the node id
+     * @param logialSwitchName the logical switch name
      * @param mac
      *            the mac
      * @deprecated Use {@link #deleteRemoteUcastMac(TypedWriteTransaction, NodeId, String, MacAddress)}.
@@ -489,6 +502,7 @@ public final class HwvtepUtils {
      *            the broker
      * @param nodeId
      *            the node id
+     * @param logicalSwitchName the logical switch name
      * @param lstMac
      *            the lst mac
      * @return the listenable future
@@ -509,6 +523,7 @@ public final class HwvtepUtils {
      *            the transaction
      * @param nodeId
      *            the node id
+     * @param logicalSwitchName the logical switch name
      * @param lstMac
      *            the lst mac
      * @deprecated Use {@link #deleteRemoteUcastMacs(TypedWriteTransaction, NodeId, String, Iterable)}.
@@ -597,6 +612,10 @@ public final class HwvtepUtils {
     /**
      * Adds a remote multicast MAC.
      *
+     * @param transaction the transaction
+     * @param logicalDatastoreType the LogicalDatastoreType
+     * @param nodeId the node id
+     * @param remoteMcastMac the remote mcast mac
      * @deprecated Use {@link #addRemoteMcastMac(TypedWriteTransaction, NodeId, RemoteMcastMacs)}.
      */
     @Deprecated
@@ -635,6 +654,8 @@ public final class HwvtepUtils {
      *            the remote mcast macs key
      * @return the remote mcast mac
      * @deprecated Use {@link #getRemoteMcastMac(TypedReadTransaction, NodeId, RemoteMcastMacsKey)}.
+     * @throws ExecutionException in case of a technical (!) error while reading
+     * @throws InterruptedException if the transaction is interrupted.
      */
     @Deprecated
     public static RemoteMcastMacs getRemoteMcastMac(DataBroker broker, LogicalDatastoreType datastoreType,
@@ -876,6 +897,8 @@ public final class HwvtepUtils {
      *            the node id
      * @return the hw vtep node
      * @deprecated Use {@link #getHwVtepNode(TypedReadTransaction, NodeId)}.
+     * @throws ExecutionException in case of a technical (!) error while reading
+     * @throws InterruptedException if the transaction is interrupted.
      */
     @Deprecated
     public static Node getHwVtepNode(DataBroker dataBroker, LogicalDatastoreType datastoreType, NodeId nodeId)
@@ -903,6 +926,7 @@ public final class HwvtepUtils {
      * Installs a list of Mac Addresses as remote Ucast address in an external
      * device using the hwvtep-southbound.
      *
+     * @param broker  the databroker
      * @param deviceNodeId
      *            NodeId if the ExternalDevice where the macs must be installed
      *            in.
@@ -914,6 +938,7 @@ public final class HwvtepUtils {
      *            VTEP's IP in this OVS used for the tunnel with external
      *            device.
      * @deprecated Use {@link #addUcastMacs(TypedWriteTransaction, String, Iterable, String, IpAddress)}.
+     * @return future if present
      */
     @Deprecated
     public static FluentFuture<? extends @NonNull CommitInfo> installUcastMacs(DataBroker broker,
@@ -959,7 +984,12 @@ public final class HwvtepUtils {
     /**
      * Retrieves the database version.
      *
+     * @param broker the broker
+     * @param nodeId the node id
      * @deprecated Use {@link #getDbVersion(TypedReadTransaction, NodeId)}.
+     * @return dbversion
+     * @throws ExecutionException in case of a technical (!) error while reading
+     * @throws InterruptedException if the transaction is interrupted.
      */
     @Deprecated
     public static String getDbVersion(DataBroker broker, NodeId nodeId) throws ExecutionException,
