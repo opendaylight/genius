@@ -112,6 +112,7 @@ public final class HwvtepSouthboundUtils {
      *
      * @param nodeId
      *            the node id
+     * @param logicalSwitchName the logical switch name
      * @param mac
      *            the mac
      * @return the instance identifier
@@ -130,6 +131,7 @@ public final class HwvtepSouthboundUtils {
      *
      * @param nodeId
      *            the node id
+     * @param logicalSwitchName the logical switch name
      * @param mac
      *            the mac
      * @return the instance identifier
@@ -275,6 +277,7 @@ public final class HwvtepSouthboundUtils {
      *            the desc
      * @param tunnelKey
      *            the tunnel key
+     * @param replicationMode replication mode
      * @return the logical switches
      */
     public static LogicalSwitches createLogicalSwitch(String name, String desc, String tunnelKey,

@@ -124,6 +124,8 @@ public final class MetaDataUtil {
      * For the tunnel id with VNI and valid-vni-flag set, the most significant byte
      * should have 08. So, shifting 08 to 7 bytes (56 bits) and the result is OR-ed with
      * VNI being shifted to 1 byte.
+     * @param vni virtual network id
+     * @return TunnelId
      */
     public static Uint64 getTunnelIdWithValidVniBitAndVniSet(int vni) {
         return Uint64.valueOf(8L << 56 | vni << 8);
@@ -195,6 +197,10 @@ public final class MetaDataUtil {
     /** Utility to fetch the register value for lport dispatcher table.
      * Register6 used for service binding will have first 4 bits of service-index, next 20 bits for lportTag,
      * and next 4 bits for interface-type
+     * @param lportTag lport tag of interface
+     * @param serviceIndex serviceIndex of interface
+     * @param interfaceType type of interface
+     * @return reg6 value of lport dispatcher
      */
     public static long getReg6ValueForLPortDispatcher(int lportTag, short serviceIndex, short interfaceType) {
         // FIXME: this can be done more efficiently

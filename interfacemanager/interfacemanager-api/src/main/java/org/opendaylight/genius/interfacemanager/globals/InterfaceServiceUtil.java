@@ -55,7 +55,7 @@ public final class InterfaceServiceUtil {
     /**
      * Build a service information structure.
      *
-     * @deprecated Use {@link #buildServiceInfo(String, int)}.
+     * @deprecated Use {@link #buildServiceInfo(String, Uint8)}.
      */
     @Deprecated
     public static ServicesInfo buildServiceInfo(String serviceName, short serviceIndex, Uint8 servicePriority,
@@ -66,7 +66,7 @@ public final class InterfaceServiceUtil {
     /**
      * Build a service information structure.
      *
-     * @deprecated Use {@link #buildServiceInfo(String, int)}.
+     * @deprecated Use {@link #buildServiceInfo(String, Uint8)}.
      */
     @Deprecated
     public static ServicesInfo buildServiceInfo(String serviceName, short serviceIndex, Uint8 servicePriority,
