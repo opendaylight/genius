@@ -116,6 +116,7 @@ public final class NWUtil {
      * Accepts a MAC address and returns the corresponding long, where the MAC
      * bytes are set on the lower order bytes of the long.
      *
+     * @param macAddress The MAC
      * @return a long containing the mac address bytes
      */
     public static long macByteToLong(byte[] macAddress) {
@@ -162,6 +163,10 @@ public final class NWUtil {
 
     /**
      * Returns the ids of the currently operative DPNs.
+     * @param dataBroker instance of databroker
+     * @return List of DPNs
+     * @throws ExecutionException in case of a technical (!) error while reading
+     * @throws InterruptedException if the transaction is interrupted
      */
     public static List<Uint64> getOperativeDPNs(DataBroker dataBroker) throws ExecutionException, InterruptedException {
         List<Uint64> result = new LinkedList<>();

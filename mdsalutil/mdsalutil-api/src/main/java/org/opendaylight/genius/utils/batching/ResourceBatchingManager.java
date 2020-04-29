@@ -156,6 +156,7 @@ public class ResourceBatchingManager implements AutoCloseable {
      * @param resourceType resource type that was registered with batch manager
      * @param identifier   identifier to be read
      * @return a CheckFuture containing the result of the read
+     * @param <T> DataObject subclass
      */
     public <T extends DataObject> FluentFuture<Optional<T>> read(
             String resourceType, InstanceIdentifier<T> identifier) {

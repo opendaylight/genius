@@ -143,6 +143,8 @@ public class ICMP extends Packet {
 
     /**
      * Sets the ICMP sequence number for the current ICMP object instance.
+     * @param seqNumber  sequence number
+     * @return sequence number
      */
     public ICMP setSequenceNumber(short seqNumber) {
         byte[] icmpSeqNumber = BitBufferHelper.toByteArray(seqNumber);
