@@ -19,7 +19,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
@@ -360,14 +359,13 @@ public class ItmManagerRpcServiceTest {
                 .read(LogicalDatastoreType.CONFIGURATION, deviceVtepsIdentifier).get().get());
     }
 
-    @Ignore
     @Test
     public void testAddL2GwMlagDevice() throws Exception {
         ListenableFuture<RpcResult<AddL2GwMlagDeviceOutput>> rpcRes =
                 itmManagerRpcService.addL2GwMlagDevice(addL2GwMlagDeviceInput);
 
         coordinatorEventsWaiter.awaitEventsConsumption();
-        Thread.sleep(8000);
+        Thread.sleep(5000);
 
 
         // check RPC response is SUCCESS
