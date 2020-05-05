@@ -878,54 +878,64 @@ public class ItmManagerRpcService implements ItmRpcService {
                     containerPath, dataBroker);
             if (transportZonesOptional.isPresent()) {
                 TransportZones transportZones = transportZonesOptional.get();
-                if (transportZones.getTransportZone() == null || transportZones.getTransportZone().isEmpty()) {
+                if (transportZones.getTransportZone() == null || transportZones.getTransportZone()
+                    .isEmpty()) {
                     LOG.error("No teps configured");
                     result.set(RpcResultBuilder.<AddL2GwMlagDeviceOutput>failed()
-                            .withError(RpcError.ErrorType.APPLICATION, "No teps Configured").build());
+                        .withError(RpcError.ErrorType.APPLICATION, "No teps Configured").build());
                     return result;
                 }
-                String transportZone = transportZones.getTransportZone().get(0).getZoneName();
-                DeviceVtepsKey deviceVtepKey = new DeviceVtepsKey(hwIp, nodeId.get(0));
-                InstanceIdentifier<DeviceVteps> path =
+                for (TransportZone tzone : transportZones.getTransportZone()) {
+                    if (!TunnelTypeVxlan.class.equals(tzone.getTunnelType())) {
+                        continue;
+                    }
+                    String transportZone = tzone.getZoneName();
+                    DeviceVtepsKey deviceVtepKey = new DeviceVtepsKey(hwIp, nodeId.get(0));
+                    InstanceIdentifier<DeviceVteps> path =
                         InstanceIdentifier.builder(TransportZones.class)
-                                .child(TransportZone.class, new TransportZoneKey(transportZone))
-                                .child(DeviceVteps.class, deviceVtepKey).build();
-                DeviceVteps deviceVtep = new DeviceVtepsBuilder().withKey(deviceVtepKey).setIpAddress(hwIp)
+                            .child(TransportZone.class, new TransportZoneKey(transportZone))
+                            .child(DeviceVteps.class, deviceVtepKey).build();
+                    DeviceVteps deviceVtep = new DeviceVtepsBuilder().withKey(deviceVtepKey)
+                        .setIpAddress(hwIp)
                         .setNodeId(nodeId.get(0)).setTopologyId(input.getTopologyId()).build();
-                LOG.trace("writing hWvtep{}", deviceVtep);
-                FluentFuture<Void> future =
-                    retryingTxRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
-                        tx -> {
-                            tx.put(path, deviceVtep, true);
-                            if (nodeId.size() == 2) {
-                                LOG.trace("second node-id {}", nodeId.get(1));
-                                DeviceVtepsKey deviceVtepKey2 = new DeviceVtepsKey(hwIp, nodeId.get(1));
-                                InstanceIdentifier<DeviceVteps> path2 = InstanceIdentifier
+                    LOG.trace("writing hWvtep{}", deviceVtep);
+                    FluentFuture<Void> future =
+                        retryingTxRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
+                            tx -> {
+                                tx.put(path, deviceVtep, true);
+                                if (nodeId.size() == 2) {
+                                    LOG.trace("second node-id {}", nodeId.get(1));
+                                    DeviceVtepsKey deviceVtepKey2 = new DeviceVtepsKey(hwIp,
+                                        nodeId.get(1));
+                                    InstanceIdentifier<DeviceVteps> path2 = InstanceIdentifier
                                         .builder(TransportZones.class)
                                         .child(TransportZone.class, new TransportZoneKey(transportZone))
                                         .child(DeviceVteps.class, deviceVtepKey2).build();
-                                DeviceVteps deviceVtep2 = new DeviceVtepsBuilder().withKey(deviceVtepKey2)
+                                    DeviceVteps deviceVtep2 = new DeviceVtepsBuilder()
+                                        .withKey(deviceVtepKey2)
                                         .setIpAddress(hwIp).setNodeId(nodeId.get(1))
                                         .setTopologyId(input.getTopologyId()).build();
-                                LOG.trace("writing {}", deviceVtep2);
-                                tx.put(path2, deviceVtep2, true);
-                            }
-                        });
-                future.addCallback(new FutureCallback<Void>() {
-                    @Override
-                    public void onSuccess(Void voidInstance) {
-                        result.set(RpcResultBuilder.<AddL2GwMlagDeviceOutput>success().build());
-                    }
+                                    LOG.trace("writing {}", deviceVtep2);
+                                    tx.put(path2, deviceVtep2, true);
+                                }
+                            });
+                    future.addCallback(new FutureCallback<Void>() {
+                        @Override
+                        public void onSuccess(Void voidInstance) {
+                            result.set(RpcResultBuilder.<AddL2GwMlagDeviceOutput>success().build());
+                        }
 
-                    @Override
-                    public void onFailure(Throwable error) {
-                        String msg = String.format("Unable to write HwVtep %s to datastore", nodeId);
-                        LOG.error("Unable to write HwVtep {}, {} to datastore", nodeId , hwIp);
-                        result.set(RpcResultBuilder.<AddL2GwMlagDeviceOutput>failed()
+                        @Override
+                        public void onFailure(Throwable error) {
+                            String msg = String
+                                .format("Unable to write HwVtep %s to datastore", nodeId);
+                            LOG.error("Unable to write HwVtep {}, {} to datastore", nodeId, hwIp);
+                            result.set(RpcResultBuilder.<AddL2GwMlagDeviceOutput>failed()
                                 .withError(RpcError.ErrorType.APPLICATION, msg, error)
                                 .build());
-                    }
-                }, MoreExecutors.directExecutor());
+                        }
+                    }, MoreExecutors.directExecutor());
+                }
             }
             return result;
         } catch (RuntimeException e) {
