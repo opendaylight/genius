@@ -408,11 +408,11 @@ public class SouthboundUtils {
                 && TunnelMonitoringTypeBfd.class.isAssignableFrom(ifTunnel.getMonitorProtocol());
     }
 
-    public static boolean bfdMonitoringEnabled(List<InterfaceBfd> interfaceBfds) {
+    public static boolean bfdMonitoringEnabled(Map<InterfaceBfdKey, InterfaceBfd> interfaceBfds) {
         if (interfaceBfds == null) {
             return false;
         }
-        for (InterfaceBfd interfaceBfd : interfaceBfds) {
+        for (InterfaceBfd interfaceBfd : interfaceBfds.values()) {
             if (SouthboundUtils.BFD_ENABLE_KEY.equalsIgnoreCase(interfaceBfd.getBfdKey())) {
                 return SouthboundUtils.BFD_ENABLE_VALUE.equalsIgnoreCase(interfaceBfd.getBfdValue());//checkBfdEnabled
             }
