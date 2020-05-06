@@ -44,7 +44,7 @@ public class ActionSetFieldEthernetSourceTest {
     public void generateAction() {
         ActionInfo actionInfo = new ActionSetFieldEthernetSource(new MacAddress(MAC_ADDRESS));
         actionInfo.buildAction();
-        assertEquals("new ActionSetFieldEthernetSource(0, new MacAddress(\"" + MAC_ADDRESS + "\"))",
-                generator.getExpression(actionInfo));
+        assertEquals(( "MacAddress{_value=" + MAC_ADDRESS + "}"),
+                ((ActionSetFieldEthernetSource) actionInfo).getSource().toString());
     }
 }

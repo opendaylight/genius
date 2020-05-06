@@ -8,8 +8,6 @@
 
 package org.opendaylight.genius.utils.hwvtep;
 
-import static org.opendaylight.mdsal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
-
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.ArrayList;
 import java.util.List;
@@ -107,7 +105,7 @@ public final class HwvtepUtils {
         LogicalSwitches logicalSwitch) {
         InstanceIdentifier<LogicalSwitches> iid = HwvtepSouthboundUtils.createLogicalSwitchesInstanceIdentifier(nodeId,
             logicalSwitch.getHwvtepNodeName());
-        tx.put(iid, logicalSwitch, CREATE_MISSING_PARENTS);
+        tx.mergeParentStructurePut(iid, logicalSwitch);
     }
 
     /**
@@ -144,7 +142,7 @@ public final class HwvtepUtils {
                                         final NodeId nodeId, final LogicalSwitches logicalSwitch) {
         InstanceIdentifier<LogicalSwitches> iid = HwvtepSouthboundUtils.createLogicalSwitchesInstanceIdentifier(nodeId,
                 logicalSwitch.getHwvtepNodeName());
-        transaction.put(logicalDatastoreType, iid, logicalSwitch, true);
+        transaction.mergeParentStructurePut(logicalDatastoreType, iid, logicalSwitch);
     }
 
     /**
@@ -323,7 +321,7 @@ public final class HwvtepUtils {
                 .withKey(HwvtepSouthboundUtils.getTerminationPointKey(phyLocator))
                 .addAugmentation(HwvtepPhysicalLocatorAugmentation.class, phyLocator).build();
 
-        transaction.put(LogicalDatastoreType.CONFIGURATION, iid, terminationPoint, true);
+        transaction.mergeParentStructurePut(LogicalDatastoreType.CONFIGURATION, iid, terminationPoint);
     }
 
     /**
@@ -398,7 +396,7 @@ public final class HwvtepUtils {
         InstanceIdentifier<RemoteUcastMacs> iid = HwvtepSouthboundUtils.createInstanceIdentifier(nodeId)
             .augmentation(HwvtepGlobalAugmentation.class).child(RemoteUcastMacs.class,
                 new RemoteUcastMacsKey(remoteUcastMac.getLogicalSwitchRef(), remoteUcastMac.getMacEntryKey()));
-        tx.put(iid, remoteUcastMac, CREATE_MISSING_PARENTS);
+        tx.mergeParentStructurePut(iid, remoteUcastMac);
     }
 
     /**
@@ -439,7 +437,7 @@ public final class HwvtepUtils {
         InstanceIdentifier<RemoteUcastMacs> iid = HwvtepSouthboundUtils.createInstanceIdentifier(nodeId)
                 .augmentation(HwvtepGlobalAugmentation.class).child(RemoteUcastMacs.class,
                         new RemoteUcastMacsKey(remoteUcastMac.getLogicalSwitchRef(), remoteUcastMac.getMacEntryKey()));
-        transaction.put(LogicalDatastoreType.CONFIGURATION, iid, remoteUcastMac, true);
+        transaction.mergeParentStructurePut(LogicalDatastoreType.CONFIGURATION, iid, remoteUcastMac);
     }
 
     /**
@@ -606,7 +604,7 @@ public final class HwvtepUtils {
                                          RemoteMcastMacs remoteMcastMac) {
         InstanceIdentifier<RemoteMcastMacs> iid = HwvtepSouthboundUtils.createRemoteMcastMacsInstanceIdentifier(nodeId,
                 remoteMcastMac.key());
-        transaction.put(LogicalDatastoreType.CONFIGURATION, iid, remoteMcastMac, true);
+        transaction.mergeParentStructurePut(LogicalDatastoreType.CONFIGURATION, iid, remoteMcastMac);
     }
 
     /**
@@ -624,7 +622,7 @@ public final class HwvtepUtils {
                                          RemoteMcastMacs remoteMcastMac) {
         InstanceIdentifier<RemoteMcastMacs> iid = HwvtepSouthboundUtils.createRemoteMcastMacsInstanceIdentifier(nodeId,
                 remoteMcastMac.key());
-        transaction.put(logicalDatastoreType, iid, remoteMcastMac, true);
+        transaction.mergeParentStructurePut(logicalDatastoreType, iid, remoteMcastMac);
     }
 
     /**
@@ -638,7 +636,7 @@ public final class HwvtepUtils {
         RemoteMcastMacs remoteMcastMac) {
         InstanceIdentifier<RemoteMcastMacs> iid = HwvtepSouthboundUtils.createRemoteMcastMacsInstanceIdentifier(nodeId,
             remoteMcastMac.key());
-        tx.put(iid, remoteMcastMac, CREATE_MISSING_PARENTS);
+        tx.mergeParentStructurePut(iid, remoteMcastMac);
     }
 
     /**
@@ -831,7 +829,7 @@ public final class HwvtepUtils {
 
         final InstanceIdentifier<HwvtepPhysicalPortAugmentation> iid = HwvtepSouthboundUtils
                 .createPhysicalPortInstanceIdentifier(physicalSwitchNodeId, phyPortName);
-        transaction.merge(LogicalDatastoreType.CONFIGURATION, iid, phyPortAug, true);
+        transaction.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, iid, phyPortAug);
     }
 
     /**
@@ -849,7 +847,7 @@ public final class HwvtepUtils {
 
         final InstanceIdentifier<HwvtepPhysicalPortAugmentation> iid = HwvtepSouthboundUtils
             .createPhysicalPortInstanceIdentifier(physicalSwitchNodeId, phyPortName);
-        tx.merge(iid, phyPortAug, CREATE_MISSING_PARENTS);
+        tx.mergeParentStructureMerge(iid, phyPortAug);
     }
 
     /**
