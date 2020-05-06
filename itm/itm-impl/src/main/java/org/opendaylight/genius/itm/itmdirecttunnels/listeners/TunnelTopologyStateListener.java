@@ -11,9 +11,11 @@ import com.google.common.util.concurrent.ListenableFuture;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
@@ -30,6 +32,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.b
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.bridge.tunnel.info.OvsBridgeEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.bridge.tunnel.info.OvsBridgeEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.bridge.tunnel.info.ovs.bridge.entry.OvsBridgeTunnelEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.bridge.tunnel.info.ovs.bridge.entry.OvsBridgeTunnelEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.ovs.bridge.ref.info.OvsBridgeRefEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.ovs.bridge.ref.info.OvsBridgeRefEntryBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.ovs.bridge.ref.info.OvsBridgeRefEntryKey;
@@ -184,7 +187,7 @@ public class TunnelTopologyStateListener extends AbstractClusteredSyncDataTreeCh
         OvsBridgeRefEntryBuilder tunnelDpnBridgeEntryBuilder =
                 new OvsBridgeRefEntryBuilder().withKey(bridgeRefEntryKey).setDpid(dpnId)
                         .setOvsBridgeReference(new OvsdbBridgeRef(bridgeIid));
-        tx.put(LogicalDatastoreType.OPERATIONAL, bridgeEntryId, tunnelDpnBridgeEntryBuilder.build(), true);
+        tx.mergeParentStructurePut(LogicalDatastoreType.OPERATIONAL, bridgeEntryId, tunnelDpnBridgeEntryBuilder.build());
     }
 
     private void deleteOvsBridgeRefEntry(Uint64 dpnId, WriteTransaction tx) {
@@ -203,7 +206,7 @@ public class TunnelTopologyStateListener extends AbstractClusteredSyncDataTreeCh
 
         OvsBridgeEntryBuilder bridgeEntryBuilder = new OvsBridgeEntryBuilder().withKey(bridgeEntryKey)
                 .setOvsBridgeReference(ovsdbBridgeRef);
-        tx.merge(LogicalDatastoreType.CONFIGURATION, bridgeEntryInstanceIdentifier, bridgeEntryBuilder.build(), true);
+        tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, bridgeEntryInstanceIdentifier, bridgeEntryBuilder.build());
     }
 
     /*
@@ -214,9 +217,9 @@ public class TunnelTopologyStateListener extends AbstractClusteredSyncDataTreeCh
                                      OvsdbBridgeAugmentation bridgeNew) {
         String bridgeName = bridgeNew.getBridgeName().getValue();
         LOG.debug("adding all ports to bridge: {}", bridgeName);
-        List<OvsBridgeTunnelEntry> bridgeInterfaceEntries = bridgeEntry.getOvsBridgeTunnelEntry();
+        @Nullable Map<OvsBridgeTunnelEntryKey, OvsBridgeTunnelEntry> bridgeInterfaceEntries = bridgeEntry.getOvsBridgeTunnelEntry();
         if (bridgeInterfaceEntries != null) {
-            for (OvsBridgeTunnelEntry bridgeInterfaceEntry : bridgeInterfaceEntries) {
+            for (OvsBridgeTunnelEntry bridgeInterfaceEntry : bridgeInterfaceEntries.values()) {
                 String portName = bridgeInterfaceEntry.getTunnelName();
                 org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                         .ietf.interfaces.rev140508.interfaces.Interface iface =

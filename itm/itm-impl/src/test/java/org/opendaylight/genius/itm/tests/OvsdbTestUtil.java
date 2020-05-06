@@ -119,7 +119,7 @@ public final class OvsdbTestUtil {
         Node ovsdbNode = nodeBuilder.build();
 
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-        transaction.put(LogicalDatastoreType.OPERATIONAL, iid, ovsdbNode, true);
+        transaction.mergeParentStructurePut(LogicalDatastoreType.OPERATIONAL, iid, ovsdbNode);
         return transaction.commit();
     }
 
@@ -190,7 +190,7 @@ public final class OvsdbTestUtil {
 
         //ReadWriteTransaction transaction = dataBroker.newReadWriteTransaction();
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
-        transaction.put(LogicalDatastoreType.OPERATIONAL, iid, ovsdbNode, true);
+        transaction.mergeParentStructurePut(LogicalDatastoreType.OPERATIONAL, iid, ovsdbNode);
         return transaction.commit();
     }
 
@@ -217,8 +217,8 @@ public final class OvsdbTestUtil {
         Node bridgeNode = bridgeNodeBuilder.build();
 
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
-        tx.merge(LogicalDatastoreType.OPERATIONAL, bridgeIid,
-            bridgeNode, true);
+        tx.mergeParentStructureMerge(LogicalDatastoreType.OPERATIONAL, bridgeIid,
+            bridgeNode);
         return tx.commit();
     }
 }
