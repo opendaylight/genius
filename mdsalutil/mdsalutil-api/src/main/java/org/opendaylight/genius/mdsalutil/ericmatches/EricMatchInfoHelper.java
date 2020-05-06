@@ -7,7 +7,9 @@
  */
 package org.opendaylight.genius.mdsalutil.ericmatches;
 
+import com.google.common.collect.Maps;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
@@ -21,6 +23,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ge
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.general.rev140714.general.extension.grouping.ExtensionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.general.rev140714.general.extension.list.grouping.ExtensionList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.general.rev140714.general.extension.list.grouping.ExtensionListBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.general.rev140714.general.extension.list.grouping.ExtensionListKey;
 import org.opendaylight.yangtools.concepts.Builder;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 
@@ -66,18 +69,19 @@ public abstract class EricMatchInfoHelper<T extends DataObject, B extends Builde
     private GeneralAugMatchNodesNodeTableFlow generalAugMatchBuilder(
             GeneralAugMatchNodesNodeTableFlow existingAugmentations, EricAugMatchNodesNodeTableFlow ericAugMatch,
             Class<? extends ExtensionKey> extentionKey) {
-        List<ExtensionList> extensions = null;
+        Map<ExtensionListKey, ExtensionList> extensions = null;
         if (existingAugmentations != null) {
             extensions = existingAugmentations.getExtensionList();
         }
         if (extensions == null) {
-            extensions = new ArrayList<>();
+            extensions = new HashMap<>();
         }
-        extensions.add(new ExtensionListBuilder().setExtensionKey(extentionKey)
+        ExtensionList extensionList = new ExtensionListBuilder().setExtensionKey(extentionKey)
                 .setExtension(
                         new ExtensionBuilder().addAugmentation(EricAugMatchNodesNodeTableFlow.class, ericAugMatch)
                                 .build())
-                .build());
+                .build();
+        extensions.put(extensionList.key(),extensionList);
         return new GeneralAugMatchNodesNodeTableFlowBuilder().setExtensionList(extensions).build();
     }
 

@@ -8,8 +8,6 @@
 
 package org.opendaylight.genius.idmanager;
 
-import static org.opendaylight.mdsal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
-
 import com.google.common.net.InetAddresses;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -307,7 +305,7 @@ public class IdUtils {
         ChildPools childPool = createChildPool(localPoolName);
         InstanceIdentifier<ChildPools> childPoolInstanceIdentifier =
                 getChildPoolsInstanceIdentifier(poolName, localPoolName);
-        tx.merge(childPoolInstanceIdentifier, childPool, CREATE_MISSING_PARENTS);
+        tx.mergeParentStructureMerge(childPoolInstanceIdentifier, childPool);
     }
 
     public void incrementPoolUpdatedMap(String localPoolName) {

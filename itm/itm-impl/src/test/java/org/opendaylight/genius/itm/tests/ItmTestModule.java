@@ -146,7 +146,7 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
         bind(ServiceRecoveryRegistry.class).toInstance(mock(ServiceRecoveryRegistry.class));
         bind(ItmDiagStatusProvider.class).toInstance(mock(ItmDiagStatusProvider.class));
         EntityOwnershipService entityOwnershipService = new BindingDOMEntityOwnershipServiceAdapter(
-                new SimpleDOMEntityOwnershipService(), test.getDataBrokerTestCustomizer().getBindingToNormalized());
+                new SimpleDOMEntityOwnershipService(), test.getDataBrokerTestCustomizer().getAdapterContext());
         bind(EntityOwnershipService.class).toInstance(entityOwnershipService);
         bind(EntityOwnershipUtils.class);
         bind(TombstonedNodeManager.class).to(TombstonedNodeManagerImpl.class);

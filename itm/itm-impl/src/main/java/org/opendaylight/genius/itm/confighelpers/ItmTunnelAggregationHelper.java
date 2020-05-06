@@ -10,19 +10,20 @@ package org.opendaylight.genius.itm.confighelpers;
 
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
-import static org.opendaylight.mdsal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.Datastore.Operational;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -59,6 +60,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.itm.config.TunnelAggregation;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.itm.config.TunnelAggregationKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.GroupTypes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.group.types.rev131018.group.buckets.Bucket;
@@ -164,9 +166,9 @@ public class ItmTunnelAggregationHelper {
         // Load balancing of VxLAN feature is guarded by a global configuration option in the ITM,
         // only when the feature is enabled, the logical tunnel interfaces should be created.
         boolean tunnelAggregationConfigEnabled = false;
-        List<TunnelAggregation> tunnelsConfig = itmConfig != null ? itmConfig.getTunnelAggregation() : null;
+        Map<TunnelAggregationKey, TunnelAggregation> tunnelsConfig = itmConfig != null ? itmConfig.getTunnelAggregation() : null;
         if (tunnelsConfig != null) {
-            for (TunnelAggregation tnlCfg : tunnelsConfig) {
+            for (TunnelAggregation tnlCfg : tunnelsConfig.values()) {
                 Class<? extends TunnelTypeBase> tunType = ItmUtils.getTunnelType(tnlCfg.key().getTunnelType());
                 if (tunType.isAssignableFrom(TunnelTypeVxlan.class)) {
                     tunnelAggregationConfigEnabled = tnlCfg.isEnabled();
@@ -212,12 +214,12 @@ public class ItmTunnelAggregationHelper {
                 ? interfaceManager.getLogicalTunnelSelectGroupId(ifLogicTunnel.getInterfaceTag()) : INVALID_ID;
         Uint64 srcDpnId = logicInternalTunnel.getSourceDPN();
         List<Bucket> listBuckets = new ArrayList<>();
-        List<InterfaceChildEntry> interfaceChildEntries = parentEntry.getInterfaceChildEntry();
+        @Nullable Map<InterfaceChildEntryKey, InterfaceChildEntry> interfaceChildEntries = parentEntry.getInterfaceChildEntry();
         if (interfaceChildEntries == null || interfaceChildEntries.isEmpty()) {
             LOG.debug("MULTIPLE_VxLAN_TUNNELS: empty child list in group {}", parentEntry.getParentInterface());
             return;
         }
-        for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
+        for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries.values()) {
             String curChildName = interfaceChildEntry.getChildInterface();
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface
                         childIface = ItmUtils.getInterface(curChildName, interfaceManager);
@@ -239,7 +241,10 @@ public class ItmTunnelAggregationHelper {
                         curChildName, groupId);
                 continue;
             }
-            int bucketId = interfaceChildEntries.indexOf(interfaceChildEntry);
+
+            List<InterfaceChildEntry> val = new ArrayList<>(interfaceChildEntries.values());
+            int bucketId = val.indexOf(interfaceChildEntry);
+
             LOG.debug("MULTIPLE_VxLAN_TUNNELS: updateTunnelAggregationGroup - add bucketId {} to groupId {}",
                     bucketId, groupId);
             listBuckets.add(createBucket(curChildName, ifTunnel, bucketId, ifInfo.getPortNo()));
@@ -258,7 +263,7 @@ public class ItmTunnelAggregationHelper {
                                                     int action, TypedReadWriteTransaction<Configuration> tx)
             throws ExecutionException, InterruptedException {
         String logicTunnelName = parentRefs.getParentInterface();
-        List<InterfaceChildEntry> interfaceChildEntries = groupParentEntry.getInterfaceChildEntry();
+        @Nullable Map<InterfaceChildEntryKey, InterfaceChildEntry> interfaceChildEntries = groupParentEntry.getInterfaceChildEntry();
         if (interfaceChildEntries == null) {
             LOG.debug("MULTIPLE_VxLAN_TUNNELS: empty child list in group {}", groupParentEntry.getParentInterface());
             return;
@@ -266,7 +271,9 @@ public class ItmTunnelAggregationHelper {
         String ifaceName = ifaceState.getName();
         InterfaceChildEntry childEntry = new InterfaceChildEntryBuilder().setChildInterface(ifaceName)
                 .withKey(new InterfaceChildEntryKey(ifaceName)).build();
-        int bucketId = interfaceChildEntries.indexOf(childEntry);
+        List<InterfaceChildEntry> val = new ArrayList<>(interfaceChildEntries.values());
+        int bucketId = val.indexOf(childEntry);
+
         if (bucketId == -1) {
             LOG.debug("MULTIPLE_VxLAN_TUNNELS: wrong child id for {} in group {}", ifaceName,
                     groupParentEntry.getParentInterface());
@@ -336,13 +343,13 @@ public class ItmTunnelAggregationHelper {
             return OperStatus.Up;
         }
 
-        List<InterfaceChildEntry> interfaceChildEntries = parentEntry.getInterfaceChildEntry();
+        @Nullable Map<InterfaceChildEntryKey, InterfaceChildEntry> interfaceChildEntries = parentEntry.getInterfaceChildEntry();
         if (interfaceChildEntries == null || interfaceChildEntries.isEmpty()) {
             LOG.debug("MULTIPLE_VxLAN_TUNNELS: OperStatus is Down, because of the empty child list in group {}",
                     parentEntry.getParentInterface());
             return OperStatus.Down;
         }
-        for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
+        for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries.values()) {
             String curChildInterface = interfaceChildEntry.getChildInterface();
             if (!Objects.equals(curChildInterface, ifaceState.getName())) {
                 InterfaceInfo ifInfo = interfaceManager.getInterfaceInfoFromOperationalDataStore(curChildInterface);
@@ -360,7 +367,7 @@ public class ItmTunnelAggregationHelper {
         InstanceIdentifier<Interface> idLogicGroup = ItmUtils.buildStateInterfaceId(ifaceName);
         InterfaceBuilder ifaceBuilderChild = new InterfaceBuilder(ifaceState);
         ifaceBuilderChild.setOperStatus(st);
-        tx.merge(idLogicGroup, ifaceBuilderChild.build(), CREATE_MISSING_PARENTS);
+        tx.mergeParentStructureMerge(idLogicGroup, ifaceBuilderChild.build());
     }
 
     @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
@@ -371,12 +378,12 @@ public class ItmTunnelAggregationHelper {
         if (ifOrigin == null || ifUpdated == null || ifOrigin.getAdminStatus() == ifUpdated.getAdminStatus()) {
             return;
         }
-        List<InterfaceChildEntry> interfaceChildEntries = parentEntry.getInterfaceChildEntry();
+        @Nullable Map<InterfaceChildEntryKey, InterfaceChildEntry> interfaceChildEntries = parentEntry.getInterfaceChildEntry();
         if (interfaceChildEntries == null || interfaceChildEntries.isEmpty()) {
             LOG.debug("MULTIPLE_VxLAN_TUNNELS: empty child list in group {}", logicalTunnelName);
             return;
         }
-        for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
+        for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries.values()) {
             String curChildInterface = interfaceChildEntry.getChildInterface();
             updateInterfaceAdminStatus(curChildInterface, ifUpdated.getAdminStatus(), tx);
         }
@@ -402,7 +409,7 @@ public class ItmTunnelAggregationHelper {
         InterfaceBuilder ifaceBuilderChild = new InterfaceBuilder();
         ifaceBuilderChild.withKey(new InterfaceKey(ifaceName));
         ifaceBuilderChild.setAdminStatus(st);
-        tx.merge(id, ifaceBuilderChild.build(), CREATE_MISSING_PARENTS);
+        tx.mergeParentStructureMerge(id, ifaceBuilderChild.build());
     }
 
     private class TunnelAggregationUpdateWorker implements Callable<List<? extends ListenableFuture<?>>> {

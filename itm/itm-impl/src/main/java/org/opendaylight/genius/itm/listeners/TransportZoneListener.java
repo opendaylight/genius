@@ -11,6 +11,7 @@ package org.opendaylight.genius.itm.listeners;
 import com.google.common.util.concurrent.FluentFuture;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -20,6 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.genius.cloudscaler.api.TombstonedNodeManager;
 import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
 import org.opendaylight.genius.infra.Datastore;
@@ -69,6 +71,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.ho
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.tepsinnothostedtransportzone.UnknownVtepsKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.DeviceVteps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.DeviceVtepsKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Vteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.VtepsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.VtepsKey;
@@ -200,7 +203,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
                                 itmInternalTunnelDeleteWorker, dpnTEPsInfoCache, txRunner, itmConfig));
 
                 if (transportZone.getVteps() != null && !transportZone.getVteps().isEmpty()) {
-                    List<UnknownVteps> unknownVteps = convertVtepListToUnknownVtepList(transportZone.getVteps());
+                    Map<UnknownVtepsKey, UnknownVteps> unknownVteps = convertVtepListToUnknownVtepList(transportZone.getVteps());
                     LOG.trace("Moving Transport Zone {} to tepsInNotHostedTransportZone Oper Ds.",
                             transportZone.getZoneName());
                     jobCoordinator.enqueueJob(transportZone.getZoneName(),
@@ -329,10 +332,10 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         if (tepsInNotHostedTransportZone == null) {
             return notHostedDpnTepInfo;
         }
-        List<UnknownVteps> unVtepsLst = tepsInNotHostedTransportZone.getUnknownVteps();
+        @Nullable Map<UnknownVtepsKey, UnknownVteps> unVtepsLst = tepsInNotHostedTransportZone.getUnknownVteps();
         List<Vteps> vtepsList = new ArrayList<>();
         if (unVtepsLst != null && !unVtepsLst.isEmpty()) {
-            for (UnknownVteps vteps : unVtepsLst) {
+            for (UnknownVteps vteps : unVtepsLst.values()) {
                 Uint64 dpnID = vteps.getDpnId();
                 IpAddress ipAddress = vteps.getIpAddress();
                 String portName = itmConfig.getPortname() == null ? ITMConstants.DUMMY_PORT : itmConfig.getPortname();
@@ -397,14 +400,15 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         return vtepObj;
     }
 
-    private  List<UnknownVteps> convertVtepListToUnknownVtepList(List<Vteps> vteps) {
-        List<UnknownVteps> unknownVtepsList = new ArrayList<>();
-        for (Vteps vtep : vteps) {
+    private  Map<UnknownVtepsKey, UnknownVteps> convertVtepListToUnknownVtepList(Map<VtepsKey, Vteps> vteps) {
+        Map<UnknownVtepsKey, UnknownVteps> unknownVtepsList = new HashMap<>();
+        for (Vteps vtep : vteps.values()) {
             UnknownVtepsKey vtepkey = new UnknownVtepsKey(vtep.getDpnId());
             UnknownVteps vtepObj =
                     new UnknownVtepsBuilder().setDpnId(vtep.getDpnId()).setIpAddress(vtep.getIpAddress())
                             .withKey(vtepkey).setOfTunnel(vtep.isOptionOfTunnel()).build();
-            unknownVtepsList.add(vtepObj);
+            //unknownVtepsList.values().add(vtepObj);
+            unknownVtepsList.put(vtepObj.key(),vtepObj);
         }
         return unknownVtepsList;
     }
@@ -433,13 +437,13 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         List<TzMembership> zones = ItmUtils.createTransportZoneMembership(transportZone.getZoneName());
         Class<? extends TunnelTypeBase> tunnelType = transportZone.getTunnelType();
         LOG.trace("Transport Zone_name: {}", transportZone.getZoneName());
-        List<Vteps> vtepsList = transportZone.getVteps();
+        @Nullable Map<VtepsKey, Vteps> vtepsList = transportZone.getVteps();
 
         String portName = itmConfig.getPortname() == null ? ITMConstants.DUMMY_PORT : itmConfig.getPortname();
         int vlanId = itmConfig.getVlanId() != null ? itmConfig.getVlanId().toJava() : ITMConstants.DUMMY_VLANID;
 
         if (vtepsList != null && !vtepsList.isEmpty()) {
-            for (Vteps vteps : vtepsList) {
+            for (Vteps vteps : vtepsList.values()) {
                 Uint64 dpnID = vteps.getDpnId();
                 IpAddress ipAddress = vteps.getIpAddress();
                 boolean useOfTunnel = itmConfig.isUseOfTunnels();
@@ -481,9 +485,9 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         String zoneName = transportZone.getZoneName();
         Class<? extends TunnelTypeBase> tunnelType = transportZone.getTunnelType();
         LOG.trace("Transport Zone_name: {}", zoneName);
-        List<DeviceVteps> deviceVtepsList = transportZone.getDeviceVteps();
+        @Nullable Map<DeviceVtepsKey, DeviceVteps> deviceVtepsList = transportZone.getDeviceVteps();
         if (deviceVtepsList != null) {
-            for (DeviceVteps vteps : deviceVtepsList) {
+            for (DeviceVteps vteps : deviceVtepsList.values()) {
                 String topologyId = vteps.getTopologyId();
                 String nodeId = vteps.getNodeId();
                 IpAddress ipAddress = vteps.getIpAddress();

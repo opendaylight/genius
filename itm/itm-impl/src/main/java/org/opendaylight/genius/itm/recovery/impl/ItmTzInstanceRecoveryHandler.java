@@ -12,9 +12,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
@@ -33,6 +35,7 @@ import org.opendaylight.serviceutils.tools.listener.AbstractSyncDataTreeChangeLi
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelsState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.DpnsTeps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpns;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpnsKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
@@ -104,8 +107,8 @@ public class ItmTzInstanceRecoveryHandler extends
             Collection<DpnsTeps> dpnsTeps = dpnTepStateCache.getAllPresent();
             List<Uint64> listOfDpnIds = ItmUtils.getDpIdFromTransportzone(dataBroker, entityId);
             for (DpnsTeps dpnTep : dpnsTeps) {
-                List<RemoteDpns> rmtdpns = dpnTep.getRemoteDpns();
-                for (RemoteDpns remoteDpn : rmtdpns) {
+                @Nullable Map<RemoteDpnsKey, RemoteDpns> rmtdpns = dpnTep.getRemoteDpns();
+                for (RemoteDpns remoteDpn : rmtdpns.values()) {
                     if (listOfDpnIds.contains(remoteDpn.getDestinationDpnId())) {
                         tunnelList.add(remoteDpn.getTunnelName());
                     }
