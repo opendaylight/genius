@@ -12,6 +12,7 @@ import static org.opendaylight.serviceutils.tools.rpc.FutureRpcResults.fromListe
 import static org.opendaylight.yangtools.yang.common.RpcResultBuilder.failed;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -407,7 +408,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                 .child(DpnsTeps.class, new DpnsTepsKey(srcDpnId))
                 .child(RemoteDpns.class,
                         new RemoteDpnsKey(destDpnId)).build();
-        tx.merge(iid, remoteDpn, true);
+        tx.mergeParentStructureMerge(iid, remoteDpn);
     }
 
     @Override
@@ -515,7 +516,7 @@ public class ItmManagerRpcService implements ItmRpcService {
             tx -> {
                 externalTunnelAddWorker.buildTunnelsToExternalEndPoint(meshedDpnList, input.getDestinationIp(),
                     input.getTunnelType(), tx);
-                tx.put(extPath, dcGatewayIp, true);
+                tx.mergeParentStructurePut(extPath, dcGatewayIp);
             }
         );
         future.addCallback(new FutureCallback<Void>() {
@@ -821,8 +822,8 @@ public class ItmManagerRpcService implements ItmRpcService {
                             .setNodeId(nodeId).setTopologyId(input.getTopologyId()).build();
                     //TO DO: add retry if it fails
                     FluentFuture<Void> future = retryingTxRunner
-                            .callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> tx.put(path,
-                                    deviceVtep, true));
+                            .callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> tx.mergeParentStructurePut(path,
+                                    deviceVtep));
 
                     future.addCallback(new FutureCallback<Void>() {
 
@@ -896,7 +897,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                 FluentFuture<Void> future =
                     retryingTxRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
                         tx -> {
-                            tx.put(path, deviceVtep, true);
+                            tx.mergeParentStructurePut(path, deviceVtep);
                             if (nodeId.size() == 2) {
                                 LOG.trace("second node-id {}", nodeId.get(1));
                                 DeviceVtepsKey deviceVtepKey2 = new DeviceVtepsKey(hwIp, nodeId.get(1));
@@ -908,7 +909,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                                         .setIpAddress(hwIp).setNodeId(nodeId.get(1))
                                         .setTopologyId(input.getTopologyId()).build();
                                 LOG.trace("writing {}", deviceVtep2);
-                                tx.put(path2, deviceVtep2, true);
+                                tx.mergeParentStructurePut(path2, deviceVtep2);
                             }
                         });
                 future.addCallback(new FutureCallback<Void>() {
@@ -1025,16 +1026,16 @@ public class ItmManagerRpcService implements ItmRpcService {
     public ListenableFuture<RpcResult<IsDcgwPresentOutput>> isDcgwPresent(IsDcgwPresentInput input) {
         RpcResultBuilder<IsDcgwPresentOutput> resultBld = RpcResultBuilder.success();
 
-        List<DcGatewayIp> dcGatewayIpList = new ArrayList<>();
+        Map<DcGatewayIpKey, DcGatewayIp> dcGatewayIpList = Maps.newHashMap();
         txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION,
-            tx -> dcGatewayIpList.addAll(getDcGatewayIpList(tx))).isDone();
+            tx -> dcGatewayIpList.values().addAll(getDcGatewayIpList(tx).values())).isDone();
 
         String dcgwIpStr = input.getDcgwIp();
         IpAddress dcgwIpAddr = IpAddressBuilder.getDefaultInstance(dcgwIpStr);
         long retVal;
 
         if (!dcGatewayIpList.isEmpty()
-                && dcGatewayIpList.stream().anyMatch(gwIp -> Objects.equal(gwIp.getIpAddress(), dcgwIpAddr))) {
+                && dcGatewayIpList.values().stream().anyMatch(gwIp -> Objects.equal(gwIp.getIpAddress(), dcgwIpAddr))) {
             //Match found
             retVal = 1;
             IsDcgwPresentOutputBuilder output = new IsDcgwPresentOutputBuilder().setRetVal(retVal);
@@ -1102,7 +1103,7 @@ public class ItmManagerRpcService implements ItmRpcService {
         }
         Map<Uint64, ComputesBuilder> result = new HashMap<>();
         for (TransportZone transportZone : transportZones.getTransportZone()) {
-            for (Vteps vtep : transportZone.getVteps()) {
+            for (Vteps vtep : transportZone.getVteps().values()) {
                 if (dpnIds.contains(vtep.getDpnId())) {
                     result.putIfAbsent(vtep.getDpnId(),
                             new ComputesBuilder()
@@ -1129,7 +1130,7 @@ public class ItmManagerRpcService implements ItmRpcService {
             throw new IllegalStateException("Failed to find operational inventory nodes datastore");
         }
         Map<String, Uint64> result = new HashMap<>();
-        for (Node node : operInventoryNodes.getNode()) {
+        for (Node node : operInventoryNodes.getNode().values()) {
             String name = node.augmentation(FlowCapableNode.class).getDescription();
             if (nodeNames.contains(name)) {
                 String[] nodeId = node.getId().getValue().split(":");
@@ -1196,9 +1197,9 @@ public class ItmManagerRpcService implements ItmRpcService {
                 .setAction(result.stream().map(ActionInfo::buildAction).collect(Collectors.toList())).build());
     }
 
-    public static List<DcGatewayIp> getDcGatewayIpList(TypedReadWriteTransaction<Datastore.Configuration> tx)
+    public static Map<DcGatewayIpKey, DcGatewayIp> getDcGatewayIpList(TypedReadWriteTransaction<Datastore.Configuration> tx)
             throws ExecutionException, InterruptedException {
-        List<DcGatewayIp> dcGatewayIpList = new ArrayList<>();
+        Map<DcGatewayIpKey, DcGatewayIp> dcGatewayIpList = Maps.newHashMap();
         FluentFuture<Optional<DcGatewayIpList>> future =
                 tx.read(InstanceIdentifier.builder(DcGatewayIpList.class).build());
         future.addCallback(new FutureCallback<Optional<DcGatewayIpList>>() {
@@ -1210,7 +1211,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                     if (opt.isPresent()) {
                         DcGatewayIpList list = opt.get();
                         if (list != null) {
-                            dcGatewayIpList.addAll(list.getDcGatewayIp());
+                            dcGatewayIpList.values().addAll(list.getDcGatewayIp().values());
                         }
                     }
                 } catch (ExecutionException | InterruptedException e) {

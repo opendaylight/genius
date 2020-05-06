@@ -10,7 +10,6 @@ package org.opendaylight.genius.idmanager;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toCollection;
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
-import static org.opendaylight.mdsal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 import static org.opendaylight.yangtools.yang.binding.CodeHelpers.nonnull;
 
 import com.google.common.util.concurrent.Futures;
@@ -24,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.SortedMap;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
@@ -37,6 +37,7 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.daexim.DataImportBootReady;
 import org.opendaylight.genius.datastoreutils.ExpectedDataObjectNotFoundException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
@@ -79,7 +80,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.AvailableIdsHolder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.AvailableIdsHolderBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.ChildPools;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.ChildPoolsKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.IdEntries;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.IdEntriesKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.ReleasedIdsHolder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.ReleasedIdsHolderBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.released.ids.DelayedIdEntries;
@@ -165,7 +168,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         if (!idPoolsOptional.isPresent()) {
             return;
         }
-        idPoolsOptional.get().nonnullIdPool()
+        idPoolsOptional.get().nonnullIdPool().values()
                 .stream()
                 .filter(idPool -> idPool.getParentPoolName() != null
                         && !idPool.getParentPoolName().isEmpty()
@@ -271,9 +274,14 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
             InstanceIdentifier<IdPool> idPoolToBeDeleted = idUtils.getIdPoolInstance(poolName);
             synchronized (poolName) {
                 IdPool idPool = singleTxDB.syncRead(LogicalDatastoreType.CONFIGURATION, idPoolToBeDeleted);
-                List<ChildPools> childPoolList = idPool.getChildPools();
+                //List<ChildPools> childPoolList = idPool.getChildPools();
+
+
+                @Nullable Map<ChildPoolsKey, ChildPools> childPoolList = idPool.getChildPools();
                 if (childPoolList != null) {
-                    childPoolList.forEach(childPool -> deletePool(childPool.getChildPoolName()));
+                    childPoolList.forEach((childPool, childPools) -> {
+                        deletePool(childPool.getChildPoolName());
+                    });
                 }
                 singleTxDB.syncDelete(LogicalDatastoreType.CONFIGURATION, idPoolToBeDeleted);
             }
@@ -456,12 +464,13 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
 
     private long getIdsFromOtherChildPools(ReleasedIdsHolderBuilder releasedIdsBuilderParent, IdPool parentIdPool)
             throws OperationFailedException {
-        List<ChildPools> childPoolsList = parentIdPool.nonnullChildPools();
+        //List<ChildPools> childPoolsList = parentIdPool.nonnullChildPools();
+        @Nullable Map<ChildPoolsKey, ChildPools> childPoolsList = parentIdPool.nonnullChildPools();
         // Sorting the child pools on last accessed time so that the pool that
         // was not accessed for a long time comes first.
         childPoolsList.sort(comparing(ChildPools::getLastAccessTime));
         long currentTime = System.currentTimeMillis() / 1000;
-        for (ChildPools childPools : childPoolsList) {
+        for (ChildPools childPools : childPoolsList.values()) {
             if (childPools.getLastAccessTime().toJava() + DEFAULT_IDLE_TIME > currentTime) {
                 break;
             }
@@ -530,7 +539,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                         new IdPoolKey(parentIdPool.getPoolName())).child(ReleasedIdsHolder.class).build();
         releasedIdsBuilderParent.setAvailableIdCount(releasedIdsBuilderParent.getAvailableIdCount().toJava() - idCount);
         LOG.debug("Allocated {} ids from releasedIds of parent pool {}", idCount, parentIdPool);
-        confTx.merge(releasedIdsHolderInstanceIdentifier, releasedIdsBuilderParent.build(), CREATE_MISSING_PARENTS);
+        confTx.mergeParentStructureMerge(releasedIdsHolderInstanceIdentifier, releasedIdsBuilderParent.build());
         return idCount;
     }
 
@@ -558,7 +567,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Allocated {} ids from availableIds of global pool {}", idCount, parentIdPool);
         }
-        confTx.merge(availableIdsHolderInstanceIdentifier, availableIdsBuilderParent.build(), CREATE_MISSING_PARENTS);
+        confTx.mergeParentStructureMerge(availableIdsHolderInstanceIdentifier, availableIdsBuilderParent.build());
         return idCount;
     }
 
@@ -581,7 +590,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         localPoolName = localPoolName.intern();
         InstanceIdentifier<IdPool> parentIdPoolInstanceIdentifier = idUtils.getIdPoolInstance(parentPoolName);
         IdPool parentIdPool = singleTxDB.syncRead(LogicalDatastoreType.CONFIGURATION, parentIdPoolInstanceIdentifier);
-        List<IdEntries> idEntries = parentIdPool.getIdEntries();
+        @Nullable Map<IdEntriesKey, IdEntries> idEntries = parentIdPool.getIdEntries();
         if (idEntries == null) {
             throw new IdDoesNotExistException(parentPoolName, idKey);
         }
@@ -597,7 +606,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         IdEntries existingIdEntry = existingIdEntryObject.get();
         List<Uint32> idValuesList = nonnull(existingIdEntry.getIdValue());
         IdLocalPool localIdPoolCache = localPool.get(parentPoolName);
-        boolean isRemoved = idEntries.contains(existingIdEntry);
+        boolean isRemoved = idEntries.values().contains(existingIdEntry);
         LOG.debug("The entry {} is removed {}", existingIdEntry, isRemoved);
         updateDelayedEntriesInLocalCache(idValuesList, parentPoolName, localIdPoolCache);
         IdHolderSyncJob poolSyncJob = new IdHolderSyncJob(localPoolName, localIdPoolCache.getReleasedIds(), txRunner,
@@ -637,7 +646,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
                     LOG.debug("Creating new global pool {}", poolName);
                 }
                 idPool = idUtils.createGlobalPool(poolName, low, high, blockSize);
-                confTx.put(idPoolInstanceIdentifier, idPool, CREATE_MISSING_PARENTS);
+                confTx.mergeParentStructurePut(idPoolInstanceIdentifier, idPool);
             } else {
                 idPool = existingIdPool.get();
                 if (LOG.isDebugEnabled()) {

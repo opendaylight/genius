@@ -7,10 +7,13 @@
  */
 package org.opendaylight.genius.itm.confighelpers;
 
+import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -158,7 +161,7 @@ public final class OvsdbTepAddConfigHelper {
                         .setZoneName(tzName).build();
 
         // Update TZ in Config DS to add vtep in TZ
-        tx.merge(tranzportZonePath, updatedTzone, true);
+        tx.mergeParentStructureMerge(tranzportZonePath, updatedTzone);
     }
 
     /**
@@ -175,12 +178,12 @@ public final class OvsdbTepAddConfigHelper {
     protected static void addUnknownTzTepIntoTepsNotHosted(String tzName, IpAddress tepIpAddress,
                                                            Uint64 dpid, boolean ofTunnel, DataBroker dataBroker,
                                                            TypedWriteTransaction<Datastore.Operational> tx) {
-        List<UnknownVteps> vtepList;
+        Map<UnknownVtepsKey, UnknownVteps> vtepList;
         TepsInNotHostedTransportZone tepsInNotHostedTransportZone =
                 ItmUtils.getUnknownTransportZoneFromITMOperDS(tzName, dataBroker);
         if (tepsInNotHostedTransportZone == null) {
             LOG.trace("Unhosted TransportZone ({}) does not exist in OperDS.", tzName);
-            vtepList = new ArrayList<>();
+            vtepList = new HashMap<>();
             addVtepIntoTepsNotHosted(addVtepToUnknownVtepsList(vtepList, tepIpAddress, dpid, ofTunnel), tzName, tx);
         } else {
             vtepList = tepsInNotHostedTransportZone.getUnknownVteps();
@@ -188,7 +191,7 @@ public final class OvsdbTepAddConfigHelper {
                 //  case: vtep list does not exist or it has no elements
                 if (vtepList == null) {
                     LOG.trace("Add TEP into unhosted TZ ({}) when no vtep-list in the TZ.", tzName);
-                    vtepList = new ArrayList<>();
+                    vtepList = new HashMap<>();
                 }
                 LOG.trace("Add TEP into unhosted TZ ({}) when no vtep-list in the TZ.", tzName);
                 addVtepIntoTepsNotHosted(addVtepToUnknownVtepsList(vtepList, tepIpAddress, dpid, ofTunnel), tzName, tx);
@@ -197,7 +200,7 @@ public final class OvsdbTepAddConfigHelper {
                 boolean vtepFound = false;
                 UnknownVteps oldVtep = null;
 
-                for (UnknownVteps vtep : vtepList) {
+                for (UnknownVteps vtep : vtepList.values()) {
                     if (Objects.equals(vtep.getDpnId(), dpid)) {
                         vtepFound = true;
                         oldVtep = vtep;
@@ -226,7 +229,7 @@ public final class OvsdbTepAddConfigHelper {
      * @param tzName transport zone name in string
      * @param tx TypedWriteTransaction object
      */
-    protected static void addVtepIntoTepsNotHosted(List<UnknownVteps> updatedVtepList, String tzName,
+    protected static void addVtepIntoTepsNotHosted(Map<UnknownVtepsKey, UnknownVteps> updatedVtepList, String tzName,
                                                    TypedWriteTransaction<Datastore.Operational> tx) {
         //Create TZ node path
         InstanceIdentifier<TepsInNotHostedTransportZone> tepsInNotHostedTransportZoneIid =
@@ -240,7 +243,7 @@ public final class OvsdbTepAddConfigHelper {
                 .setUnknownVteps(updatedVtepList).build();
 
         // Update TZ in Oper DS.
-        tx.merge(tepsInNotHostedTransportZoneIid, updatedTzone, true);
+        tx.mergeParentStructureMerge(tepsInNotHostedTransportZoneIid, updatedTzone);
     }
 
     private static void addConfig(String tzName, Uint64 dpnId, IpAddress ipAdd,
@@ -258,7 +261,7 @@ public final class OvsdbTepAddConfigHelper {
             tx -> addUnknownTzTepIntoTepsNotHosted(tzName, tepIpAddress, id, ofTunnel, dataBroker, tx)));
     }
 
-    private static List<UnknownVteps> addVtepToUnknownVtepsList(List<UnknownVteps> updatedVtepList,
+    private static Map<UnknownVtepsKey, UnknownVteps> addVtepToUnknownVtepsList(Map<UnknownVtepsKey, UnknownVteps> updatedVtepList,
                                                                 IpAddress tepIpAddress, Uint64 dpid,
                                                                 boolean ofTunnel) {
         // create vtep
@@ -268,7 +271,7 @@ public final class OvsdbTepAddConfigHelper {
                         .setOfTunnel(ofTunnel).build();
 
         // Add vtep obtained into unknown TZ tep list
-        updatedVtepList.add(vtepObj);
+        updatedVtepList.values().add(vtepObj);
         LOG.trace("Adding TEP  (DPID: {}, TEP IP: {}, of-tunnel: {}) into unhosted Transport Zone"
                 + "inside ITM Oper DS.", dpid, tepIpAddress, ofTunnel);
         return updatedVtepList;
