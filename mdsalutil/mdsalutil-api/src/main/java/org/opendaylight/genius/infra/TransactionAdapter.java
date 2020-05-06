@@ -87,17 +87,10 @@ public final class TransactionAdapter {
         }
 
         @Override
-        public <T extends DataObject> void put(LogicalDatastoreType store, InstanceIdentifier<T> path, T data,
-                                               boolean createMissingParents) {
+        public <T extends DataObject> void mergeParentStructurePut(LogicalDatastoreType store,
+                                                                   InstanceIdentifier<T> path, T data) {
             checkStore(store);
-            delegate.put(path, data, createMissingParents);
-        }
-
-        @Override
-        public <T extends DataObject> void mergeParentStructurePut(@NonNull LogicalDatastoreType store,
-                                                                   @NonNull InstanceIdentifier<T> path,
-                                                                   @NonNull T data) {
-            /////
+            delegate.mergeParentStructurePut(path, data);
         }
 
         @Override
@@ -108,18 +101,10 @@ public final class TransactionAdapter {
         }
 
         @Override
-        public <T extends DataObject> void merge(LogicalDatastoreType store, InstanceIdentifier<T> path,
-                                                 T data,
-                                                 boolean createMissingParents) {
+        public <T extends DataObject> void mergeParentStructureMerge(LogicalDatastoreType store,
+                                                                     InstanceIdentifier<T> path, T data) {
             checkStore(store);
-            delegate.merge(path, data, createMissingParents);
-        }
-
-        @Override
-        public <T extends DataObject> void mergeParentStructureMerge(@NonNull LogicalDatastoreType store,
-                                                                     @NonNull InstanceIdentifier<T> path,
-                                                                     @NonNull T data) {
-            //////
+            delegate.mergeParentStructureMerge(path, data);
         }
 
         @Override

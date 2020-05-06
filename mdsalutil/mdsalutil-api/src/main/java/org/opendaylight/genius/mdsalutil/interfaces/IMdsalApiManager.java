@@ -29,7 +29,7 @@ public interface IMdsalApiManager {
      *
      * @param flowEntity The flow entity.
      * @deprecated Use {@link #addFlow(TypedWriteTransaction, FlowEntity)}.
-     * @return
+     * @return this builder
      */
     @Deprecated
     FluentFuture<Void> installFlow(FlowEntity flowEntity);
@@ -40,7 +40,7 @@ public interface IMdsalApiManager {
      * @param dpId The DPN identifier.
      * @param flowEntity The flow entity.
      * @deprecated Use {@link #addFlow(TypedWriteTransaction, Uint64, Flow)}.
-     * @return
+     * @return this builder
      */
     @Deprecated
     FluentFuture<Void> installFlow(Uint64 dpId, Flow flowEntity);
@@ -51,7 +51,7 @@ public interface IMdsalApiManager {
      * @param dpId The DPN identifier.
      * @param flowEntity The flow entity.
      * @deprecated Use {@link #addFlow(TypedWriteTransaction, FlowEntity)}.
-     * @return
+     * @return this builder
      */
     @Deprecated
     FluentFuture<Void> installFlow(Uint64 dpId, FlowEntity flowEntity);
@@ -80,7 +80,7 @@ public interface IMdsalApiManager {
      * @param tableId The table identifier.
      * @param flowId The flow identifier.
      * @deprecated Use {@link #removeFlow(TypedReadWriteTransaction, Uint64, String, short)}.
-     * @return
+     * @return this builder
      */
     @Deprecated
     ListenableFuture<Void> removeFlow(Uint64 dpId, short tableId, FlowId flowId);
@@ -90,7 +90,7 @@ public interface IMdsalApiManager {
      *
      * @param flowEntity The flow entity.
      * @deprecated Use {@link #removeFlow(TypedReadWriteTransaction, FlowEntity)}.
-     * @return
+     * @return this builder
      */
     @Deprecated
     FluentFuture<Void> removeFlow(FlowEntity flowEntity);
@@ -98,7 +98,10 @@ public interface IMdsalApiManager {
     /**
      * Removes a flow.
      *
+     * @param dpId The DPN identifier.
+     * @param flowEntity The flow entity.
      * @deprecated Use {@link #removeFlow(TypedReadWriteTransaction, Uint64, Flow)}.
+     * @return this builder
      */
     @Deprecated
     FluentFuture<Void> removeFlow(Uint64 dpId, Flow flowEntity);

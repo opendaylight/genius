@@ -330,8 +330,8 @@ public class TepCommandHelperTest {
         tepCommandHelper.configureTunnelMonitorInterval(interval);
 
         verify(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,tunnelMonitorIntervalIdentifier);
-        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,tunnelMonitorIntervalIdentifier,
-                tunnelMonitor,true);
+        verify(mockWriteTx).mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION,
+                tunnelMonitorIntervalIdentifier, tunnelMonitor);
     }
 
     @Test
@@ -386,7 +386,8 @@ public class TepCommandHelperTest {
         tepCommandHelper.buildTeps();
 
         verify(mockReadTx, times(2)).read(LogicalDatastoreType.CONFIGURATION,transportZoneIdentifier);
-        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,transportZonesIdentifier,transportZonesNew,true);
+        verify(mockWriteTx).mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION,
+                transportZonesIdentifier,transportZonesNew);
 
     }
 
@@ -403,8 +404,10 @@ public class TepCommandHelperTest {
         }
         tepCommandHelper.buildTeps();
 
-        verify(mockReadTx, times(2)).read(LogicalDatastoreType.CONFIGURATION,transportZoneIdentifier);
-        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,transportZonesIdentifier,transportZonesNew,true);
+        verify(mockReadTx, times(2)).read(LogicalDatastoreType.CONFIGURATION,
+                transportZoneIdentifier);
+        verify(mockWriteTx).mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION,transportZonesIdentifier,
+                transportZonesNew);
 
     }
 
@@ -419,7 +422,8 @@ public class TepCommandHelperTest {
         tepCommandHelper.buildTeps();
 
         verify(mockReadTx, times(2)).read(LogicalDatastoreType.CONFIGURATION,transportZoneIdentifier);
-        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,transportZonesIdentifier,transportZonesNew,true);
+        verify(mockWriteTx).mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION,transportZonesIdentifier,
+                transportZonesNew);
 
     }
 

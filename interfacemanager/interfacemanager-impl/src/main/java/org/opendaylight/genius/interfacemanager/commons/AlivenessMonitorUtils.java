@@ -8,7 +8,6 @@
 package org.opendaylight.genius.interfacemanager.commons;
 
 import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
-import static org.opendaylight.mdsal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
@@ -19,7 +18,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.genius.infra.Datastore.Operational;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -64,7 +62,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.Uint32;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -175,7 +172,7 @@ public final class AlivenessMonitorUtils {
                 InterfaceMonitorIdBuilder interfaceMonitorIdBuilder = new InterfaceMonitorIdBuilder();
                 interfaceMonitorIdInstance = interfaceMonitorIdBuilder.withKey(new InterfaceMonitorIdKey(infName))
                         .setMonitorId(existingMonitorIds).build();
-                tx.merge(id, interfaceMonitorIdInstance, CREATE_MISSING_PARENTS);
+                tx.mergeParentStructureMerge(id, interfaceMonitorIdInstance);
             }
         }
     }
@@ -236,14 +233,14 @@ public final class AlivenessMonitorUtils {
                 existingMonitorIds.add(Uint32.valueOf(monitorId));
                 interfaceMonitorIdInstance = interfaceMonitorIdBuilder.withKey(new InterfaceMonitorIdKey(infName))
                         .setMonitorId(existingMonitorIds).build();
-                tx.merge(id, interfaceMonitorIdInstance, CREATE_MISSING_PARENTS);
+                tx.mergeParentStructureMerge(id, interfaceMonitorIdInstance);
             }
         } else {
             existingMonitorIds = new ArrayList<>();
             existingMonitorIds.add(Uint32.valueOf(monitorId));
             interfaceMonitorIdInstance = interfaceMonitorIdBuilder.setMonitorId(existingMonitorIds)
                     .withKey(new InterfaceMonitorIdKey(infName)).setInterfaceName(infName).build();
-            tx.merge(id, interfaceMonitorIdInstance, CREATE_MISSING_PARENTS);
+            tx.mergeParentStructureMerge(id, interfaceMonitorIdInstance);
         }
     }
 
@@ -261,12 +258,12 @@ public final class AlivenessMonitorUtils {
             if (!Objects.equals(existinginterfaceName, infName)) {
                 monitorIdInterfaceInstance = monitorIdInterfaceBuilder.withKey(new MonitorIdInterfaceKey(monitorId))
                         .setInterfaceName(infName).build();
-                tx.merge(id, monitorIdInterfaceInstance, CREATE_MISSING_PARENTS);
+                tx.mergeParentStructureMerge(id, monitorIdInterfaceInstance);
             }
         } else {
             monitorIdInterfaceInstance = monitorIdInterfaceBuilder.setMonitorId(monitorId)
                     .withKey(new MonitorIdInterfaceKey(monitorId)).setInterfaceName(infName).build();
-            tx.merge(id, monitorIdInterfaceInstance, CREATE_MISSING_PARENTS);
+            tx.mergeParentStructureMerge(id, monitorIdInterfaceInstance);
         }
     }
 

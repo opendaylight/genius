@@ -176,7 +176,7 @@ public final class NWUtil {
         if (!nodesOptional.isPresent()) {
             return result;
         }
-        for (Node node : nodesOptional.get().nonnullNode()) {
+        for (Node node : nodesOptional.get().nonnullNode().values()) {
             NodeId nodeId = node.getId();
             if (nodeId != null) {
                 Uint64 dpnId = MDSALUtil.getDpnIdFromNodeName(nodeId);

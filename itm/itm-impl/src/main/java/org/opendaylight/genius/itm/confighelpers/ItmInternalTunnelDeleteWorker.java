@@ -14,10 +14,12 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.genius.cloudscaler.api.TombstonedNodeManager;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -62,6 +64,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPointsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembership;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembershipKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnelKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
@@ -143,7 +146,7 @@ public class ItmInternalTunnelDeleteWorker {
                 for (TunnelEndPoints srcTep : srcDpn.nonnullTunnelEndPoints()) {
                     LOG.trace("Processing srcTep {}", srcTep);
                     Boolean isDpnTombstoned = tombstonedNodeManager.isDpnTombstoned(srcDpn.getDPNID());
-                    List<TzMembership> srcTZones = srcTep.nonnullTzMembership();
+                    @NonNull Map<TzMembershipKey, TzMembership> srcTZones = srcTep.nonnullTzMembership();
                     boolean tepDeleteFlag = false;
                     // First, take care of tunnel removal, so run through all other DPNS other than srcDpn
                     // In the tep received from Delete DCN, the membership list will always be 1
@@ -154,7 +157,7 @@ public class ItmInternalTunnelDeleteWorker {
                         if (!Objects.equals(srcDpn.getDPNID(), dstDpn.getDPNID())) {
                             for (TunnelEndPoints dstTep : dstDpn.nonnullTunnelEndPoints()) {
                                 if (!ItmUtils.getIntersection(dstTep.nonnullTzMembership(), srcTZones).isEmpty()) {
-                                    List<TzMembership> originalTzMembership =
+                                    Map<TzMembershipKey, TzMembership> originalTzMembership =
                                             ItmUtils.getOriginalTzMembership(srcTep, srcDpn.getDPNID(), meshedDpnList);
                                     if (ItmUtils.getIntersection(dstTep.getTzMembership(),
                                             originalTzMembership).size() == 1) {
@@ -478,7 +481,8 @@ public class ItmInternalTunnelDeleteWorker {
 
 
         if (ovsBridgeEntryOptional.isPresent()) {
-            List<OvsBridgeTunnelEntry> bridgeTunnelEntries = ovsBridgeEntryOptional.get().nonnullOvsBridgeTunnelEntry();
+            @NonNull Map<OvsBridgeTunnelEntryKey, OvsBridgeTunnelEntry> bridgeTunnelEntries =
+                    ovsBridgeEntryOptional.get().nonnullOvsBridgeTunnelEntry();
 
             if (ovsdbBridgeRef != null) {
                 if (!itmConfig.isUseOfTunnels()) {
@@ -542,7 +546,7 @@ public class ItmInternalTunnelDeleteWorker {
     }
 
     private void deleteBridgeInterfaceEntry(OvsBridgeEntryKey bridgeEntryKey,
-                                            List<OvsBridgeTunnelEntry> bridgeTunnelEntries,
+                                            Map<OvsBridgeTunnelEntryKey, OvsBridgeTunnelEntry> bridgeTunnelEntries,
                                             InstanceIdentifier<OvsBridgeEntry> bridgeEntryIid,
                                             String interfaceName) {
         OvsBridgeTunnelEntryKey bridgeTunnelEntryKey = new OvsBridgeTunnelEntryKey(interfaceName);

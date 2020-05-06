@@ -11,7 +11,6 @@ import static org.mockito.Mockito.mock;
 
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
-
 import java.util.concurrent.Executors;
 import org.opendaylight.daexim.DataImportBootReady;
 import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
@@ -109,7 +108,7 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         bind(ServiceRecoveryRegistry.class).toInstance(mock(ServiceRecoveryRegistry.class));
         EntityOwnershipService entityOwnershipService = new BindingDOMEntityOwnershipServiceAdapter(
                 new SimpleDOMEntityOwnershipService(),
-                test.getDataBrokerTestCustomizer().getBindingToNormalized());
+                test.getDataBrokerTestCustomizer().getAdapterContext());
         bind(EntityOwnershipService.class).toInstance(entityOwnershipService);
         bind(EntityOwnershipUtils.class);
         bind(AlivenessMonitorService.class).toInstance(mock(AlivenessMonitorService.class));
