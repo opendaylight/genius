@@ -8,7 +8,6 @@
 package org.opendaylight.genius.interfacemanager;
 
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
-import static org.opendaylight.mdsal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
@@ -23,6 +22,7 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.genius.datastoreutils.ExpectedDataObjectNotFoundException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.infra.Datastore.Configuration;
@@ -66,6 +66,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.config.rev160406.IfmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfExternal;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfExternalBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
@@ -92,6 +93,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.re
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPoint;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPointKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.Uint64;
@@ -425,7 +427,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         InstanceIdentifier<Interface> interfaceIId = InterfaceManagerCommonUtils
                 .getInterfaceIdentifier(new InterfaceKey(interfaceName));
         ListenableFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
-            tx -> tx.put(interfaceIId, interfaceBuilder.build(), CREATE_MISSING_PARENTS));
+            tx -> tx.mergeParentStructurePut(interfaceIId, interfaceBuilder.build()));
         ListenableFutures.addErrorLogging(future, LOG, "Failed to (async) write {}", interfaceIId);
         return future;
     }
@@ -551,14 +553,14 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
             return Collections.emptyList();
         }
 
-        List<InterfaceChildEntry> childEntries = parentEntry.getInterfaceChildEntry();
+        @Nullable Map<InterfaceChildEntryKey, InterfaceChildEntry> childEntries = parentEntry.getInterfaceChildEntry();
         if (childEntries == null || childEntries.isEmpty()) {
             LOG.debug("No child entries found for parent {}", parentInterface);
             return Collections.emptyList();
         }
 
         List<Interface> childInterfaces = new ArrayList<>();
-        for (InterfaceChildEntry childEntry : childEntries) {
+        for (InterfaceChildEntry childEntry : childEntries.values()) {
             String interfaceName = childEntry.getChildInterface();
             Interface iface = interfaceManagerCommonUtils.getInterfaceFromConfigDS(tx, interfaceName);
             if (iface != null) {
@@ -816,8 +818,8 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
      */
     public List<OvsdbTerminationPointAugmentation> getPortsOnBridge(Uint64 dpnId) {
         List<OvsdbTerminationPointAugmentation> ports = new ArrayList<>();
-        List<TerminationPoint> portList = interfaceMetaUtils.getTerminationPointsOnBridge(dpnId);
-        for (TerminationPoint ovsPort : portList) {
+        Map<TerminationPointKey, TerminationPoint> portList = interfaceMetaUtils.getTerminationPointsOnBridge(dpnId);
+        for (TerminationPoint ovsPort : portList.values()) {
             if (ovsPort.augmentation(OvsdbTerminationPointAugmentation.class) != null) {
                 ports.add(ovsPort.augmentation(OvsdbTerminationPointAugmentation.class));
             }
@@ -838,8 +840,8 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     @Override
     public List<OvsdbTerminationPointAugmentation> getTunnelPortsOnBridge(Uint64 dpnId) {
         List<OvsdbTerminationPointAugmentation> tunnelPorts = new ArrayList<>();
-        List<TerminationPoint> portList = interfaceMetaUtils.getTerminationPointsOnBridge(dpnId);
-        for (TerminationPoint ovsPort : portList) {
+        Map<TerminationPointKey, TerminationPoint> portList = interfaceMetaUtils.getTerminationPointsOnBridge(dpnId);
+        for (TerminationPoint ovsPort : portList.values()) {
             OvsdbTerminationPointAugmentation portAug =
                     ovsPort.augmentation(OvsdbTerminationPointAugmentation.class);
             if (portAug != null && SouthboundUtils.isInterfaceTypeTunnel(portAug.getInterfaceType())) {
@@ -866,9 +868,9 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
 
         Map<Class<? extends InterfaceTypeBase>, List<OvsdbTerminationPointAugmentation>> portMap;
         portMap = new ConcurrentHashMap<>();
-        List<TerminationPoint> ovsPorts = interfaceMetaUtils.getTerminationPointsOnBridge(dpnId);
+        Map<TerminationPointKey, TerminationPoint> ovsPorts = interfaceMetaUtils.getTerminationPointsOnBridge(dpnId);
         if (ovsPorts != null) {
-            for (TerminationPoint ovsPort : ovsPorts) {
+            for (TerminationPoint ovsPort : ovsPorts.values()) {
                 OvsdbTerminationPointAugmentation portAug =
                         ovsPort.augmentation(OvsdbTerminationPointAugmentation.class);
                 if (portAug != null && portAug.getInterfaceType() != null) {

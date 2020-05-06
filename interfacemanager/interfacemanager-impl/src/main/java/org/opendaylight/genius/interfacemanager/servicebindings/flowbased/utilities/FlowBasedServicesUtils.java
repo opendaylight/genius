@@ -8,7 +8,6 @@
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities;
 
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
-import static org.opendaylight.mdsal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableSet;
@@ -18,6 +17,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.annotation.NonNull;
@@ -58,6 +58,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instru
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.WriteActionsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.WriteMetadataCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.InstructionKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfExternal;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.SplitHorizon;
@@ -191,7 +192,7 @@ public final class FlowBasedServicesUtils {
 
     public static void installInterfaceIngressFlow(Uint64 dpId, Interface iface, BoundServices boundServiceNew,
             TypedWriteTransaction<Configuration> tx, List<MatchInfo> matches, int lportTag, short tableId) {
-        List<Instruction> instructions = boundServiceNew.augmentation(StypeOpenflow.class).getInstruction();
+        Map<InstructionKey, Instruction> instructions = boundServiceNew.augmentation(StypeOpenflow.class).getInstruction();
 
         int serviceInstructionsSize = instructions != null ? instructions.size() : 0;
         List<Instruction> instructionSet = new ArrayList<>();
@@ -220,7 +221,7 @@ public final class FlowBasedServicesUtils {
         }
 
         if (instructions != null && !instructions.isEmpty()) {
-            for (Instruction info : instructions) {
+            for (Instruction info : instructions.values()) {
                 // Skip meta data write as that is handled already
                 if (info.getInstruction() instanceof WriteMetadataCase) {
                     continue;
@@ -251,7 +252,7 @@ public final class FlowBasedServicesUtils {
                 .child(Node.class, nodeDpn.key()).augmentation(FlowCapableNode.class)
                 .child(Table.class, new TableKey(flow.getTableId())).child(Flow.class, flowKey).build();
 
-        writeTransaction.put(flowInstanceId, flow, CREATE_MISSING_PARENTS);
+        writeTransaction.mergeParentStructurePut(flowInstanceId, flow);
         EVENT_LOGGER.debug("IFM,InstallFlow {}", flow.getId());
     }
 
@@ -270,7 +271,7 @@ public final class FlowBasedServicesUtils {
         // Get the metadata and mask from the service's write metadata
         // instruction
         StypeOpenflow stypeOpenFlow = boundService.augmentation(StypeOpenflow.class);
-        List<Instruction> serviceInstructions = stypeOpenFlow.getInstruction();
+        @Nullable Map<InstructionKey, Instruction> serviceInstructions = stypeOpenFlow.getInstruction();
         int instructionSize = serviceInstructions != null ? serviceInstructions.size() : 0;
         Uint64[] metadataValues = IfmUtil.mergeOpenflowMetadataWriteInstructions(serviceInstructions);
         Uint64 metadata = MetaDataUtil.getMetaDataForLPortDispatcher(interfaceTag, nextServiceIndex,
@@ -281,7 +282,7 @@ public final class FlowBasedServicesUtils {
         List<Instruction> instructions = new ArrayList<>();
         instructions.add(MDSALUtil.buildAndGetWriteMetadaInstruction(metadata, metadataMask, ++instructionSize));
         if (serviceInstructions != null && !serviceInstructions.isEmpty()) {
-            for (Instruction info : serviceInstructions) {
+            for (Instruction info : serviceInstructions.values()) {
                 // Skip meta data write as that is handled already
                 if (info.getInstruction() instanceof WriteMetadataCase) {
                     continue;
@@ -334,9 +335,9 @@ public final class FlowBasedServicesUtils {
             LOG.warn("Could not install egress dispatcher flow, missing service openflow configuration");
             return;
         }
-        List<Instruction> serviceInstructions = stypeOpenflow.getInstruction() != null
+        Map<InstructionKey, Instruction> serviceInstructions = stypeOpenflow.getInstruction() != null
                 ? stypeOpenflow.getInstruction()
-                : Collections.emptyList();
+                : Collections.emptyMap();
 
         // build the final instruction for LPort Dispatcher table flow entry
         List<Action> finalApplyActions = new ArrayList<>();
@@ -352,7 +353,7 @@ public final class FlowBasedServicesUtils {
         }
 
         final int applyActionsOffset = finalApplyActions.size();
-        for (Instruction info : serviceInstructions) {
+        for (Instruction info : serviceInstructions.values()) {
             if (info.getInstruction() instanceof WriteActionsCase) {
                 List<Action> writeActions = ActionConverterUtil.convertServiceActionToFlowAction(
                         ((WriteActionsCase) info.getInstruction()).getWriteActions().getAction());
@@ -740,7 +741,7 @@ public final class FlowBasedServicesUtils {
         InstanceIdentifier<BoundServicesState> id = InstanceIdentifier.builder(BoundServicesStateList.class)
             .child(BoundServicesState.class, new BoundServicesStateKey(interfaceName,
                 interfaceBoundServicesState.getServiceMode())).build();
-        tx.put(id, interfaceBoundServicesState, CREATE_MISSING_PARENTS);
+        tx.mergeParentStructurePut(id, interfaceBoundServicesState);
     }
 
     public static  void removeBoundServicesState(TypedWriteTransaction<Operational> tx,

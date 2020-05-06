@@ -8,7 +8,6 @@
 package org.opendaylight.genius.mdsal.testutils;
 
 import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.mdsal.binding.dom.adapter.BindingToNormalizedNodeCodec;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractConcurrentDataBrokerTest;
 import org.opendaylight.mdsal.dom.api.DOMDataBroker;
 import org.opendaylight.mdsal.dom.api.DOMSchemaService;
@@ -33,10 +32,6 @@ public class DataBrokerTestWiring {
 
     public DOMDataBroker getDOMDataBroker() {
         return dataBrokerTest.getDomBroker();
-    }
-
-    public BindingToNormalizedNodeCodec getBindingToNormalizedNodeCodec() {
-        return dataBrokerTest.getDataBrokerTestCustomizer().getBindingToNormalized();
     }
 
     public DOMNotificationRouter getDOMNotificationRouter() {

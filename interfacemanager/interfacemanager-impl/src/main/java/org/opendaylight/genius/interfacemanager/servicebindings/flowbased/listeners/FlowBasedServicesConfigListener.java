@@ -145,7 +145,7 @@ public class FlowBasedServicesConfigListener implements ClusteredDataTreeChangeL
         if (rootNode.getDataAfter() != null) {
             List<BoundServices> boundServices = new ArrayList<>();
             if (rootNode.getDataAfter().getBoundServices() != null) {
-                boundServices = new ArrayList<>(rootNode.getDataAfter().getBoundServices());
+                boundServices = new ArrayList<>(rootNode.getDataAfter().getBoundServices().values());
             }
             final ServicesInfoKey servicesInfoKey = rootNode.getDataAfter().key();
             final BoundServices boundServicesBefore = dataObjectModification.getDataBefore();
