@@ -8,10 +8,12 @@
 package org.opendaylight.genius.itm.impl;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.google.common.net.InetAddresses;
 import com.google.common.util.concurrent.FutureCallback;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -21,11 +23,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
@@ -96,6 +100,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPointsKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembership;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembershipBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembershipKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnelBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnelKey;
@@ -114,6 +119,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.ho
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Vteps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.VtepsKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
@@ -530,7 +536,7 @@ public final class ItmUtils {
     public static <T extends DataObject> void syncWrite(LogicalDatastoreType datastoreType,
                                                         InstanceIdentifier<T> path, T data, DataBroker broker) {
         WriteTransaction tx = broker.newWriteOnlyTransaction();
-        tx.put(datastoreType, path, data, true);
+        tx.mergeParentStructurePut(datastoreType, path, data);
         try {
             tx.commit().get();
         } catch (InterruptedException | ExecutionException e) {
@@ -564,16 +570,16 @@ public final class ItmUtils {
         return tunnelList;
     }
 
-    public static List<InternalTunnel> getInternalTunnelsFromCache(DataBroker dataBroker) {
+    public static Map<InternalTunnelKey, InternalTunnel> getInternalTunnelsFromCache(DataBroker dataBroker) {
         Collection<InternalTunnel> internalInterfaces = ITM_CACHE.getAllInternalTunnel();
         LOG.trace("getInternalTunnelsFromCache - List of InternalTunnels in the Cache: {} ", internalInterfaces);
-        List<InternalTunnel> tunnelList = new ArrayList<>();
+        Map<InternalTunnelKey, InternalTunnel> tunnelList = Maps.newHashMap();
         if (internalInterfaces.isEmpty()) {
             LOG.trace("ItmUtils.getInternalTunnelsFromCache invoking getAllInternalTunnlInterfacesFromDS");
             tunnelList = getAllInternalTunnels(dataBroker);
         } else {
             LOG.debug("No. of Internal Tunnel Interfaces in cache: {} ", internalInterfaces.size());
-            tunnelList.addAll(internalInterfaces);
+            tunnelList.values().addAll(internalInterfaces);
         }
         LOG.trace("List of Internal Tunnels: {}", tunnelList);
         return tunnelList;
@@ -602,8 +608,8 @@ public final class ItmUtils {
         return null;
     }
 
-    public static List<InternalTunnel> getAllInternalTunnels(DataBroker dataBroker) {
-        List<InternalTunnel> result = null;
+    public static Map<InternalTunnelKey, InternalTunnel> getAllInternalTunnels(DataBroker dataBroker) {
+        Map<InternalTunnelKey, InternalTunnel> result = null;
         InstanceIdentifier<TunnelList> iid = InstanceIdentifier.builder(TunnelList.class).build();
         Optional<TunnelList> tunnelList = read(LogicalDatastoreType.CONFIGURATION, iid, dataBroker);
 
@@ -611,7 +617,7 @@ public final class ItmUtils {
             result = tunnelList.get().getInternalTunnel();
         }
         if (result == null) {
-            result = emptyList();
+            result = emptyMap();
         }
         return result;
     }
@@ -627,9 +633,9 @@ public final class ItmUtils {
 
     private static List<String> getAllInternalTunnlInterfacesFromDS(DataBroker broker) {
         List<String> tunnelList = new ArrayList<>();
-        List<InternalTunnel> internalTunnels = getAllInternalTunnels(broker);
+        Map<InternalTunnelKey, InternalTunnel> internalTunnels = getAllInternalTunnels(broker);
         if (internalTunnels != null) {
-            for (InternalTunnel tunnel : internalTunnels) {
+            for (InternalTunnel tunnel : internalTunnels.values()) {
                 List<String> tunnelInterfaceNames = tunnel.getTunnelInterfaceNames();
                 if (tunnelInterfaceNames != null) {
                     for (String tunnelInterfaceName : tunnelInterfaceNames) {
@@ -643,9 +649,9 @@ public final class ItmUtils {
     }
 
     private static ExternalTunnel getExternalTunnelFromDS(String interfaceName, DataBroker broker) {
-        List<ExternalTunnel> externalTunnels = getAllExternalTunnels(broker);
+        Map<ExternalTunnelKey, ExternalTunnel> externalTunnels = getAllExternalTunnels(broker);
         if (externalTunnels != null) {
-            for (ExternalTunnel tunnel : externalTunnels) {
+            for (ExternalTunnel tunnel : externalTunnels.values()) {
                 String tunnelInterfaceName = tunnel.getTunnelInterfaceName();
                 if (tunnelInterfaceName != null && tunnelInterfaceName.equalsIgnoreCase(interfaceName)) {
                     LOG.trace("getExternalTunnelFromDS tunnelInterfaceName: {} ", tunnelInterfaceName);
@@ -665,15 +671,15 @@ public final class ItmUtils {
         return externalTunnel;
     }
 
-    private static List<ExternalTunnel> getAllExternalTunnels(DataBroker dataBroker) {
-        List<ExternalTunnel> result = null;
+    private static Map<ExternalTunnelKey, ExternalTunnel> getAllExternalTunnels(DataBroker dataBroker) {
+        Map<ExternalTunnelKey, ExternalTunnel> result = null;
         InstanceIdentifier<ExternalTunnelList> iid = InstanceIdentifier.builder(ExternalTunnelList.class).build();
         Optional<ExternalTunnelList> tunnelList = read(LogicalDatastoreType.CONFIGURATION, iid, dataBroker);
         if (tunnelList.isPresent()) {
             result = tunnelList.get().getExternalTunnel();
         }
         if (result == null) {
-            result = emptyList();
+            result = emptyMap();
         }
         return result;
     }
@@ -722,10 +728,10 @@ public final class ItmUtils {
         return value == null ? false : value;
     }
 
-    public static <T> List<T> getIntersection(List<T> list1, List<T> list2) {
-        List<T> list = new ArrayList<>();
-        for (T iter : list1) {
-            if (list2.contains(iter)) {
+    public static List<TzMembership> getIntersection(Map<TzMembershipKey, TzMembership> list1, Map<TzMembershipKey, TzMembership> list2) {
+        List<TzMembership> list = new ArrayList<>();
+        for (TzMembership iter : list1.values()) {
+            if (list2.values().contains(iter)) {
                 list.add(iter);
             }
         }
@@ -895,10 +901,10 @@ public final class ItmUtils {
         return TUNNEL_TYPE_MAP.get(tunnelType);
     }
 
-    public static List<TzMembership> removeTransportZoneMembership(TunnelEndPoints endPts, List<TzMembership> zones) {
+    public static List<TzMembership> removeTransportZoneMembership(TunnelEndPoints endPts, Map<TzMembershipKey, TzMembership> zones) {
         LOG.trace(" RemoveTransportZoneMembership TEPs {}, Membership to be removed {} ", endPts, zones);
-        List<TzMembership> existingTzList = new ArrayList<>(endPts.nonnullTzMembership());
-        for (TzMembership membership : zones) {
+        List<TzMembership> existingTzList = new ArrayList<>(endPts.nonnullTzMembership().values());
+        for (TzMembership membership : zones.values()) {
             existingTzList.remove(new TzMembershipBuilder().setZoneName(membership.getZoneName()).build());
         }
         LOG.debug("Modified Membership List {}", existingTzList);
@@ -906,21 +912,21 @@ public final class ItmUtils {
     }
 
     @NonNull
-    public static List<TzMembership> getOriginalTzMembership(TunnelEndPoints srcTep, Uint64 dpnId,
+    public static  Map<TzMembershipKey, TzMembership> getOriginalTzMembership(TunnelEndPoints srcTep, Uint64 dpnId,
                                                              Collection<DPNTEPsInfo> meshedDpnList) {
         LOG.trace("Original Membership for source DPN {}, source TEP {}", dpnId, srcTep);
         for (DPNTEPsInfo dstDpn : meshedDpnList) {
             if (dpnId.equals(dstDpn.getDPNID())) {
                 for (TunnelEndPoints tep : dstDpn.nonnullTunnelEndPoints()) {
                     if (Objects.equals(tep.getIpAddress(), srcTep.getIpAddress())) {
-                        List<TzMembership> tzMemberships = tep.nonnullTzMembership();
+                        @NonNull Map<TzMembershipKey, TzMembership> tzMemberships = tep.nonnullTzMembership();
                         LOG.debug("Original Membership size {}", tzMemberships.size());
                         return tzMemberships;
                     }
                 }
             }
         }
-        return emptyList();
+        return emptyMap();
     }
 
     public static StateTunnelList buildStateTunnelList(StateTunnelListKey tlKey, String name, boolean state,
@@ -993,9 +999,9 @@ public final class ItmUtils {
     }
 
     private static InternalTunnel getInternalTunnelFromDS(String interfaceName, DataBroker broker) {
-        List<InternalTunnel> internalTunnels = getAllInternalTunnels(broker);
+        Map<InternalTunnelKey, InternalTunnel> internalTunnels = getAllInternalTunnels(broker);
         if (internalTunnels != null) {
-            for (InternalTunnel tunnel : internalTunnels) {
+            for (InternalTunnel tunnel : internalTunnels.values()) {
                 List<String> tunnelInterfaceNames = tunnel.getTunnelInterfaceNames();
                 if (tunnelInterfaceNames != null) {
                     for (String tunnelInterfaceName : tunnelInterfaceNames) {
@@ -1059,7 +1065,7 @@ public final class ItmUtils {
         InstanceIdentifier<DpnEndpoints> iid = InstanceIdentifier.builder(DpnEndpoints.class).build();
         Optional<DpnEndpoints> dpnEndpoints = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, iid, dataBroker);
         if (dpnEndpoints.isPresent()) {
-            return new ArrayList<>(dpnEndpoints.get().getDPNTEPsInfo());
+            return new ArrayList<>(dpnEndpoints.get().getDPNTEPsInfo().values());
         } else {
             return new ArrayList<>();
         }
@@ -1105,9 +1111,9 @@ public final class ItmUtils {
         if (transportZoneOptional.isPresent()) {
             TransportZone transportZone = transportZoneOptional.get();
             if (transportZone.getVteps() != null && !transportZone.getVteps().isEmpty()) {
-                List<Vteps> vtepsList = transportZone.getVteps();
+                @Nullable Map<VtepsKey, Vteps> vtepsList = transportZone.getVteps();
                 if (vtepsList != null && !vtepsList.isEmpty()) {
-                    for (Vteps vtep : vtepsList) {
+                    for (Vteps vtep : vtepsList.values()) {
                         listOfDpId.add(vtep.getDpnId());
                     }
                 }

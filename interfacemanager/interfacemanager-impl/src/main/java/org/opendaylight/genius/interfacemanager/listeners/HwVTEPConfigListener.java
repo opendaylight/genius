@@ -60,7 +60,7 @@ public class HwVTEPConfigListener extends AbstractSyncDataTreeChangeListener<Int
             if (parentRefs != null && parentRefs.getNodeIdentifier() != null) {
                 LOG.debug("Received HwVTEP Interface Remove Event: {}", removedInterface.getName());
                 LOG.trace("Received HwVTEP Interface Remove Event: {}", removedInterface);
-                for (NodeIdentifier nodeIdentifier : parentRefs.getNodeIdentifier()) {
+                for (NodeIdentifier nodeIdentifier : parentRefs.getNodeIdentifier().values()) {
                     if (SouthboundUtils.HWVTEP_TOPOLOGY.equals(nodeIdentifier.getTopologyId())) {
                         coordinator.enqueueJob(removedInterface.getName(), () -> HwVTEPConfigRemoveHelper
                                                        .removeConfiguration(txRunner, removedInterface,
@@ -86,7 +86,7 @@ public class HwVTEPConfigListener extends AbstractSyncDataTreeChangeListener<Int
                 LOG.debug("Received HwVTEP Interface Update Event: {}", originalInterface.getName());
                 LOG.trace("Received HwVTEP Interface Update Event: updatedInterface: {}, OriginalInterface: {}",
                         updatedInterface, originalInterface);
-                for (NodeIdentifier nodeIdentifier : parentRefs.getNodeIdentifier()) {
+                for (NodeIdentifier nodeIdentifier : parentRefs.getNodeIdentifier().values()) {
                     if (SouthboundUtils.HWVTEP_TOPOLOGY.equals(nodeIdentifier.getTopologyId())) {
                         coordinator.enqueueJob(originalInterface.getName(), () -> HwVTEPInterfaceConfigUpdateHelper
                                 .updateConfiguration(txRunner,
@@ -108,7 +108,7 @@ public class HwVTEPConfigListener extends AbstractSyncDataTreeChangeListener<Int
             if (parentRefs != null && parentRefs.getNodeIdentifier() != null) {
                 LOG.debug("Received HwVTEP Interface Add Event: {}", newInterface.getName());
                 LOG.trace("Received HwVTEP Interface Add Event: {}", newInterface);
-                for (NodeIdentifier nodeIdentifier : parentRefs.getNodeIdentifier()) {
+                for (NodeIdentifier nodeIdentifier : parentRefs.getNodeIdentifier().values()) {
                     if (SouthboundUtils.HWVTEP_TOPOLOGY.equals(nodeIdentifier.getTopologyId())) {
                         coordinator.enqueueJob(newInterface.getName(), () -> HwVTEPInterfaceConfigAddHelper
                                 .addConfiguration(txRunner,

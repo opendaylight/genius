@@ -9,7 +9,6 @@
 package org.opendaylight.genius.mdsalutil.internal;
 
 import static org.opendaylight.infrautils.utils.concurrent.Executors.newListeningSingleThreadExecutor;
-import static org.opendaylight.mdsal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.util.concurrent.FluentFuture;
@@ -149,7 +148,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         FlowBuilder flowbld = flowEntity.getFlowBuilder();
         InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(flowEntity.getDpnId(),
                 flowEntity.getTableId(), flowKey);
-        tx.put(flowInstanceId, flowbld.build(), true);
+        tx.mergeParentStructurePut(flowInstanceId, flowbld.build());
     }
 
     private static void writeFlowInternal(Uint64 dpId, Flow flow,
@@ -157,7 +156,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         FlowKey flowKey = new FlowKey(new FlowId(flow.getId()));
         InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId,
                                                             flow.getTableId().toJava(), flowKey);
-        tx.put(flowInstanceId, flow, true);
+        tx.mergeParentStructurePut(flowInstanceId, flow);
     }
 
     @VisibleForTesting
@@ -172,7 +171,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         Group group = groupEntity.getGroupBuilder().build();
         Node nodeDpn = buildDpnNode(groupEntity.getDpnId());
         InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupEntity.getGroupId(), nodeDpn);
-        tx.put(groupInstanceId, group, true);
+        tx.mergeParentStructurePut(groupInstanceId, group);
     }
 
     @VisibleForTesting
@@ -556,7 +555,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     public void addFlow(TypedWriteTransaction<Configuration> tx, Uint64 dpId, Flow flow) {
         InstanceIdentifier<Flow> flowInstanceId = buildFlowInstanceIdentifier(dpId,
                                                             flow.getTableId().toJava(), flow.key());
-        tx.put(flowInstanceId, flow, CREATE_MISSING_PARENTS);
+        tx.mergeParentStructurePut(flowInstanceId, flow);
     }
 
     @Override
@@ -569,7 +568,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         Node nodeDpn = buildDpnNode(dpId);
         long groupId = group.getGroupId().getValue().toJava();
         InstanceIdentifier<Group> groupInstanceId = buildGroupInstanceIdentifier(groupId, nodeDpn);
-        tx.put(groupInstanceId, group, CREATE_MISSING_PARENTS);
+        tx.mergeParentStructurePut(groupInstanceId, group);
     }
 
     @Override

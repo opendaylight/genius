@@ -15,8 +15,10 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.MoreExecutors;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Semaphore;
@@ -62,6 +64,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hw
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.hwvtep.tunnel.attributes.BfdRemoteConfigsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.hwvtep.tunnel.attributes.BfdRemoteConfigsKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.hwvtep.tunnel.attributes.BfdStatus;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.hwvtep.tunnel.attributes.BfdStatusKey;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NodeId;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.TopologyId;
@@ -103,8 +106,8 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
     @Override
     public void update(@NonNull InstanceIdentifier<Tunnels> instanceIdentifier, @NonNull Tunnels oldTunnelInfo,
                        @NonNull Tunnels updatedTunnelInfo) {
-        List<BfdStatus> oldBfdStatus = oldTunnelInfo.getBfdStatus();
-        List<BfdStatus> newBfdStatus = updatedTunnelInfo.getBfdStatus();
+        @Nullable Map<BfdStatusKey, BfdStatus> oldBfdStatus = oldTunnelInfo.getBfdStatus();
+        @Nullable Map<BfdStatusKey, BfdStatus> newBfdStatus = updatedTunnelInfo.getBfdStatus();
         LivenessState oldTunnelOpState = getTunnelOpState(oldBfdStatus);
         final LivenessState newTunnelOpState = getTunnelOpState(newBfdStatus);
         if (oldTunnelOpState == newTunnelOpState) {
@@ -162,12 +165,12 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
         }, MoreExecutors.directExecutor());
     }
 
-    private LivenessState getTunnelOpState(List<BfdStatus> tunnelBfdStatus) {
+    private LivenessState getTunnelOpState(Map<BfdStatusKey, BfdStatus> tunnelBfdStatus) {
         LivenessState livenessState = LivenessState.Unknown;
         if (tunnelBfdStatus == null || tunnelBfdStatus.isEmpty()) {
             return livenessState;
         }
-        for (BfdStatus bfdState : tunnelBfdStatus) {
+        for (BfdStatus bfdState : tunnelBfdStatus.values()) {
             if (AlivenessMonitorConstants.BFD_OP_STATE.equalsIgnoreCase(bfdState.getBfdStatusKey())) {
                 String bfdOpState = bfdState.getBfdStatusValue();
                 if (AlivenessMonitorConstants.BFD_STATE_UP.equalsIgnoreCase(bfdOpState)) {
@@ -223,13 +226,13 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
                         return;
                     }
                     Tunnels tunnel = tunnelsOptional.get();
-                    List<BfdParams> tunnelBfdParams = tunnel.getBfdParams();
+                    @Nullable Map<BfdParamsKey, BfdParams> tunnelBfdParams = tunnel.getBfdParams();
                     if (tunnelBfdParams == null || tunnelBfdParams.isEmpty()) {
                         LOG.debug("there is no bfd params available for the tunnel {}", tunnel);
                         return;
                     }
 
-                    Iterator<BfdParams> tunnelBfdParamsIterator = tunnelBfdParams.iterator();
+                    Iterator<BfdParams> tunnelBfdParamsIterator = tunnelBfdParams.values().iterator();
                     while (tunnelBfdParamsIterator.hasNext()) {
                         BfdParams bfdParam = tunnelBfdParamsIterator.next();
                         if (AlivenessMonitorConstants.BFD_PARAM_ENABLE.equals(bfdParam.getBfdParamKey())) {
@@ -272,7 +275,7 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
         String tunnelLocalMacAddress = "<TODO>";
         String tunnelLocalIpAddress = "<TODO>";
         String tunnelRemoteMacAddress = "<TODO>";
-        List<BfdParams> bfdParams = new ArrayList<>();
+        Map<BfdParamsKey, BfdParams> bfdParams = new HashMap<>();
         fillBfdParams(bfdParams, profile);
         List<BfdLocalConfigs> bfdLocalConfigs = new ArrayList<>();
         fillBfdLocalConfigs(bfdLocalConfigs, tunnelLocalMacAddress, tunnelLocalIpAddress);
@@ -319,21 +322,21 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
                 .setBfdLocalConfigValue(value).build();
     }
 
-    private void fillBfdParams(List<BfdParams> bfdParams, MonitorProfile profile) {
+    private void fillBfdParams(Map<BfdParamsKey, BfdParams> bfdParams, MonitorProfile profile) {
         setBfdParamForEnable(bfdParams, true);
-        bfdParams.add(getBfdParams(AlivenessMonitorConstants.BFD_PARAM_MIN_RX,
+        bfdParams.values().add(getBfdParams(AlivenessMonitorConstants.BFD_PARAM_MIN_RX,
                 Long.toString(profile.getMinRx().toJava())));
-        bfdParams.add(getBfdParams(AlivenessMonitorConstants.BFD_PARAM_MIN_TX,
+        bfdParams.values().add(getBfdParams(AlivenessMonitorConstants.BFD_PARAM_MIN_TX,
                 Long.toString(profile.getMinTx().toJava())));
-        bfdParams.add(getBfdParams(AlivenessMonitorConstants.BFD_PARAM_DECAY_MIN_RX,
+        bfdParams.values().add(getBfdParams(AlivenessMonitorConstants.BFD_PARAM_DECAY_MIN_RX,
                 Long.toString(profile.getDecayMinRx().toJava())));
-        bfdParams.add(getBfdParams(AlivenessMonitorConstants.BFD_PARAM_FORWARDING_IF_RX, profile.getForwardingIfRx()));
-        bfdParams.add(getBfdParams(AlivenessMonitorConstants.BFD_PARAM_CPATH_DOWN, profile.getCpathDown()));
-        bfdParams.add(getBfdParams(AlivenessMonitorConstants.BFD_PARAM_CHECK_TNL_KEY, profile.getCheckTnlKey()));
+        bfdParams.values().add(getBfdParams(AlivenessMonitorConstants.BFD_PARAM_FORWARDING_IF_RX, profile.getForwardingIfRx()));
+        bfdParams.values().add(getBfdParams(AlivenessMonitorConstants.BFD_PARAM_CPATH_DOWN, profile.getCpathDown()));
+        bfdParams.values().add(getBfdParams(AlivenessMonitorConstants.BFD_PARAM_CHECK_TNL_KEY, profile.getCheckTnlKey()));
     }
 
-    private void setBfdParamForEnable(List<BfdParams> bfdParams, boolean isEnabled) {
-        bfdParams.add(getBfdParams(AlivenessMonitorConstants.BFD_PARAM_ENABLE, Boolean.toString(isEnabled)));
+    private void setBfdParamForEnable(Map<BfdParamsKey, BfdParams> bfdParams, boolean isEnabled) {
+        bfdParams.values().add(getBfdParams(AlivenessMonitorConstants.BFD_PARAM_ENABLE, Boolean.toString(isEnabled)));
     }
 
     private BfdParams getBfdParams(String key, String value) {

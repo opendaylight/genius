@@ -9,7 +9,6 @@ package org.opendaylight.genius.interfacemanager.renderer.hwvtep.confighelpers;
 
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
-import static org.opendaylight.mdsal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
@@ -106,6 +105,6 @@ public final class HwVTEPInterfaceConfigAddHelper {
         SouthboundUtils.setDstIp(tpAugmentationBuilder, destIPAddress);
         tpBuilder.addAugmentation(HwvtepPhysicalLocatorAugmentation.class, tpAugmentationBuilder.build());
         LOG.debug("creating physical locator entry for {}", terminationPointKey);
-        transaction.put(tpPath, tpBuilder.build(), CREATE_MISSING_PARENTS);
+        transaction.mergeParentStructurePut(tpPath, tpBuilder.build());
     }
 }

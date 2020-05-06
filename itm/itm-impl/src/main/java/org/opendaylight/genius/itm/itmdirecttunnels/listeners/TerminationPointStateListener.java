@@ -11,9 +11,11 @@ import com.google.common.util.concurrent.ListenableFuture;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.itm.cache.BfdStateCache;
@@ -35,6 +37,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tun
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceBfdStatus;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceBfdStatusKey;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
@@ -150,9 +153,9 @@ public class TerminationPointStateListener
         if (!DirectTunnelUtils.bfdMonitoringEnabled(terminationPoint.getInterfaceBfd())) {
             return Interface.OperStatus.Up;
         }
-        List<InterfaceBfdStatus> tunnelBfdStatus = terminationPoint.getInterfaceBfdStatus();
+        @Nullable Map<InterfaceBfdStatusKey, InterfaceBfdStatus> tunnelBfdStatus = terminationPoint.getInterfaceBfdStatus();
         if (tunnelBfdStatus != null && !tunnelBfdStatus.isEmpty()) {
-            for (InterfaceBfdStatus bfdState : tunnelBfdStatus) {
+            for (InterfaceBfdStatus bfdState : tunnelBfdStatus.values()) {
                 if (DirectTunnelUtils.BFD_OP_STATE.equalsIgnoreCase(bfdState.getBfdStatusKey())) {
                     String bfdOpState = bfdState.getBfdStatusValue();
                     return DirectTunnelUtils.BFD_STATE_UP.equalsIgnoreCase(bfdOpState)
@@ -173,7 +176,7 @@ public class TerminationPointStateListener
         LOG.debug("updating tep interface state as {} for {}", operStatus.name(), interfaceName);
         StateTunnelListBuilder stateTnlBuilder = new StateTunnelListBuilder().withKey(stateTnlKey);
         stateTnlBuilder.setOperState(operStatus);
-        transaction.merge(LogicalDatastoreType.OPERATIONAL, stateTnlII, stateTnlBuilder.build(), false);
+        transaction.mergeParentStructureMerge(LogicalDatastoreType.OPERATIONAL, stateTnlII, stateTnlBuilder.build());
     }
 
     private class RendererTunnelStateUpdateWorker implements Callable<List<? extends ListenableFuture<?>>> {
