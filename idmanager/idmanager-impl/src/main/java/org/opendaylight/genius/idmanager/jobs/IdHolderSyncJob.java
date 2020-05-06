@@ -8,7 +8,6 @@
 package org.opendaylight.genius.idmanager.jobs;
 
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
-import static org.opendaylight.mdsal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collections;
@@ -47,7 +46,7 @@ public class IdHolderSyncJob implements Callable<List<? extends ListenableFuture
         idHolder.refreshDataStore(idPool);
         InstanceIdentifier<IdPool> localPoolInstanceIdentifier = idUtils.getIdPoolInstance(localPoolName);
         return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
-            tx.merge(localPoolInstanceIdentifier, idPool.build(), CREATE_MISSING_PARENTS);
+            tx.mergeParentStructureMerge(localPoolInstanceIdentifier, idPool.build());
             idUtils.incrementPoolUpdatedMap(localPoolName);
 
             if (LOG.isDebugEnabled()) {

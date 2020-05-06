@@ -798,8 +798,8 @@ public class ItmTepAutoConfigTest {
                 .withKey(new TransportZoneKey(ItmTestConstants.NOT_HOSTED_TZ_NAME)).build();
         Assert.assertNotNull(transportZoneNorth);
 
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> tx.put(ItmTepAutoConfigTestUtil
-                .getTzIid(ItmTestConstants.NOT_HOSTED_TZ_NAME), transportZoneNorth, true)).get();
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> tx.mergeParentStructurePut(ItmTepAutoConfigTestUtil
+                .getTzIid(ItmTestConstants.NOT_HOSTED_TZ_NAME), transportZoneNorth)).get();
 
         // wait for TransportZoneListener to perform config DS update
         // for TEP movement through transaction

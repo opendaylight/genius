@@ -494,7 +494,7 @@ public class ItmManagerRpcServiceTest {
     private <T extends DataObject> void syncWrite(InstanceIdentifier<T> path, T data) {
         try {
             txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
-                tx -> tx.put(path, data, true)).get();
+                tx -> tx.mergeParentStructurePut(path, data)).get();
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e.getMessage(), e);
         }

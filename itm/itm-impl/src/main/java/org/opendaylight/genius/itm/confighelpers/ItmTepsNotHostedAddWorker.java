@@ -10,22 +10,24 @@ package org.opendaylight.genius.itm.confighelpers;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.tepsinnothostedtransportzone.UnknownVteps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.tepsinnothostedtransportzone.UnknownVtepsKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ItmTepsNotHostedAddWorker implements Callable<List<? extends ListenableFuture<?>>> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmTepsNotHostedAddWorker.class);
-    private final  List<UnknownVteps> vtepsList;
+    private final Map<UnknownVtepsKey, UnknownVteps> vtepsList;
     private final  String tzName;
     private final ManagedNewTransactionRunner txRunner;
 
-    public ItmTepsNotHostedAddWorker(List<UnknownVteps> vtepsList, String tzName, DataBroker broker,
+    public ItmTepsNotHostedAddWorker(Map<UnknownVtepsKey, UnknownVteps> vtepsList, String tzName, DataBroker broker,
                                      ManagedNewTransactionRunner txRunner) {
         this.vtepsList = vtepsList;
         this.tzName = tzName;
