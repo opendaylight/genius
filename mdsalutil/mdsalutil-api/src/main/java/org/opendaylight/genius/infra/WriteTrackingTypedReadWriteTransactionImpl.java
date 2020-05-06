@@ -32,8 +32,8 @@ class WriteTrackingTypedReadWriteTransactionImpl<D extends Datastore> extends Ty
     }
 
     @Override
-    public <T extends DataObject> void put(InstanceIdentifier<T> path, T data, boolean createMissingParents) {
-        super.put(path, data, createMissingParents);
+    public <T extends DataObject> void mergeParentStructurePut(InstanceIdentifier<T> path, T data) {
+        super.put(path, data);
         written = true;
     }
 
@@ -44,8 +44,8 @@ class WriteTrackingTypedReadWriteTransactionImpl<D extends Datastore> extends Ty
     }
 
     @Override
-    public <T extends DataObject> void merge(InstanceIdentifier<T> path, T data, boolean createMissingParents) {
-        super.merge(path, data, createMissingParents);
+    public <T extends DataObject> void mergeParentStructureMerge(InstanceIdentifier<T> path, T data) {
+        super.merge(path, data);
         written = true;
     }
 

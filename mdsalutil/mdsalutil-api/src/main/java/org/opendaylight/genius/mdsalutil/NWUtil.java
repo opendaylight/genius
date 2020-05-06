@@ -31,6 +31,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnectorKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.Uint64;
@@ -176,7 +177,7 @@ public final class NWUtil {
         if (!nodesOptional.isPresent()) {
             return result;
         }
-        for (Node node : nodesOptional.get().nonnullNode()) {
+        for (Node node : nodesOptional.get().nonnullNode().values()) {
             NodeId nodeId = node.getId();
             if (nodeId != null) {
                 Uint64 dpnId = MDSALUtil.getDpnIdFromNodeName(nodeId);
