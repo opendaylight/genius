@@ -10,9 +10,11 @@ package org.opendaylight.genius.itm.listeners;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
 import org.opendaylight.genius.itm.commons.OvsdbTepInfo;
 import org.opendaylight.genius.itm.confighelpers.OvsdbTepAddWorker;
@@ -37,7 +39,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbNodeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.node.attributes.OpenvswitchExternalIds;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.node.attributes.OpenvswitchExternalIdsKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.node.attributes.OpenvswitchOtherConfigs;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.node.attributes.OpenvswitchOtherConfigsKey;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.NetworkTopology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.Topology;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
@@ -350,7 +354,8 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
             return null;
         }
 
-        List<OpenvswitchOtherConfigs> ovsdbNodeOtherConfigsList = ovsdbNodeAugmentation.getOpenvswitchOtherConfigs();
+        @Nullable Map<OpenvswitchOtherConfigsKey, OpenvswitchOtherConfigs> ovsdbNodeOtherConfigsList =
+                ovsdbNodeAugmentation.getOpenvswitchOtherConfigs();
         if (ovsdbNodeOtherConfigsList == null) {
             //Local IP is not configured
             LOG.debug("OtherConfigs list does not exist in the OVSDB Node Augmentation.");
@@ -359,18 +364,19 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
 
         OvsdbTepInfo ovsdbTepInfoObj = new OvsdbTepInfo();
 
-        for (OpenvswitchOtherConfigs otherConfigs : ovsdbNodeOtherConfigsList) {
+        for (OpenvswitchOtherConfigs otherConfigs : ovsdbNodeOtherConfigsList.values()) {
             if (ITMConstants.OTH_CFG_TEP_PARAM_KEY_LOCAL_IP.equals(otherConfigs.getOtherConfigKey())) {
                 String tepIp = otherConfigs.getOtherConfigValue();
                 ovsdbTepInfoObj.setLocalIp(tepIp);
             }
         }
 
-        List<OpenvswitchExternalIds> ovsdbNodeExternalIdsList = ovsdbNodeAugmentation.getOpenvswitchExternalIds();
+        @Nullable Map<OpenvswitchExternalIdsKey, OpenvswitchExternalIds> ovsdbNodeExternalIdsList =
+                ovsdbNodeAugmentation.getOpenvswitchExternalIds();
         if (ovsdbNodeExternalIdsList == null) {
             LOG.debug("ExternalIds list does not exist in the OVSDB Node Augmentation.");
         } else {
-            for (OpenvswitchExternalIds externalId : ovsdbNodeExternalIdsList) {
+            for (OpenvswitchExternalIds externalId : ovsdbNodeExternalIdsList.values()) {
                 switch (externalId.getExternalIdKey()) {
                     case ITMConstants.EXT_ID_TEP_PARAM_KEY_TZNAME:
                         ovsdbTepInfoObj.setTzName(externalId.getExternalIdValue());

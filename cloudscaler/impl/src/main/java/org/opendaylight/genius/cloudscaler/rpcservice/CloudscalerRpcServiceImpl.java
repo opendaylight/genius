@@ -262,8 +262,8 @@ public class CloudscalerRpcServiceImpl implements CloudscalerRpcService {
         }
         ComputeNodeBuilder builder = new ComputeNodeBuilder(computeNode);
         builder.setTombstoned(tombstone);
-        tx.put(LogicalDatastoreType.CONFIGURATION,
-                computeNodeManager.buildComputeNodeIid(computeName), builder.build(), true);
+        tx.mergeParentStructurePut(LogicalDatastoreType.CONFIGURATION,
+                computeNodeManager.buildComputeNodeIid(computeName), builder.build());
     }
 
     @Override
@@ -306,7 +306,7 @@ public class CloudscalerRpcServiceImpl implements CloudscalerRpcService {
                         if (zone.getVteps() == null) {
                             continue;
                         }
-                        for (Vteps vteps : zone.getVteps()) {
+                        for (Vteps vteps : zone.getVteps().values()) {
                             if (vteps.getDpnId().equals(computeNode.getDpnid())) {
                                 InstanceIdentifier<Vteps> dpnVtepIid = InstanceIdentifier
                                         .create(TransportZones.class)

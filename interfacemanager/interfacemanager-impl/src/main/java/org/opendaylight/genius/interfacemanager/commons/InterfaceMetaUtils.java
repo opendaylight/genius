@@ -7,10 +7,8 @@
  */
 package org.opendaylight.genius.interfacemanager.commons;
 
-import static org.opendaylight.mdsal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -63,6 +61,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.re
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeRef;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPoint;
+import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPointKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
@@ -309,7 +308,7 @@ public final class InterfaceMetaUtils {
 
         BridgeEntryBuilder bridgeEntryBuilder =
                 new BridgeEntryBuilder().withKey(bridgeEntryKey).setBridgeReference(ovsdbBridgeRef);
-        tx.merge(bridgeEntryInstanceIdentifier, bridgeEntryBuilder.build(), CREATE_MISSING_PARENTS);
+        tx.mergeParentStructureMerge(bridgeEntryInstanceIdentifier, bridgeEntryBuilder.build());
     }
 
     public static void createBridgeRefEntry(Uint64 dpnId, InstanceIdentifier<?> bridgeIid,
@@ -322,7 +321,7 @@ public final class InterfaceMetaUtils {
         BridgeRefEntryBuilder tunnelDpnBridgeEntryBuilder =
                 new BridgeRefEntryBuilder().withKey(bridgeRefEntryKey).setDpid(dpnId)
                         .setBridgeReference(new OvsdbBridgeRef(bridgeIid));
-        tx.put(bridgeEntryId, tunnelDpnBridgeEntryBuilder.build(), CREATE_MISSING_PARENTS);
+        tx.mergeParentStructurePut(bridgeEntryId, tunnelDpnBridgeEntryBuilder.build());
     }
 
     public static void deleteBridgeRefEntry(Uint64 dpnId, TypedWriteTransaction<Operational> tx) {
@@ -339,7 +338,7 @@ public final class InterfaceMetaUtils {
         TunnelInstanceInterface tunnelInstanceInterface = new TunnelInstanceInterfaceBuilder()
                 .setTunnelInstanceIdentifier(tunnelInstanceId).withKey(new TunnelInstanceInterfaceKey(tunnelInstanceId))
                 .setInterfaceName(infName).build();
-        transaction.put(id, tunnelInstanceInterface, CREATE_MISSING_PARENTS);
+        transaction.mergeParentStructurePut(id, tunnelInstanceInterface);
 
     }
 
@@ -370,8 +369,8 @@ public final class InterfaceMetaUtils {
     }
 
     public void deleteBridgeInterfaceEntry(BridgeEntryKey bridgeEntryKey,
-            List<BridgeInterfaceEntry> bridgeInterfaceEntries, InstanceIdentifier<BridgeEntry> bridgeEntryIid,
-            String interfaceName) {
+            Map<BridgeInterfaceEntryKey, BridgeInterfaceEntry> bridgeInterfaceEntries,
+                                           InstanceIdentifier<BridgeEntry> bridgeEntryIid, String interfaceName) {
         BridgeInterfaceEntryKey bridgeInterfaceEntryKey =
                 new BridgeInterfaceEntryKey(interfaceName);
         InstanceIdentifier<BridgeInterfaceEntry> bridgeInterfaceEntryIid =
@@ -389,11 +388,11 @@ public final class InterfaceMetaUtils {
         }
     }
 
-    public List<TerminationPoint> getTerminationPointsOnBridge(Uint64 dpnId) {
+    public Map<TerminationPointKey, TerminationPoint> getTerminationPointsOnBridge(Uint64 dpnId) {
         BridgeRefEntry bridgeRefEntry = getBridgeRefEntryFromOperDS(dpnId);
         if (bridgeRefEntry == null || bridgeRefEntry.getBridgeReference() == null) {
             LOG.debug("BridgeRefEntry for DPNID {} not found", dpnId);
-            return Collections.emptyList();
+            return Collections.emptyMap();
         }
         InstanceIdentifier<Node> nodeIid =
                         bridgeRefEntry.getBridgeReference().getValue().firstIdentifierOf(Node.class);
@@ -402,7 +401,7 @@ public final class InterfaceMetaUtils {
         if (optNode.isPresent()) {
             return optNode.get().getTerminationPoint();
         }
-        return Collections.emptyList();
+        return Collections.emptyMap();
     }
 
     // Cache Util methods

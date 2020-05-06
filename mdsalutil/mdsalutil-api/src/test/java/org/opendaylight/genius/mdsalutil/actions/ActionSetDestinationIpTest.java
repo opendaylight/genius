@@ -47,7 +47,7 @@ public class ActionSetDestinationIpTest {
     @Test
     public void generateAction() {
         ActionInfo actionInfo = new ActionSetDestinationIp(IP_ADDRESS);
-        assertEquals("new ActionSetDestinationIp(0, new Ipv4Prefix(\"" + IP_ADDRESS + "/" + IP_MASK + "\"))",
-                generator.getExpression(actionInfo));
+        assertEquals(("Ipv4Prefix{_value=" + IP_ADDRESS + "/" + IP_MASK + "}"),
+                ((ActionSetDestinationIp) actionInfo).getDestination().toString());
     }
 }

@@ -7,9 +7,6 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.ovs.utilities;
 
-import static org.opendaylight.mdsal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
-
-import com.google.common.collect.Maps;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,6 +18,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.apache.commons.lang3.BooleanUtils;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
@@ -39,6 +37,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.BridgeEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.bridge.entry.BridgeInterfaceEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.bridge.entry.BridgeInterfaceEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
@@ -176,9 +175,10 @@ public class SouthboundUtils {
                                     OvsdbBridgeAugmentation bridgeNew) {
         String bridgeName = bridgeNew.getBridgeName().getValue();
         LOG.debug("adding all ports to bridge: {}", bridgeName);
-        List<BridgeInterfaceEntry> bridgeInterfaceEntries = bridgeEntry.getBridgeInterfaceEntry();
+        @Nullable Map<BridgeInterfaceEntryKey, BridgeInterfaceEntry> bridgeInterfaceEntries =
+                bridgeEntry.getBridgeInterfaceEntry();
         if (bridgeInterfaceEntries != null) {
-            for (BridgeInterfaceEntry bridgeInterfaceEntry : bridgeInterfaceEntries) {
+            for (BridgeInterfaceEntry bridgeInterfaceEntry : bridgeInterfaceEntries.values()) {
                 String portName = bridgeInterfaceEntry.getInterfaceName();
                 InterfaceKey interfaceKey = new InterfaceKey(portName);
                 Interface iface = interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceKey);
@@ -217,7 +217,7 @@ public class SouthboundUtils {
             vlanId = ifL2vlan.getVlanId().getValue().toJava();
         }
 
-        Map<String, String> options = Maps.newHashMap();
+        Map<String, String> options = new HashMap<>();
 
         // Options common to any kind of tunnel
         if (BooleanUtils.isTrue(ifTunnel.isTunnelSourceIpFlow())) {
@@ -262,7 +262,7 @@ public class SouthboundUtils {
         }
 
         if (ifTunnel.getTunnelOptions() != null) {
-            for (TunnelOptions tunOpt : ifTunnel.getTunnelOptions()) {
+            for (TunnelOptions tunOpt : ifTunnel.getTunnelOptions().values()) {
                 options.putIfAbsent(tunOpt.getTunnelOption(), tunOpt.getValue());
             }
         }
@@ -288,7 +288,7 @@ public class SouthboundUtils {
         tpBuilder.withKey(InstanceIdentifier.keyOf(tpIid));
         tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
 
-        transaction.merge(tpIid, tpBuilder.build(), CREATE_MISSING_PARENTS);
+        transaction.mergeParentStructureMerge(tpIid, tpBuilder.build());
     }
 
     private void addTerminationPoint(InstanceIdentifier<?> bridgeIid, String portName, int vlanId,
@@ -408,11 +408,11 @@ public class SouthboundUtils {
                 && TunnelMonitoringTypeBfd.class.isAssignableFrom(ifTunnel.getMonitorProtocol());
     }
 
-    public static boolean bfdMonitoringEnabled(List<InterfaceBfd> interfaceBfds) {
+    public static boolean bfdMonitoringEnabled(Map<InterfaceBfdKey, InterfaceBfd> interfaceBfds) {
         if (interfaceBfds == null) {
             return false;
         }
-        for (InterfaceBfd interfaceBfd : interfaceBfds) {
+        for (InterfaceBfd interfaceBfd : interfaceBfds.values()) {
             if (SouthboundUtils.BFD_ENABLE_KEY.equalsIgnoreCase(interfaceBfd.getBfdKey())) {
                 return SouthboundUtils.BFD_ENABLE_VALUE.equalsIgnoreCase(interfaceBfd.getBfdValue());//checkBfdEnabled
             }

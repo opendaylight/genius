@@ -292,8 +292,8 @@ public class ItmExternalTunnelAddTest {
     public void testBuildTunnelsToExternalEndPoint() {
         externalTunnelAddWorker
             .buildTunnelsToExternalEndPoint(cfgdDpnListVxlan, ipAddress2, tunnelType1, typedWriteTransaction);
-        verify(typedWriteTransaction).merge(interfaceIdentifier, iface, true);
-        verify(typedWriteTransaction).merge(externalTunnelIdentifier, externalTunnel, true);
+        verify(typedWriteTransaction).mergeParentStructureMerge(interfaceIdentifier, iface);
+        verify(typedWriteTransaction).mergeParentStructureMerge(externalTunnelIdentifier, externalTunnel);
 
     }
 
@@ -302,8 +302,8 @@ public class ItmExternalTunnelAddTest {
     public void testBuildTunnelsFromDpnToExternalEndPoint() {
         externalTunnelAddWorker
             .buildTunnelsFromDpnToExternalEndPoint(bigIntegerList, ipAddress2, tunnelType1, typedWriteTransaction);
-        verify(typedWriteTransaction).merge(interfaceIdentifier, iface, true);
-        verify(typedWriteTransaction).merge(externalTunnelIdentifier, externalTunnel, true);
+        verify(typedWriteTransaction).mergeParentStructureMerge(interfaceIdentifier, iface);
+        verify(typedWriteTransaction).mergeParentStructureMerge(externalTunnelIdentifier, externalTunnel);
 
     }
 
@@ -393,18 +393,20 @@ public class ItmExternalTunnelAddTest {
         externalTunnelAddWorker.buildHwVtepsTunnels(cfgdDpnListVxlan, null, typedReadWriteTransaction);
         externalTunnelAddWorker.buildHwVtepsTunnels(null, cfgdHwVtepsList, typedReadWriteTransaction);
 
-        verify(typedReadWriteTransaction, times(2)).merge(ifIID1, extTunnelIf1, true);
-        verify(typedReadWriteTransaction, times(2)).merge(externalTunnelIdentifier1, externalTunnel1, true);
-        verify(typedReadWriteTransaction, times(2)).merge(ifIID2, hwTunnelIf2, true);
-        verify(typedReadWriteTransaction, times(2)).merge(externalTunnelIdentifier2, externalTunnel2, true);
-        verify(typedReadWriteTransaction).merge(ifIID3,extTunnelIf3,true);
-        verify(typedReadWriteTransaction).merge(externalTunnelIdentifier3, externalTunnel3, true);
-        verify(typedReadWriteTransaction).merge(ifIID4, hwTunnelIf4, true);
-        verify(typedReadWriteTransaction).merge(externalTunnelIdentifier4, externalTunnel4, true);
-        verify(typedReadWriteTransaction).merge(ifIID5, hwTunnelIf5, true);
-        verify(typedReadWriteTransaction).merge(externalTunnelIdentifier5, externalTunnel5, true);
-        verify(typedReadWriteTransaction).merge(ifIID6, hwTunnelIf6, true);
-        verify(typedReadWriteTransaction).merge(externalTunnelIdentifier6, externalTunnel6, true);
+        verify(typedReadWriteTransaction, times(2)).mergeParentStructureMerge(ifIID1, extTunnelIf1);
+        verify(typedReadWriteTransaction, times(2))
+                .mergeParentStructureMerge(externalTunnelIdentifier1, externalTunnel1);
+        verify(typedReadWriteTransaction, times(2)).mergeParentStructureMerge(ifIID2, hwTunnelIf2);
+        verify(typedReadWriteTransaction, times(2))
+                .mergeParentStructureMerge(externalTunnelIdentifier2, externalTunnel2);
+        verify(typedReadWriteTransaction).mergeParentStructureMerge(ifIID3,extTunnelIf3);
+        verify(typedReadWriteTransaction).mergeParentStructureMerge(externalTunnelIdentifier3, externalTunnel3);
+        verify(typedReadWriteTransaction).mergeParentStructureMerge(ifIID4, hwTunnelIf4);
+        verify(typedReadWriteTransaction).mergeParentStructureMerge(externalTunnelIdentifier4, externalTunnel4);
+        verify(typedReadWriteTransaction).mergeParentStructureMerge(ifIID5, hwTunnelIf5);
+        verify(typedReadWriteTransaction).mergeParentStructureMerge(externalTunnelIdentifier5, externalTunnel5);
+        verify(typedReadWriteTransaction).mergeParentStructureMerge(ifIID6, hwTunnelIf6);
+        verify(typedReadWriteTransaction).mergeParentStructureMerge(externalTunnelIdentifier6, externalTunnel6);
 
     }
 

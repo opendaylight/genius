@@ -19,8 +19,8 @@ import com.google.common.util.concurrent.SettableFuture;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
@@ -53,6 +53,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.ArpRequestReceivedBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.arputil.rev160406.ArpResponseReceivedBuilder;
@@ -233,7 +234,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         }
 
         int localErrorCount = 0;
-        for (InterfaceAddress interfaceAddress : arpReqInput.nonnullInterfaceAddress()) {
+        for (InterfaceAddress interfaceAddress : arpReqInput.nonnullInterfaceAddress().values()) {
             try {
                 interfaceName = interfaceAddress.getInterface();
                 srcIpBytes = getIpAddressBytes(interfaceAddress.getIpAddress());
@@ -268,7 +269,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
                 payload = ArpPacketUtil.getPayload(ArpConstants.ARP_REQUEST_OP, srcMac, srcIpBytes,
                         ArpPacketUtil.ETHERNET_BROADCAST_DESTINATION, dstIpBytes);
 
-                List<Action> actions = getEgressAction(interfaceName);
+                Map<ActionKey, Action> actions = getEgressAction(interfaceName);
                 sendPacketOutWithActions(dpnId, payload, ref, actions);
 
                 LOG.trace("sent arp request for {}", arpReqInput.getIpaddress());
@@ -299,7 +300,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     }
 
     private Future<RpcResult<TransmitPacketOutput>> sendPacketOutWithActions(
-            Uint64 dpnId, byte[] payload, NodeConnectorRef ref, List<Action> actions) {
+            Uint64 dpnId, byte[] payload, NodeConnectorRef ref, Map<ActionKey, Action> actions) {
         NodeConnectorRef nodeConnectorRef = MDSALUtil.getNodeConnRef(dpnId, "0xfffffffd");
         TransmitPacketInput transmitPacketInput = new TransmitPacketInputBuilder().setPayload(payload)
                 .setNode(new NodeRef(InstanceIdentifier.builder(Nodes.class)
@@ -309,8 +310,8 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         return packetProcessingService.transmitPacket(transmitPacketInput);
     }
 
-    private List<Action> getEgressAction(String interfaceName) {
-        List<Action> actions = new ArrayList<>();
+    private Map<ActionKey, Action> getEgressAction(String interfaceName) {
+        Map<ActionKey, Action> actions = new HashMap<>();
         try {
             GetEgressActionsForInterfaceInputBuilder egressAction = new GetEgressActionsForInterfaceInputBuilder()
                     .setIntfName(interfaceName);
@@ -367,7 +368,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
             checkNotNull(srcIpBytes, ArpConstants.FAILED_TO_GET_SRC_IP_FOR_INTERFACE, interfaceName);
             payload = ArpPacketUtil.getPayload(ArpConstants.ARP_RESPONSE_OP, srcMac, srcIpBytes, dstMac, dstIpBytes);
 
-            List<Action> actions = getEgressAction(interfaceName);
+            Map<ActionKey, Action> actions = getEgressAction(interfaceName);
             sendPacketOutWithActions(dpnId, payload, ref, actions);
             LOG.debug("Sent ARP response for IP {}, from source MAC {} to target MAC {} and target IP {} via dpnId {}",
                     input.getSrcIpaddress().getIpv4Address().getValue(), HexEncode.bytesToHexStringFormat(srcMac),

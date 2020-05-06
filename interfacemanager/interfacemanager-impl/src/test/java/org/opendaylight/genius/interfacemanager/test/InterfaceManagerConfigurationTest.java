@@ -549,12 +549,12 @@ public class InterfaceManagerConfigurationTest {
             OvsdbTerminationPointAugmentationBuilder newOvsdbTpAugmentationBuilder =
                     new OvsdbTerminationPointAugmentationBuilder(ovsdbTpAugmentation);
             if (ovsdbTpAugmentation.getOptions() != null) {
-                List<Options> options = new ArrayList<>(ovsdbTpAugmentation.getOptions());
+                List<Options> options = new ArrayList<>(ovsdbTpAugmentation.getOptions().values());
                 options.sort(Comparator.comparing(o -> o.key().toString()));
                 newOvsdbTpAugmentationBuilder.setOptions(options);
             }
             if (ovsdbTpAugmentation.getInterfaceBfd() != null) {
-                List<InterfaceBfd> interfaceBfd = new ArrayList<>(ovsdbTpAugmentation.getInterfaceBfd());
+                List<InterfaceBfd> interfaceBfd = new ArrayList<>(ovsdbTpAugmentation.getInterfaceBfd().values());
                 interfaceBfd.sort(Comparator.comparing(o -> o.key().toString()));
                 newOvsdbTpAugmentationBuilder.setInterfaceBfd(interfaceBfd);
             }
@@ -939,7 +939,7 @@ public class InterfaceManagerConfigurationTest {
         if (interfaceType != null) {
             entryBuilder.setInterfaceType(interfaceType);
         }
-        tx.put(LogicalDatastoreType.OPERATIONAL, intfid, entryBuilder.build(), true);
+        tx.mergeParentStructurePut(LogicalDatastoreType.OPERATIONAL, intfid, entryBuilder.build());
         tx.commit().get();
     }
 }

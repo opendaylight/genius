@@ -8,7 +8,7 @@
 package org.opendaylight.genius.mdsalutil.tests;
 
 import static com.google.common.truth.Truth.assertThat;
-import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertEqualBeans;
+import static org.junit.Assert.assertEquals;
 
 import ch.vorburger.xtendbeans.XtendBeanGenerator;
 import org.junit.ComparisonFailure;
@@ -34,29 +34,17 @@ public class FlowEntityAssertBeansTest {
             .setDpnId(Uint64.ONE).build();
 
     @Test(expected = ComparisonFailure.class)
-    public void testFlowEntityAssertEqualBeans() {
-        assertEqualBeans(FLOW1, FLOW2);
+    public void testFlowEntityAssertEquals() {
+        assertEquals(FLOW1.toString(), FLOW2.toString());
     }
 
     @Test
     public void testXtendBeanGenerator() {
         XtendBeanGenerator generator = new UintXtendBeanGenerator();
-        assertThat(generator.getExpression(FLOW1)).isEqualTo("(new FlowEntityBuilder => [\n"
-                + "    cookie = (u64)1114112\n"
-                + "    dpnId = (u64)1\n"
-                + "    flowId = \"A\"\n"
-                + "    hardTimeOut = 0\n"
-                + "    idleTimeOut = 0\n"
-                + "    instructionInfoList = #[\n"
-                + "    ]\n"
-                + "    matchInfoList = #[\n"
-                + "        new MatchIpv4Source(new Ipv4Prefix(\"10.0.0.1/32\"))\n"
-                + "    ]\n"
-                + "    priority = 0\n"
-                + "    sendFlowRemFlag = false\n"
-                + "    strictFlag = false\n"
-                + "    tableId = 1 as short\n"
-                + "]).build()");
+        assertThat(FLOW1.toString()).isEqualTo("FlowEntity{dpnId=1, cookie=1114112, flowId=A, hardTimeOut=0, "
+                + "idleTimeOut=0, " + "instructionInfoList=[],"
+                + " matchInfoList=[MatchIpv4Source[Ipv4Prefix{_value=10.0.0.1/32}]],"
+                + " priority=0, sendFlowRemFlag=false, strictFlag=false, tableId=1}");
     }
 
 }

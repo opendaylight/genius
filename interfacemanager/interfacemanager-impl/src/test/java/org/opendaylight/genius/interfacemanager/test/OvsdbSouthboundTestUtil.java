@@ -114,7 +114,8 @@ public class OvsdbSouthboundTestUtil {
         bridgeCreateNodeBuilder.addAugmentation(OvsdbBridgeAugmentation.class, bridgeCreateAugmentationBuilder.build());
         LOG.debug("Built with the intent to store bridge data {}", bridgeCreateAugmentationBuilder.toString());
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
-        tx.put(LogicalDatastoreType.OPERATIONAL, ovsdbBridgeIid, bridgeCreateAugmentationBuilder.build(), true);
+        tx.mergeParentStructurePut(LogicalDatastoreType.OPERATIONAL, ovsdbBridgeIid,
+                bridgeCreateAugmentationBuilder.build());
         tx.commit().get();
     }
 
@@ -133,7 +134,8 @@ public class OvsdbSouthboundTestUtil {
         bridgeCreateNodeBuilder.addAugmentation(OvsdbBridgeAugmentation.class, bridgeCreateAugmentationBuilder.build());
         LOG.debug("Built with the intent to store bridge data {}", bridgeCreateAugmentationBuilder.toString());
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
-        tx.merge(LogicalDatastoreType.OPERATIONAL, ovsdbBridgeIid, bridgeCreateAugmentationBuilder.build(), true);
+        tx.mergeParentStructureMerge(LogicalDatastoreType.OPERATIONAL, ovsdbBridgeIid,
+                bridgeCreateAugmentationBuilder.build());
         tx.commit().get();
     }
 
@@ -223,7 +225,7 @@ public class OvsdbSouthboundTestUtil {
         }
         tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
-        tx.put(OPERATIONAL, tpId, tpBuilder.build(), true);
+        tx.mergeParentStructurePut(OPERATIONAL, tpId, tpBuilder.build());
         tx.commit().get();
     }
 
@@ -249,7 +251,7 @@ public class OvsdbSouthboundTestUtil {
         tpAugmentationBuilder.setInterfaceBfdStatus(interfaceBfdStatuses);
         tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
-        tx.merge(OPERATIONAL, tpId, tpBuilder.build(), true);
+        tx.mergeParentStructureMerge(OPERATIONAL, tpId, tpBuilder.build());
         tx.commit().get();
     }
 

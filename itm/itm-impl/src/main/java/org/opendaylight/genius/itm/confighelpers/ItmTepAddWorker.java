@@ -68,7 +68,7 @@ public class ItmTepAddWorker implements Callable<List<? extends ListenableFuture
                 Optional<DcGatewayIpList> optional = tx.read(InstanceIdentifier.builder(DcGatewayIpList.class)
                         .build()).get();
                 if (optional.isPresent()) {
-                    optional.get().getDcGatewayIp().forEach(dcGatewayIp ->
+                    optional.get().getDcGatewayIp().values().forEach(dcGatewayIp ->
                         externalTunnelAddWorker.buildTunnelsToExternalEndPoint(cfgdDpnList, dcGatewayIp.getIpAddress(),
                         dcGatewayIp.getTunnnelType(), tx));
                 }

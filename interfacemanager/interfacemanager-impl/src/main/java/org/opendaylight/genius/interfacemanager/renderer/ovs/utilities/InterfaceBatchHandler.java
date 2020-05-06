@@ -40,7 +40,7 @@ class InterfaceBatchHandler implements ResourceHandler {
         if (datastoreType != this.getDatastoreType()) {
             return;
         }
-        tx.merge(datastoreType, identifier, (DataObject) update, true);
+        tx.mergeParentStructureMerge(datastoreType, identifier, (DataObject) update);
 
         buildSubTransactions(transactionObjects, identifier, update, SubTransaction.UPDATE);
     }
@@ -60,7 +60,7 @@ class InterfaceBatchHandler implements ResourceHandler {
         if (datastoreType != this.getDatastoreType()) {
             return;
         }
-        tx.put(datastoreType, identifier, (DataObject) data, true);
+        tx.mergeParentStructurePut(datastoreType, identifier, (DataObject) data);
 
         buildSubTransactions(transactionObjects, identifier, data, SubTransaction.CREATE);
     }

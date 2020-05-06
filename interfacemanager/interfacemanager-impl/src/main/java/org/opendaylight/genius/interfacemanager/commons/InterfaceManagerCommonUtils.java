@@ -8,13 +8,13 @@
 package org.opendaylight.genius.interfacemanager.commons;
 
 import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
-import static org.opendaylight.mdsal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
@@ -349,13 +349,13 @@ public final class InterfaceManagerCommonUtils {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface interfaceData = ifaceBuilder
                 .setOperStatus(opStatus).build();
-        tx.merge(interfaceId, interfaceData, CREATE_MISSING_PARENTS);
+        tx.mergeParentStructureMerge(interfaceId, interfaceData);
     }
 
     public void createInterfaceChildEntry(@NonNull TypedWriteTransaction<Configuration> tx, String parentInterface,
         String childInterface) {
         createInterfaceChildEntry(parentInterface, childInterface,
-            pair -> tx.put(pair.getKey(), pair.getValue(), CREATE_MISSING_PARENTS));
+            pair -> tx.mergeParentStructurePut(pair.getKey(), pair.getValue()));
     }
 
     private void createInterfaceChildEntry(String parentInterface, String childInterface,
@@ -477,7 +477,7 @@ public final class InterfaceManagerCommonUtils {
         InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
             .ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
             .buildStateInterfaceId(interfaceName);
-        tx.put(ifStateId, ifaceBuilder.build(), CREATE_MISSING_PARENTS);
+        tx.mergeParentStructurePut(ifStateId, ifaceBuilder.build());
 
         // install ingress flow
         Uint64 dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
@@ -544,7 +544,7 @@ public final class InterfaceManagerCommonUtils {
         if (isTunnelInterface && !isOfTunnelInterface) {
             batchingUtils.write(ifStateId, ifState, BatchingUtils.EntityType.DEFAULT_OPERATIONAL);
         } else {
-            tx.put(ifStateId, ifState, CREATE_MISSING_PARENTS);
+            tx.mergeParentStructurePut(ifStateId, ifState);
         }
         if (nodeConnectorId != null) {
             Uint64 dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
@@ -578,9 +578,10 @@ public final class InterfaceManagerCommonUtils {
                 .getInterfaceParentEntryFromConfigDS(interfaceParentEntryIdentifier);
 
         if (interfaceParentEntry != null) {
-            List<InterfaceChildEntry> interfaceChildEntries = interfaceParentEntry.getInterfaceChildEntry();
+            Map<InterfaceChildEntryKey, InterfaceChildEntry> interfaceChildEntries =
+                    interfaceParentEntry.getInterfaceChildEntry();
             if (interfaceChildEntries != null) {
-                for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
+                for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries.values()) {
                     String curChildInterface = interfaceChildEntry.getChildInterface();
                     if (childInterface.equals(curChildInterface)) {
                         LOG.trace("Child entry for interface {} already exists", childInterface);
@@ -727,7 +728,7 @@ public final class InterfaceManagerCommonUtils {
         batchingUtils.write(intfid, entryBuilder.build(), BatchingUtils.EntityType.DEFAULT_OPERATIONAL);
     }
 
-    public List<InterfaceNameEntry> getAllInterfaces(Uint64 dpnId) {
+    public Map<InterfaceNameEntryKey, InterfaceNameEntry> getAllInterfaces(Uint64 dpnId) {
         DpnToInterfaceKey dpnToInterfaceKey = new DpnToInterfaceKey(dpnId);
         InstanceIdentifier<DpnToInterface> dpninterfaceListId =
             InstanceIdentifier.builder(DpnToInterfaceList.class).child(DpnToInterface.class, dpnToInterfaceKey).build();
@@ -750,7 +751,8 @@ public final class InterfaceManagerCommonUtils {
             return;
         }
 
-        List<InterfaceNameEntry> interfaceNameEntries = dpnToInterfaceOptional.get().getInterfaceNameEntry();
+        Map<InterfaceNameEntryKey, InterfaceNameEntry> interfaceNameEntries =
+                dpnToInterfaceOptional.get().getInterfaceNameEntry();
         InterfaceNameEntryKey interfaceNameEntryKey = new InterfaceNameEntryKey(infName);
         InstanceIdentifier<InterfaceNameEntry> intfid = InstanceIdentifier.builder(DpnToInterfaceList.class)
                 .child(DpnToInterface.class, dpnToInterfaceKey)
