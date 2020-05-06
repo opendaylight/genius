@@ -126,8 +126,7 @@ public final class ActionConverterUtil {
 
     public static List<org.opendaylight.yang.gen.v1.urn.opendaylight.action
         .types.rev131112.action.list.Action> convertServiceActionToFlowAction(
-            List<org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112
-                .action.list.Action> inActionList) {
+            Map<ActionKey, org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action> inActionList) {
         return convertServiceActionToFlowAction(inActionList, 0);
     }
 
@@ -140,15 +139,14 @@ public final class ActionConverterUtil {
      * @return the flow actions.
      */
     public static List<org.opendaylight.yang.gen.v1.urn.opendaylight.action
-            .types.rev131112.action.list.Action> convertServiceActionToFlowAction(
-            List<org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112
-                    .action.list.Action> inActionList,
+            .types.rev131112.action.list.Action> convertServiceActionToFlowAction(Map<ActionKey, org.opendaylight.yang.gen.v1.urn
+            .opendaylight.action.types.rev131112.action.list.Action> inActionList,
             int keyOffset) {
         List<org.opendaylight.yang.gen.v1.urn.opendaylight
                 .action.types.rev131112.action.list.Action> outActionList = new ArrayList<>();
         if (inActionList != null) {
             for (org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112
-                     .action.list.Action inAction : inActionList) {
+                     .action.list.Action inAction : inActionList.values()) {
                 outActionList.add(
                         new org.opendaylight.yang.gen.v1.urn.opendaylight
                                 .action.types.rev131112.action.list.ActionBuilder()

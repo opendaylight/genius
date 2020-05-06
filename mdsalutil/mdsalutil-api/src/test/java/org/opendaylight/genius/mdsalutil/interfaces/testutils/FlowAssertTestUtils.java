@@ -41,7 +41,7 @@ public class FlowAssertTestUtils {
         InstructionsBuilder instructionsBuilder = new InstructionsBuilder();
         if (flow.getInstructions() != null) {
             ArrayList<Instruction> instructionList =
-                new ArrayList<>(flow.getInstructions().nonnullInstruction());
+                new ArrayList<>(flow.getInstructions().nonnullInstruction().values());
             instructionList.sort(Comparator.comparing(o -> o.key().toString()));
             instructionsBuilder.setInstruction(instructionList);
             flowBuilder.setInstructions(instructionsBuilder.build());

@@ -67,7 +67,7 @@ public class Ipv6NdUtilServiceImpl implements Ipv6NdUtilService {
         int localErrorCount = 0;
 
         targetIpv6Address = ndInput.getTargetIpAddress();
-        for (InterfaceAddress interfaceAddress : ndInput.nonnullInterfaceAddress()) {
+        for (InterfaceAddress interfaceAddress : ndInput.nonnullInterfaceAddress().values()) {
             try {
                 interfaceName = interfaceAddress.getInterface();
                 srcIpv6Address = interfaceAddress.getSrcIpAddress();
