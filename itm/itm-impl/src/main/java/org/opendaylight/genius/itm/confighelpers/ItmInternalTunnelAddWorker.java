@@ -9,7 +9,6 @@ package org.opendaylight.genius.itm.confighelpers;
 
 import static java.util.Collections.singletonList;
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
-import static org.opendaylight.mdsal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.time.Duration;
@@ -276,7 +275,7 @@ public final class ItmInternalTunnelAddWorker {
         // Switching to individual transaction submit as batching latencies is causing ELAN failures.
         // Will revert when ELAN can handle this.
         // ITMBatchingUtils.update(path, tnl, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
-        tx.merge(path, tnl, CREATE_MISSING_PARENTS);
+        tx.mergeParentStructureMerge(path, tnl);
         ItmUtils.ITM_CACHE.addInternalTunnel(tnl);
     }
 

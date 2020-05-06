@@ -10,6 +10,7 @@ package org.opendaylight.genius.interfacemanager.listeners;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -24,6 +25,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.met
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntryKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,15 +44,15 @@ public class InterfaceChildCache {
                 cacheProvider);
     }
 
-    public Optional<List<InterfaceChildEntry>> getInterfaceChildEntries(String parentInterfaceName) {
+    public Optional<Map<InterfaceChildEntryKey, InterfaceChildEntry>> getInterfaceChildEntries(String parentInterfaceName) {
         try {
             Optional<InterfaceParentEntry> interfaceParentEntry = dataObjectCache.get(
                     getInterfaceParentEntryIdentifier(parentInterfaceName));
             if (interfaceParentEntry.isPresent()) {
-                List<InterfaceChildEntry> interfaceChildEntries = interfaceParentEntry.get()
+                Map<InterfaceChildEntryKey, InterfaceChildEntry> interfaceChildEntries = interfaceParentEntry.get()
                         .getInterfaceChildEntry() != null ? interfaceParentEntry.get()
-                        .getInterfaceChildEntry() : Collections.emptyList();
-                return Optional.of(Collections.unmodifiableList(interfaceChildEntries));
+                        .getInterfaceChildEntry() : Collections.emptyMap();
+                return Optional.of(Collections.unmodifiableMap(interfaceChildEntries));
             }
         } catch (ReadFailedException ex) {
             LOG.error("ReadFailedException exception", ex);

@@ -319,9 +319,9 @@ public final class DirectTunnelUtils {
         return bfdBuilder.build();
     }
 
-    public static boolean bfdMonitoringEnabled(List<InterfaceBfd> interfaceBfds) {
+    public static boolean bfdMonitoringEnabled(Map<InterfaceBfdKey, InterfaceBfd> interfaceBfds) {
         if (interfaceBfds != null && !interfaceBfds.isEmpty()) {
-            for (InterfaceBfd interfaceBfd : interfaceBfds) {
+            for (InterfaceBfd interfaceBfd : interfaceBfds.values()) {
                 if (BFD_ENABLE_KEY.equalsIgnoreCase(interfaceBfd.getBfdKey())) {
                     return BFD_ENABLE_VALUE.equalsIgnoreCase(interfaceBfd.getBfdValue());
                 }

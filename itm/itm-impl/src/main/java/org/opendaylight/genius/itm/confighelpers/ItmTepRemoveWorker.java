@@ -13,8 +13,10 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Callable;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
@@ -25,6 +27,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.DcGatewayIpList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.dc.gateway.ip.list.DcGatewayIp;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.dc.gateway.ip.list.DcGatewayIpKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
@@ -75,9 +78,9 @@ public class ItmTepRemoveWorker implements Callable<List<? extends ListenableFut
                 Optional<DcGatewayIpList> optional = tx.read(InstanceIdentifier.builder(DcGatewayIpList.class)
                         .build()).get();
                 if (optional.isPresent()) {
-                    List<DcGatewayIp> dcGatewayIpList = optional.get().getDcGatewayIp();
+                    @Nullable Map<DcGatewayIpKey, DcGatewayIp> dcGatewayIpList = optional.get().getDcGatewayIp();
                     if (dcGatewayIpList != null && !dcGatewayIpList.isEmpty()) {
-                        processExternalTunnelTepDelete(dcGatewayIpList, tx);
+                        processExternalTunnelTepDelete(dcGatewayIpList.values(), tx);
                     }
                 }
             }

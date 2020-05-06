@@ -84,14 +84,14 @@ public class ItmExternalTunnelAddWorker {
                 InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(trunkInterfaceName);
                 LOG.debug(" Trunk Interface Identifier - {} ", trunkIdentifier);
                 LOG.trace(" Writing Trunk Interface to Config DS {}, {} ", trunkIdentifier, iface);
-                tx.merge(trunkIdentifier, iface, true);
+                tx.mergeParentStructureMerge(trunkIdentifier, iface);
                 // update external_tunnel_list ds
                 InstanceIdentifier<ExternalTunnel> path = InstanceIdentifier.create(ExternalTunnelList.class)
                         .child(ExternalTunnel.class, new ExternalTunnelKey(extIp.stringValue(),
                                 teps.getDPNID().toString(), tunType));
                 ExternalTunnel tnl = ItmUtils.buildExternalTunnel(teps.getDPNID().toString(),
                         extIp.stringValue(), tunType, trunkInterfaceName);
-                tx.merge(path, tnl, true);
+                tx.mergeParentStructureMerge(path, tnl);
                 ItmUtils.ITM_CACHE.addExternalTunnel(tnl);
 
             }
@@ -134,7 +134,7 @@ public class ItmExternalTunnelAddWorker {
             LOG.trace("processing dpn {}", dpn);
             if (dpn.getTunnelEndPoints() != null && !dpn.getTunnelEndPoints().isEmpty()) {
                 for (TunnelEndPoints tep : dpn.getTunnelEndPoints()) {
-                    for (TzMembership zone : tep.nonnullTzMembership()) {
+                    for (TzMembership zone : tep.nonnullTzMembership().values()) {
                         try {
                             createTunnelsFromOVSinTransportZone(zone.getZoneName(), dpn, tep, tx, monitorInterval,
                                     monitorProtocol);
@@ -160,7 +160,7 @@ public class ItmExternalTunnelAddWorker {
                 String portName = itmConfig.getPortname() == null ? ITMConstants.DUMMY_PORT : itmConfig.getPortname();
                 int vlanId = itmConfig.getVlanId() != null ? itmConfig.getVlanId().toJava()
                                                              : ITMConstants.DUMMY_VLANID;
-                for (DeviceVteps hwVtepDS : transportZone.getDeviceVteps()) {
+                for (DeviceVteps hwVtepDS : transportZone.getDeviceVteps().values()) {
                     //dont mesh if hwVteps and OVS-tep have same ip-address
                     if (Objects.equals(hwVtepDS.getIpAddress(), tep.getIpAddress())) {
                         continue;
@@ -202,7 +202,7 @@ public class ItmExternalTunnelAddWorker {
             int vlanId = itmConfig.getVlanId() != null ? itmConfig.getVlanId().toJava() : ITMConstants.DUMMY_VLANID;
             //do we need to check tunnel type?
             if (tzone.getDeviceVteps() != null && !tzone.getDeviceVteps().isEmpty()) {
-                for (DeviceVteps hwVtepDS : tzone.getDeviceVteps()) {
+                for (DeviceVteps hwVtepDS : tzone.getDeviceVteps().values()) {
                     if (Objects.equals(hwVtepDS.getIpAddress(), hwTep.getHwIp())) {
                         continue;//dont mesh with self
                     }
@@ -225,7 +225,7 @@ public class ItmExternalTunnelAddWorker {
                     }
                 }
             }
-            for (Vteps vtep : tzone.getVteps()) {
+            for (Vteps vtep : tzone.getVteps().values()) {
                 if (Objects.equals(vtep.getIpAddress(), hwTep.getHwIp())) {
                     continue;
                 }
@@ -274,14 +274,14 @@ public class ItmExternalTunnelAddWorker {
                 .child(Interface.class, new InterfaceKey(tunnelIfName)).build();
         LOG.trace(" Writing Trunk Interface to Config DS {}, {} ", ifIID, hwTunnelIf);
         ItmUtils.ITM_CACHE.addInterface(hwTunnelIf);
-        tx.merge(ifIID, hwTunnelIf, true);
+        tx.mergeParentStructureMerge(ifIID, hwTunnelIf);
         // also update itm-state ds?
         InstanceIdentifier<ExternalTunnel> path = InstanceIdentifier.create(ExternalTunnelList.class)
                 .child(ExternalTunnel.class, new ExternalTunnelKey(getExternalTunnelKey(dstNodeId),
                         getExternalTunnelKey(srcNodeid), tunType));
         ExternalTunnel tnl = ItmUtils.buildExternalTunnel(getExternalTunnelKey(srcNodeid),
                 getExternalTunnelKey(dstNodeId), tunType, tunnelIfName);
-        tx.merge(path, tnl, true);
+        tx.mergeParentStructureMerge(path, tnl);
         ItmUtils.ITM_CACHE.addExternalTunnel(tnl);
         return true;
     }
@@ -308,7 +308,7 @@ public class ItmExternalTunnelAddWorker {
         InstanceIdentifier<Interface> ifIID = InstanceIdentifier.builder(Interfaces.class).child(Interface.class,
                 new InterfaceKey(tunnelIfName)).build();
         LOG.trace(" Writing Trunk Interface to Config DS {}, {} ", ifIID, extTunnelIf);
-        tx.merge(ifIID, extTunnelIf, true);
+        tx.mergeParentStructureMerge(ifIID, extTunnelIf);
         ItmUtils.ITM_CACHE.addInterface(extTunnelIf);
         InstanceIdentifier<ExternalTunnel> path = InstanceIdentifier.create(ExternalTunnelList.class)
                 .child(ExternalTunnel.class, new ExternalTunnelKey(getExternalTunnelKey(dstNodeId),
@@ -316,7 +316,7 @@ public class ItmExternalTunnelAddWorker {
         ExternalTunnel tnl = ItmUtils.buildExternalTunnel(dpnId.toString(),
                 getExternalTunnelKey(dstNodeId),
                 tunType, tunnelIfName);
-        tx.merge(path, tnl, true);
+        tx.mergeParentStructureMerge(path, tnl);
         ItmUtils.ITM_CACHE.addExternalTunnel(tnl);
         return true;
     }
