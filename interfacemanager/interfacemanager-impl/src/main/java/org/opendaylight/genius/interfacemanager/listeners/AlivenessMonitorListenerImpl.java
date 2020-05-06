@@ -14,7 +14,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
@@ -28,7 +27,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.LivenessState;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.MonitorEvent;
 import org.opendaylight.yangtools.yang.common.Uint32;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -13,7 +13,6 @@ import java.time.Duration;
 import java.util.Collections;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;

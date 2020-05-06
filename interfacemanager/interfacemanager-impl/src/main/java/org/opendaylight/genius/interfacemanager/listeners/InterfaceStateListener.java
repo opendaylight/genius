@@ -12,7 +12,6 @@ import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
 import java.util.Collections;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;

@@ -157,15 +157,17 @@ public class ResourceBatchingManager implements AutoCloseable {
      * @param identifier   identifier to be read
      * @param <T> DataObject subclass
      * @return a CheckFuture containing the result of the read
+     * @throws InterruptedException if the transaction is interrupted.
+     * @throws ExecutionException in case of a technical (!) error while reading
      */
     public <T extends DataObject> FluentFuture<Optional<T>> read(
-            String resourceType, InstanceIdentifier<T> identifier) {
+            String resourceType, InstanceIdentifier<T> identifier) throws InterruptedException, ExecutionException {
         BlockingQueue<ActionableResource> queue = getQueue(resourceType);
         if (queue != null) {
             if (pendingModificationByResourceType.get(resourceType).contains(identifier)) {
                 SettableFuture<Optional<T>> readFuture = SettableFuture.create();
                 queue.add(new ActionableReadResource<>(identifier, readFuture));
-                return FluentFuture.from(Futures.makeChecked(readFuture, ReadFailedException.MAPPER));
+                return FluentFutures.immediateFluentFuture(readFuture.get());
             } else {
                 ResourceHandler resourceHandler = resourceHandlerMapper.get(resourceType).getRight();
                 try (ReadTransaction tx = resourceHandler.getResourceBroker().newReadOnlyTransaction()) {
@@ -415,15 +417,15 @@ public class ResourceBatchingManager implements AutoCloseable {
                     WriteTransaction writeTransaction = broker.newWriteOnlyTransaction();
                     switch (object.getAction()) {
                         case SubTransaction.CREATE:
-                            writeTransaction.put(dsType, object.getInstanceIdentifier(),
-                                    (DataObject) object.getInstance(), true);
+                            writeTransaction.mergeParentStructurePut(dsType, object.getInstanceIdentifier(),
+                                    (DataObject) object.getInstance());
                             break;
                         case SubTransaction.DELETE:
                             writeTransaction.delete(dsType, object.getInstanceIdentifier());
                             break;
                         case SubTransaction.UPDATE:
-                            writeTransaction.merge(dsType, object.getInstanceIdentifier(),
-                                    (DataObject) object.getInstance(), true);
+                            writeTransaction.mergeParentStructureMerge(dsType, object.getInstanceIdentifier(),
+                                    (DataObject) object.getInstance());
                             break;
                         default:
                             LOG.error("Unable to determine Action for transaction object with id {}",

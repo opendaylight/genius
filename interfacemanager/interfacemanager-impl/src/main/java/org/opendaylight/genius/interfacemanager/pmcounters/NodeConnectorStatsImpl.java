@@ -14,7 +14,6 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -27,6 +26,7 @@ import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.listeners.InterfaceChildCache;
 import org.opendaylight.genius.interfacemanager.listeners.PortNameCache;
@@ -48,8 +48,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.direct.statistics.rev160511
 import org.opendaylight.yang.gen.v1.urn.opendaylight.direct.statistics.rev160511.GetNodeConnectorStatisticsOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.direct.statistics.rev160511.OpendaylightDirectStatisticsService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.statistics.rev130819.flow.and.statistics.map.list.FlowAndStatisticsMapList;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.statistics.rev130819.flow.and.statistics.map.list.FlowAndStatisticsMapListKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.config.rev160406.IfmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeRef;
@@ -57,6 +59,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.port.statistics.rev131214.node.connector.statistics.and.port.number.map.NodeConnectorStatisticsAndPortNumberMap;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.port.statistics.rev131214.node.connector.statistics.and.port.number.map.NodeConnectorStatisticsAndPortNumberMapKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.slf4j.Logger;
@@ -251,10 +254,10 @@ public class NodeConnectorStatsImpl extends AbstractClusteredAsyncDataTreeChange
                                                 String dpid) {
         String port = "";
         String portUuid = "";
-        List<NodeConnectorStatisticsAndPortNumberMap> ncStatsAndPortMapList = nodeConnectorStatisticsOutput
-                        .nonnullNodeConnectorStatisticsAndPortNumberMap();
+        @NonNull Map<NodeConnectorStatisticsAndPortNumberMapKey, NodeConnectorStatisticsAndPortNumberMap>
+                ncStatsAndPortMapList = nodeConnectorStatisticsOutput.nonnullNodeConnectorStatisticsAndPortNumberMap();
         // Parse NodeConnectorStatistics and create/update counters for them
-        for (NodeConnectorStatisticsAndPortNumberMap ncStatsAndPortMap : ncStatsAndPortMapList) {
+        for (NodeConnectorStatisticsAndPortNumberMap ncStatsAndPortMap : ncStatsAndPortMapList.values()) {
             NodeConnectorId nodeConnector = ncStatsAndPortMap.getNodeConnectorId();
             LOG.trace("Create/update metric counter for NodeConnector: {} of node: {}", nodeConnector, dpid);
             port = nodeConnector.getValue();
@@ -262,7 +265,7 @@ public class NodeConnectorStatsImpl extends AbstractClusteredAsyncDataTreeChange
             String portNameInCache = "openflow" + ":" + dpid + ":" + port;
             java.util.Optional<String> portName = portNameCache.get(portNameInCache);
             if (portName.isPresent()) {
-                Optional<List<InterfaceChildEntry>> interfaceChildEntries = interfaceChildCache
+                Optional<Map<InterfaceChildEntryKey, InterfaceChildEntry>> interfaceChildEntries = interfaceChildCache
                         .getInterfaceChildEntries(portName.get());
                 if (interfaceChildEntries.isPresent()) {
                     if (!interfaceChildEntries.get().isEmpty()) {
@@ -326,9 +329,9 @@ public class NodeConnectorStatsImpl extends AbstractClusteredAsyncDataTreeChange
     private void processFlowStatistics(GetFlowStatisticsOutput flowStatsOutput, String dpid) {
         Map<Short, AtomicInteger> flowTableMap = new HashMap<>();
         // Get all flows for node from RPC result
-        List<FlowAndStatisticsMapList> flowTableAndStatisticsMapList =
+        @NonNull Map<FlowAndStatisticsMapListKey, FlowAndStatisticsMapList> flowTableAndStatisticsMapList =
             flowStatsOutput.nonnullFlowAndStatisticsMapList();
-        for (FlowAndStatisticsMapList flowAndStatisticsMap : flowTableAndStatisticsMapList) {
+        for (FlowAndStatisticsMapList flowAndStatisticsMap : flowTableAndStatisticsMapList.values()) {
             short tableId = flowAndStatisticsMap.getTableId().toJava();
             // populate map to maintain flow count per table
             flowTableMap.computeIfAbsent(tableId, key -> new AtomicInteger(0)).incrementAndGet();

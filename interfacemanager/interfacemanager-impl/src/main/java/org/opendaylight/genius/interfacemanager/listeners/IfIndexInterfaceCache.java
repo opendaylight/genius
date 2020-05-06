@@ -10,7 +10,6 @@ package org.opendaylight.genius.interfacemanager.listeners;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.genius.mdsalutil.cache.DataObjectCache;
 import org.opendaylight.infrautils.caches.CacheProvider;

@@ -378,8 +378,9 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
             LOG.debug(" Tunnel events are processed out order for {} hence updating it from cache",
                     add.getTunnelInterfaceName());
             return Collections.singletonList(txRunner
-                .callWithNewWriteOnlyTransactionAndSubmit(Datastore.OPERATIONAL, tx -> tx.merge(identifier,
-                    new StateTunnelListBuilder(add).setOperState(operStatus).build(), false)));
+                .callWithNewWriteOnlyTransactionAndSubmit(Datastore.OPERATIONAL,
+                    tx -> tx.mergeParentStructureMerge(identifier,
+                        new StateTunnelListBuilder(add).setOperState(operStatus).build())));
         }
     }
 }

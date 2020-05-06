@@ -14,9 +14,11 @@ import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import javax.inject.Inject;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -38,7 +40,6 @@ import org.opendaylight.infrautils.caches.testutils.CacheModule;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
 import org.opendaylight.infrautils.testutils.LogRule;
 import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.mdsal.binding.api.WriteTransaction;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
@@ -48,6 +49,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfigBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.TepsInNotHostedTransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.tepsinnothostedtransportzone.UnknownVteps;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.tepsinnothostedtransportzone.UnknownVtepsKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneKey;
@@ -154,14 +156,6 @@ public class ItmTepAutoConfigTest {
         // set def-tz-tunnel-type to VXLAN
         String defTzTunnelType = ITMConstants.TUNNEL_TYPE_VXLAN;
 
-        /*InstanceIdentifier<TransportZone> tzPath =
-                ItmUtils.getTZInstanceIdentifier(ITMConstants.DEFAULT_TRANSPORT_ZONE);
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(LogicalDatastoreType.CONFIGURATION,
-                tzPath, new TransportZoneBuilder().setZoneName(ITMConstants.DEFAULT_TRANSPORT_ZONE)
-                        .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN)
-                        .withKey(new TransportZoneKey(ITMConstants.DEFAULT_TRANSPORT_ZONE))
-                        .build(), WriteTransaction.CREATE_MISSING_PARENTS)).get();*/
-
         InstanceIdentifier<TransportZone> tzonePath = processDefTzOnItmConfig(defTzEnabledFlag,
                 defTzTunnelType);
         Assert.assertNotNull(tzonePath);
@@ -180,11 +174,12 @@ public class ItmTepAutoConfigTest {
 
         InstanceIdentifier<TransportZone> tzPath =
                 ItmUtils.getTZInstanceIdentifier(ITMConstants.DEFAULT_TRANSPORT_ZONE);
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(LogicalDatastoreType.CONFIGURATION,
-                tzPath, new TransportZoneBuilder().setZoneName(ITMConstants.DEFAULT_TRANSPORT_ZONE)
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
+                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath,
+                        new TransportZoneBuilder().setZoneName(ITMConstants.DEFAULT_TRANSPORT_ZONE)
                         .setTunnelType(TunnelTypeGre.class)
                         .withKey(new TransportZoneKey(ITMConstants.DEFAULT_TRANSPORT_ZONE))
-                        .build(), WriteTransaction.CREATE_MISSING_PARENTS)).get();
+                        .build())).get();
 
 
         InstanceIdentifier<TransportZone> tzonePath = processDefTzOnItmConfig(defTzEnabledFlag,
@@ -220,11 +215,11 @@ public class ItmTepAutoConfigTest {
 
         InstanceIdentifier<TransportZone> tzPath =
                 ItmUtils.getTZInstanceIdentifier(ITMConstants.DEFAULT_TRANSPORT_ZONE);
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(LogicalDatastoreType.CONFIGURATION,
-                tzPath, new TransportZoneBuilder().setZoneName(ITMConstants.DEFAULT_TRANSPORT_ZONE)
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
+                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath,
+                        new TransportZoneBuilder().setZoneName(ITMConstants.DEFAULT_TRANSPORT_ZONE)
                         .setTunnelType(TunnelTypeVxlan.class)
-                        .withKey(new TransportZoneKey(ITMConstants.DEFAULT_TRANSPORT_ZONE))
-                        .build(), WriteTransaction.CREATE_MISSING_PARENTS)).get();
+                        .withKey(new TransportZoneKey(ITMConstants.DEFAULT_TRANSPORT_ZONE)).build())).get();
 
         InstanceIdentifier<TransportZone> tzonePath = processDefTzOnItmConfig(defTzEnabledFlag,
                 defTzTunnelType);
@@ -239,12 +234,11 @@ public class ItmTepAutoConfigTest {
         defTzTunnelType = ITMConstants.TUNNEL_TYPE_GRE;
 
 
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(LogicalDatastoreType.CONFIGURATION,
-                tzPath, new TransportZoneBuilder().setZoneName(ITMConstants.DEFAULT_TRANSPORT_ZONE)
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
+                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath,
+                        new TransportZoneBuilder().setZoneName(ITMConstants.DEFAULT_TRANSPORT_ZONE)
                         .setTunnelType(TunnelTypeGre.class)
-                        .withKey(new TransportZoneKey(ITMConstants.DEFAULT_TRANSPORT_ZONE))
-                        .build(), WriteTransaction.CREATE_MISSING_PARENTS)).get();
-
+                        .withKey(new TransportZoneKey(ITMConstants.DEFAULT_TRANSPORT_ZONE)).build())).get();
 
         tzonePath = processDefTzOnItmConfig(defTzEnabledFlag, defTzTunnelType);
         Assert.assertNotNull(tzonePath);
@@ -270,11 +264,11 @@ public class ItmTepAutoConfigTest {
 
         InstanceIdentifier<TransportZone> tzPath =
                 ItmUtils.getTZInstanceIdentifier(ITMConstants.DEFAULT_TRANSPORT_ZONE);
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(LogicalDatastoreType.CONFIGURATION,
-                tzPath, new TransportZoneBuilder().setZoneName(ITMConstants.DEFAULT_TRANSPORT_ZONE)
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
+                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath,
+                        new TransportZoneBuilder().setZoneName(ITMConstants.DEFAULT_TRANSPORT_ZONE)
                         .setTunnelType(TunnelTypeGre.class)
-                        .withKey(new TransportZoneKey(ITMConstants.DEFAULT_TRANSPORT_ZONE))
-                        .build(), WriteTransaction.CREATE_MISSING_PARENTS)).get();
+                        .withKey(new TransportZoneKey(ITMConstants.DEFAULT_TRANSPORT_ZONE)).build())).get();
 
         InstanceIdentifier<TransportZone> tzonePath = ItmTepAutoConfigTestUtil.getTzIid(
                 ITMConstants.DEFAULT_TRANSPORT_ZONE);
@@ -302,11 +296,11 @@ public class ItmTepAutoConfigTest {
 
         InstanceIdentifier<TransportZone> tzPath =
                 ItmUtils.getTZInstanceIdentifier(ITMConstants.DEFAULT_TRANSPORT_ZONE);
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(LogicalDatastoreType.CONFIGURATION,
-                tzPath, new TransportZoneBuilder().setZoneName(ITMConstants.DEFAULT_TRANSPORT_ZONE)
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
+                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath,
+                        new TransportZoneBuilder().setZoneName(ITMConstants.DEFAULT_TRANSPORT_ZONE)
                         .setTunnelType(TunnelTypeVxlan.class)
-                        .withKey(new TransportZoneKey(ITMConstants.DEFAULT_TRANSPORT_ZONE))
-                        .build(), WriteTransaction.CREATE_MISSING_PARENTS)).get();
+                        .withKey(new TransportZoneKey(ITMConstants.DEFAULT_TRANSPORT_ZONE)).build())).get();
 
         InstanceIdentifier<TransportZone> tzonePath = ItmTepAutoConfigTestUtil.getTzIid(
                 ITMConstants.DEFAULT_TRANSPORT_ZONE);
@@ -351,8 +345,8 @@ public class ItmTepAutoConfigTest {
 
         // create TZA
         InstanceIdentifier<TransportZone> tzPath = ItmUtils.getTZInstanceIdentifier(ItmTestConstants.TZ_NAME);
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(LogicalDatastoreType.CONFIGURATION,
-                tzPath, transportZone, WriteTransaction.CREATE_MISSING_PARENTS)).get();
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
+                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath, transportZone)).get();
 
         // check TZ is created with correct TZ name
         Assert.assertEquals(ItmTestConstants.TZ_NAME, dataBroker.newReadOnlyTransaction()
@@ -404,12 +398,11 @@ public class ItmTepAutoConfigTest {
 
         InstanceIdentifier<TransportZone> tzPath =
                 ItmUtils.getTZInstanceIdentifier(ITMConstants.DEFAULT_TRANSPORT_ZONE);
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(LogicalDatastoreType.CONFIGURATION,
-                tzPath, new TransportZoneBuilder().setZoneName(ITMConstants.DEFAULT_TRANSPORT_ZONE)
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
+                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath,
+                        new TransportZoneBuilder().setZoneName(ITMConstants.DEFAULT_TRANSPORT_ZONE)
                         .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN)
-                        .withKey(new TransportZoneKey(ITMConstants.DEFAULT_TRANSPORT_ZONE))
-                        .build(), WriteTransaction.CREATE_MISSING_PARENTS)).get();
-
+                        .withKey(new TransportZoneKey(ITMConstants.DEFAULT_TRANSPORT_ZONE)).build())).get();
 
         // add bridge into node
         future = OvsdbTestUtil.addBridgeIntoNode(connInfo, ItmTestConstants.DEF_BR_NAME,
@@ -461,8 +454,8 @@ public class ItmTepAutoConfigTest {
 
         // create Transport-zone in advance
         InstanceIdentifier<TransportZone> tzPath = ItmUtils.getTZInstanceIdentifier(ItmTestConstants.TZ_NAME);
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(LogicalDatastoreType.CONFIGURATION,
-                tzPath, transportZone, WriteTransaction.CREATE_MISSING_PARENTS)).get();
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
+                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath, transportZone)).get();
 
         // add bridge into node
         future = OvsdbTestUtil.addBridgeIntoNode(connInfo, ItmTestConstants.DEF_BR_NAME,
@@ -551,11 +544,11 @@ public class ItmTepAutoConfigTest {
 
         InstanceIdentifier<TransportZone> tzPath =
                 ItmUtils.getTZInstanceIdentifier(ITMConstants.DEFAULT_TRANSPORT_ZONE);
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(LogicalDatastoreType.CONFIGURATION,
-                tzPath, new TransportZoneBuilder().setZoneName(ITMConstants.DEFAULT_TRANSPORT_ZONE)
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
+                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath,
+                        new TransportZoneBuilder().setZoneName(ITMConstants.DEFAULT_TRANSPORT_ZONE)
                         .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN)
-                        .withKey(new TransportZoneKey(ITMConstants.DEFAULT_TRANSPORT_ZONE))
-                        .build(), WriteTransaction.CREATE_MISSING_PARENTS)).get();
+                        .withKey(new TransportZoneKey(ITMConstants.DEFAULT_TRANSPORT_ZONE)).build())).get();
 
         // add bridge into node
         future = OvsdbTestUtil.addBridgeIntoNode(connInfo, ItmTestConstants.DEF_BR_NAME,
@@ -638,8 +631,8 @@ public class ItmTepAutoConfigTest {
 
         // create Transport-zone TZA
         InstanceIdentifier<TransportZone> tzPath = ItmUtils.getTZInstanceIdentifier(ItmTestConstants.TZ_NAME);
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(LogicalDatastoreType.CONFIGURATION,
-                tzPath, transportZone, WriteTransaction.CREATE_MISSING_PARENTS)).get();
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
+                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath, transportZone)).get();
         // iid for TZA configured from NB
         InstanceIdentifier<TransportZone> tzaTzonePath = ItmTepAutoConfigTestUtil.getTzIid(
                 ItmTestConstants.TZ_NAME);
@@ -676,9 +669,8 @@ public class ItmTepAutoConfigTest {
 
         // create Transport-zone in advance
         InstanceIdentifier<TransportZone> tzPath = ItmUtils.getTZInstanceIdentifier(ItmTestConstants.TZ_NAME);
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(LogicalDatastoreType.CONFIGURATION,
-                tzPath, transportZone, WriteTransaction.CREATE_MISSING_PARENTS)).get();
-
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
+                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath, transportZone)).get();
 
         // add bridge into node
         future = OvsdbTestUtil.addBridgeIntoNode(connInfo, ItmTestConstants.DEF_BR_NAME,
@@ -798,8 +790,9 @@ public class ItmTepAutoConfigTest {
                 .withKey(new TransportZoneKey(ItmTestConstants.NOT_HOSTED_TZ_NAME)).build();
         Assert.assertNotNull(transportZoneNorth);
 
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> tx.put(ItmTepAutoConfigTestUtil
-                .getTzIid(ItmTestConstants.NOT_HOSTED_TZ_NAME), transportZoneNorth, true)).get();
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx ->
+                tx.mergeParentStructurePut(ItmTepAutoConfigTestUtil.getTzIid(ItmTestConstants.NOT_HOSTED_TZ_NAME),
+                        transportZoneNorth)).get();
 
         // wait for TransportZoneListener to perform config DS update
         // for TEP movement through transaction
@@ -833,9 +826,8 @@ public class ItmTepAutoConfigTest {
     public void tzDeletedAndReaddedTest() throws Exception {
         // create TZ
         InstanceIdentifier<TransportZone> tzPath = ItmUtils.getTZInstanceIdentifier(ItmTestConstants.TZ_NAME);
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(LogicalDatastoreType.CONFIGURATION,
-                tzPath, transportZone, WriteTransaction.CREATE_MISSING_PARENTS)).get();
-
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
+                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath, transportZone)).get();
 
         InstanceIdentifier<TransportZone> tzonePath = ItmTepAutoConfigTestUtil.getTzIid(
                 ItmTestConstants.TZ_NAME);
@@ -882,8 +874,8 @@ public class ItmTepAutoConfigTest {
                 .read(LogicalDatastoreType.OPERATIONAL, notHostedPath).get().get().getZoneName());
 
         //readd the same tz
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(LogicalDatastoreType.CONFIGURATION,
-                tzPath, transportZone, WriteTransaction.CREATE_MISSING_PARENTS)).get();
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
+                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath, transportZone)).get();
         // wait for TransportZoneListener to perform config DS update
         // for TEP movement through transaction
         coordinatorEventsWaiter.awaitEventsConsumption();
@@ -901,8 +893,8 @@ public class ItmTepAutoConfigTest {
     public void tzDeletedAndReaddedWithSameVtepsTest() throws Exception {
         // create TZ
         InstanceIdentifier<TransportZone> tzPath = ItmUtils.getTZInstanceIdentifier(ItmTestConstants.TZ_NAME);
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(LogicalDatastoreType.CONFIGURATION,
-                tzPath, transportZone, WriteTransaction.CREATE_MISSING_PARENTS)).get();
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
+                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath, transportZone)).get();
 
         coordinatorEventsWaiter.awaitEventsConsumption();
 
@@ -954,10 +946,10 @@ public class ItmTepAutoConfigTest {
 
         //create vtepList form unknownVtepList
         List<Vteps> vtepsList = new ArrayList<>();
-        List<UnknownVteps> unknownVtepsList = dataBroker.newReadOnlyTransaction()
+        @Nullable Map<UnknownVtepsKey, UnknownVteps> unknownVtepsList = dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.OPERATIONAL, notHostedPath).get().get().getUnknownVteps();
 
-        for (UnknownVteps unknownVtep:unknownVtepsList) {
+        for (UnknownVteps unknownVtep:unknownVtepsList.values()) {
             Vteps vteps = new VtepsBuilder().setDpnId(unknownVtep.getDpnId())
                     .setIpAddress(unknownVtep.getIpAddress())
                     .withKey(new VtepsKey(unknownVtep.getDpnId())).build();
@@ -968,8 +960,8 @@ public class ItmTepAutoConfigTest {
                 .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN).setVteps(vtepsList)
                 .withKey(new TransportZoneKey(ItmTestConstants.TZ_NAME)).build();
 
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(LogicalDatastoreType.CONFIGURATION,
-                tzPath, recreatedTransportZone, WriteTransaction.CREATE_MISSING_PARENTS)).get();
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
+                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath, recreatedTransportZone)).get();
 
         // wait for TransportZoneListener to perform config DS update
         // for TEP movement through transaction
@@ -989,9 +981,8 @@ public class ItmTepAutoConfigTest {
     public void tzReaddWithSameVtepsAndDiffDpnIDTest() throws Exception {
         // create TZ
         InstanceIdentifier<TransportZone> tzPath = ItmUtils.getTZInstanceIdentifier(ItmTestConstants.TZ_NAME);
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(LogicalDatastoreType.CONFIGURATION,
-                tzPath, transportZone, WriteTransaction.CREATE_MISSING_PARENTS)).get();
-
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
+                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath, transportZone)).get();
 
         InstanceIdentifier<TransportZone> tzonePath = ItmTepAutoConfigTestUtil.getTzIid(
                 ItmTestConstants.TZ_NAME);
@@ -1040,10 +1031,10 @@ public class ItmTepAutoConfigTest {
 
         //create vtepList form unknownVtepList
         List<Vteps> vtepsList = new ArrayList<>();
-        List<UnknownVteps> unknownVtepsList = dataBroker.newReadOnlyTransaction()
+        @Nullable Map<UnknownVtepsKey, UnknownVteps> unknownVtepsList = dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.OPERATIONAL, notHostedPath).get().get().getUnknownVteps();
         //modifing the dpnid and keeping the ip same.
-        for (UnknownVteps unknownVtep:unknownVtepsList) {
+        for (UnknownVteps unknownVtep:unknownVtepsList.values()) {
             Vteps vteps = new VtepsBuilder().setDpnId(Uint64.valueOf(10))
                     .setIpAddress(unknownVtep.getIpAddress())
                     .withKey(new VtepsKey(Uint64.valueOf(10))).build();
@@ -1054,8 +1045,8 @@ public class ItmTepAutoConfigTest {
                 .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN).setVteps(vtepsList)
                 .withKey(new TransportZoneKey(ItmTestConstants.TZ_NAME)).build();
 
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(LogicalDatastoreType.CONFIGURATION,
-                tzPath, recreatedTransportZone, WriteTransaction.CREATE_MISSING_PARENTS)).get();
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
+                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath, recreatedTransportZone)).get();
 
         // wait for TransportZoneListener to perform config DS update
         // for TEP movement through transaction

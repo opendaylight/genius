@@ -283,10 +283,10 @@ public class ItmInternalTunnelAddTest {
         itmInternalTunnelAddWorker.buildAllTunnels(mdsalApiManager, cfgdDpnListVxlan, meshDpnListVxlan);
 
         //Add some verifications
-        verify(mockReadWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierVxlan1,
-                internalTunnel1, true);
-        verify(mockReadWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierVxlan2,
-                internalTunnel2, true);
+        verify(mockReadWriteTx).mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION,
+                internalTunnelIdentifierVxlan1, internalTunnel1);
+        verify(mockReadWriteTx).mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION,
+                internalTunnelIdentifierVxlan2, internalTunnel2);
         verify(mockReadWriteTx).merge(LogicalDatastoreType.CONFIGURATION, dpnEndpointsIdentifier,
                 dpnEndpointsVxlan);
     }
@@ -320,10 +320,10 @@ public class ItmInternalTunnelAddTest {
 
         itmInternalTunnelAddWorker.buildAllTunnels(mdsalApiManager, cfgdDpnListGre, meshDpnListGre);
 
-        verify(mockReadWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierGre1,
-                internalTunnel1, true);
-        verify(mockReadWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierGre2,
-                internalTunnel2, true);
+        verify(mockReadWriteTx).mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION,
+                internalTunnelIdentifierGre1, internalTunnel1);
+        verify(mockReadWriteTx).mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION,
+                internalTunnelIdentifierGre2, internalTunnel2);
         verify(mockReadWriteTx).merge(LogicalDatastoreType.CONFIGURATION, dpnEndpointsIdentifier,
                 dpnEndpointsGre);
     }
@@ -358,10 +358,10 @@ public class ItmInternalTunnelAddTest {
 
         itmInternalTunnelAddWorker.buildAllTunnels(mdsalApiManager, cfgdDpnListVxlan, meshDpnListGre);
 
-        verify(mockReadWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierVxlan1,
-                internalTunnel1, true);
-        verify(mockReadWriteTx).merge(LogicalDatastoreType.CONFIGURATION, internalTunnelIdentifierGre2,
-                internalTunnel2, true);
+        verify(mockReadWriteTx).mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION,
+                internalTunnelIdentifierVxlan1, internalTunnel1);
+        verify(mockReadWriteTx).mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION,
+                internalTunnelIdentifierGre2, internalTunnel2);
         verify(mockReadWriteTx).merge(LogicalDatastoreType.CONFIGURATION, dpnEndpointsIdentifier,
                 dpnEndpointsVxlan);
     }

@@ -212,7 +212,7 @@ public final class IfmCLIUtil {
             String remoteIp = UNSET;
             String localIp = UNSET;
             String key = UNSET;
-            for (Options portOption: port.nonnullOptions()) {
+            for (Options portOption: port.nonnullOptions().values()) {
                 switch (portOption.getOption()) {
                     case "local_ip":
                         localIp = portOption.getValue();

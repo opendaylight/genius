@@ -33,8 +33,8 @@ class TypedWriteTransactionImpl<D extends Datastore> extends TypedTransaction<D>
     }
 
     @Override
-    public <T extends DataObject> void put(InstanceIdentifier<T> path, T data, boolean createMissingParents) {
-        delegate.put(getDatastoreType(), path, data, createMissingParents);
+    public <T extends DataObject> void mergeParentStructurePut(InstanceIdentifier<T> path, T data) {
+        delegate.mergeParentStructurePut(getDatastoreType(), path, data);
     }
 
     @Override
@@ -43,8 +43,8 @@ class TypedWriteTransactionImpl<D extends Datastore> extends TypedTransaction<D>
     }
 
     @Override
-    public <T extends DataObject> void merge(InstanceIdentifier<T> path, T data, boolean createMissingParents) {
-        delegate.merge(getDatastoreType(), path, data, createMissingParents);
+    public <T extends DataObject> void mergeParentStructureMerge(InstanceIdentifier<T> path, T data) {
+        delegate.mergeParentStructureMerge(getDatastoreType(), path, data);
     }
 
     @Override

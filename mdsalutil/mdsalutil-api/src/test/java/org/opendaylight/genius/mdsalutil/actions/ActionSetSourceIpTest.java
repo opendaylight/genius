@@ -47,7 +47,7 @@ public class ActionSetSourceIpTest {
     @Test
     public void generateAction() {
         ActionInfo actionInfo = new ActionSetSourceIp(IP_ADDRESS);
-        assertEquals("new ActionSetSourceIp(0, new Ipv4Prefix(\"" + IP_ADDRESS + "/" + IP_MASK + "\"))",
-                generator.getExpression(actionInfo));
+        assertEquals(( "Ipv4Prefix{_value=" + IP_ADDRESS + "/" + IP_MASK +"}"),
+               ((ActionSetSourceIp) actionInfo).getSource().toString());
     }
 }

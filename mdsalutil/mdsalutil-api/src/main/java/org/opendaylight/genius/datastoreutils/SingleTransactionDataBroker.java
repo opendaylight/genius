@@ -213,7 +213,7 @@ public class SingleTransactionDataBroker {
 
         RetryingManagedNewTransactionRunner runner = new RetryingManagedNewTransactionRunner(broker, maxRetries);
         ListenableFutures.checkedGet(runner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
-                tx.put(datastoreType,path,data,true)), SUBMIT_MAPPER);
+                tx.mergeParentStructurePut(datastoreType,path,data)), SUBMIT_MAPPER);
     }
 
     public <T extends DataObject> void syncUpdate(
@@ -239,7 +239,7 @@ public class SingleTransactionDataBroker {
             throws TransactionCommitFailedException {
         RetryingManagedNewTransactionRunner runner = new RetryingManagedNewTransactionRunner(broker, maxRetries);
         ListenableFutures.checkedGet(runner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
-                tx.merge(datastoreType, path, data, true)), SUBMIT_MAPPER);
+                tx.mergeParentStructureMerge(datastoreType, path, data)), SUBMIT_MAPPER);
     }
 
     public <T extends DataObject> void syncDelete(

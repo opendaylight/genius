@@ -303,7 +303,7 @@ public class DataTreeEventCallbackRegistrarTest {
         verify(mockScheduler).schedule(timerTask.capture(), eq(timeout.toMillis()), eq(TimeUnit.MILLISECONDS));
 
         new RetryingManagedNewTransactionRunner(db, 1).callWithNewWriteOnlyTransactionAndSubmit(
-            tx -> tx.put(OPERATIONAL, FOO_PATH, FOO_DATA, true));
+            tx -> tx.mergeParentStructurePut(OPERATIONAL, FOO_PATH, FOO_DATA));
 
         // Wait for the change notification callback to be invoked.
 
@@ -384,7 +384,7 @@ public class DataTreeEventCallbackRegistrarTest {
         }).when(mockListener).onDataTreeChanged(anyCollection());
 
         new RetryingManagedNewTransactionRunner(db, 1).callWithNewWriteOnlyTransactionAndSubmit(
-            tx -> tx.put(OPERATIONAL, FOO_PATH, FOO_DATA, true));
+            tx -> tx.mergeParentStructurePut(OPERATIONAL, FOO_PATH, FOO_DATA));
 
         await().untilTrue(onDataTreeChangeDone);
         assertThat(updated.get()).isFalse();

@@ -10,7 +10,9 @@ package org.opendaylight.genius.itm.confighelpers;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.genius.infra.Datastore;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
@@ -100,7 +102,7 @@ public final class OvsdbTepRemoveConfigHelper {
 
         // Remove TEP from (default transport-zone) OR (transport-zone already configured by Northbound)
 
-        List<Vteps> vtepList = transportZone.getVteps();
+        @Nullable Map<VtepsKey, Vteps> vtepList = transportZone.getVteps();
         if (vtepList == null || vtepList.isEmpty()) {
             //  case: vtep list does not exist or it has no elements
             LOG.trace("No vtep list in subnet list of transport-zone. Nothing to do.");
@@ -109,7 +111,7 @@ public final class OvsdbTepRemoveConfigHelper {
             boolean vtepFound = false;
             Vteps oldVtep = null;
 
-            for (Vteps vtep : vtepList) {
+            for (Vteps vtep : vtepList.values()) {
                 if (Objects.equals(vtep.getDpnId(), dpnId)) {
                     vtepFound = true;
                     oldVtep = vtep;
@@ -168,7 +170,7 @@ public final class OvsdbTepRemoveConfigHelper {
     public static void removeUnknownTzTepFromTepsNotHosted(String tzName, IpAddress tepIpAddress,
                                                            Uint64 dpnId, DataBroker dataBroker,
                                                            TypedWriteTransaction<Datastore.Operational> tx) {
-        List<UnknownVteps> vtepList;
+        Map<UnknownVtepsKey, UnknownVteps> vtepList;
         TepsInNotHostedTransportZone tepsInNotHostedTransportZone =
                 ItmUtils.getUnknownTransportZoneFromITMOperDS(tzName, dataBroker);
         if (tepsInNotHostedTransportZone == null) {
@@ -183,7 +185,7 @@ public final class OvsdbTepRemoveConfigHelper {
                 //  case: vtep list has elements
                 boolean vtepFound = false;
 
-                for (UnknownVteps vtep : vtepList) {
+                for (UnknownVteps vtep : vtepList.values()) {
                     if (Objects.equals(vtep.getDpnId(), dpnId)) {
                         vtepFound = true;
                         break;

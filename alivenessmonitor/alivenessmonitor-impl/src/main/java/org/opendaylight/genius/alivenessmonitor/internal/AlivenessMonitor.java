@@ -533,15 +533,15 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                 MonitoringState monitoringState = monitoringStateBuilder.build();
 
                 txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, operTx -> {
-                    operTx.put(getMonitoringInfoId(monitorId), monitoringInfo, CREATE_MISSING_PARENT);
+                    operTx.mergeParentStructurePut(getMonitoringInfoId(monitorId), monitoringInfo);
                     LOG.debug("adding oper monitoring info {}", monitoringInfo);
 
-                    operTx.put(getMonitorStateId(monitoringKey), monitoringState, CREATE_MISSING_PARENT);
+                    operTx.mergeParentStructurePut(getMonitorStateId(monitoringKey), monitoringState);
                     LOG.debug("adding oper monitoring state {}", monitoringState);
 
                     MonitoridKeyEntry mapEntry = new MonitoridKeyEntryBuilder().setMonitorId(monitorId)
                             .setMonitorKey(monitoringKey).build();
-                    operTx.put(getMonitorMapId(monitorId), mapEntry, CREATE_MISSING_PARENT);
+                    operTx.mergeParentStructurePut(getMonitorMapId(monitorId), mapEntry);
                     LOG.debug("adding oper map entry {}", mapEntry);
                 }).addCallback(new FutureCallback<Object>() {
                     @Override
@@ -601,8 +601,8 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                 monitorIds2.add(monitorId);
                 InterfaceMonitorEntry newEntry2 = new InterfaceMonitorEntryBuilder()
                             .setInterfaceName(interfaceName).setMonitorIds(monitorIds2).build();
-                tx.put(LogicalDatastoreType.OPERATIONAL, getInterfaceMonitorMapId(interfaceName), newEntry2,
-                            CREATE_MISSING_PARENT);
+                tx.mergeParentStructurePut(LogicalDatastoreType.OPERATIONAL, getInterfaceMonitorMapId(interfaceName),
+                        newEntry2);
             }
             return tx.commit();
         }, callbackExecutorService);
@@ -952,8 +952,8 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                     final MonitorProfile monitorProfile = new MonitorProfileBuilder().setId(profileId)
                                 .setFailureThreshold(failureThreshold).setMonitorInterval(monitorInterval)
                                 .setMonitorWindow(monitorWindow).setProtocolType(protocolType).build();
-                    tx.put(LogicalDatastoreType.OPERATIONAL, getMonitorProfileId(profileId), monitorProfile,
-                          CREATE_MISSING_PARENT);
+                    tx.mergeParentStructurePut(LogicalDatastoreType.OPERATIONAL, getMonitorProfileId(profileId),
+                            monitorProfile);
                     tx.commit().addCallback(new FutureCallback<CommitInfo>() {
                             @Override
                             public void onFailure(Throwable error) {
@@ -1158,8 +1158,8 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
                 } else {
                     InterfaceMonitorEntry newEntry = new InterfaceMonitorEntryBuilder(entry)
                             .withKey(new InterfaceMonitorEntryKey(interfaceName)).setMonitorIds(monitorIds).build();
-                    tx.put(LogicalDatastoreType.OPERATIONAL, getInterfaceMonitorMapId(interfaceName), newEntry,
-                            CREATE_MISSING_PARENT);
+                    tx.mergeParentStructurePut(LogicalDatastoreType.OPERATIONAL,
+                            getInterfaceMonitorMapId(interfaceName), newEntry);
                 }
                 return tx.commit();
             } else {

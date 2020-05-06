@@ -104,6 +104,14 @@ public class TepCommandHelperTest {
     private TunnelMonitorParams tunnelMonitorParams = null;
     private Vteps vteps = null;
     private Vteps vtepsTest = null;
+    private TransportZone mergeTransportZone = null;
+    private TransportZone mergeTransportZoneGre = null;
+    private TransportZones mergeParentTransportZones = null;
+    private TransportZones mergeParentTransportZonesGre = null;
+    private Vteps mergeVteps = null;
+    private final List<Vteps> mergeVtepsList = new ArrayList<>();
+    private final List<TransportZone> mergeParentTransportZoneList = new ArrayList<>();
+    private final List<TransportZone> mergeParentTransportZoneListGre = new ArrayList<>();
     private org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
             .Interface interfaceTest = null;
     private org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface
@@ -210,6 +218,46 @@ public class TepCommandHelperTest {
         transportZoneList.add(transportZone);
         transportZones = new TransportZonesBuilder().setTransportZone(transportZoneList).build();
         transportZonesNew = new TransportZonesBuilder().setTransportZone(transportZoneListNew).build();
+
+        mergeVteps = new VtepsBuilder().setDpnId(dpId2)
+                .setIpAddress(ipAddress1).withKey(new VtepsKey(dpId1)).build();
+        mergeVtepsList.add(mergeVteps);
+
+        mergeTransportZone =
+                new TransportZoneBuilder().withKey(new TransportZoneKey(transportZone1))
+                        .setTunnelType(tunnelType1).setZoneName(transportZone1).setVteps(mergeVtepsList)
+                        .build();
+        mergeParentTransportZoneList.add(mergeTransportZone);
+        mergeParentTransportZones = new TransportZonesBuilder().setTransportZone(mergeParentTransportZoneList).build();
+
+        mergeTransportZoneGre =
+                new TransportZoneBuilder().withKey(new TransportZoneKey(transportZone1))
+                        .setTunnelType(tunnelType2).setZoneName(transportZone1).setVteps(mergeVtepsList)
+                        .build();
+        mergeParentTransportZoneListGre.add(mergeTransportZoneGre);
+        mergeParentTransportZonesGre = new TransportZonesBuilder().setTransportZone(mergeParentTransportZoneListGre).build();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         tunnelMonitorInterval = new TunnelMonitorIntervalBuilder().setInterval(10000).build();
         tunnelMonitorParams = new TunnelMonitorParamsBuilder().setEnabled(true).build();
         InternalTunnel internalTunnelTest = new InternalTunnelBuilder().setSourceDPN(dpId1).setDestinationDPN(dpId2)
@@ -330,8 +378,8 @@ public class TepCommandHelperTest {
         tepCommandHelper.configureTunnelMonitorInterval(interval);
 
         verify(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,tunnelMonitorIntervalIdentifier);
-        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,tunnelMonitorIntervalIdentifier,
-                tunnelMonitor,true);
+        verify(mockWriteTx).mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION,
+                tunnelMonitorIntervalIdentifier, tunnelMonitor);
     }
 
     @Test
@@ -379,15 +427,18 @@ public class TepCommandHelperTest {
     public void testBuildTepsTunnelTypeVxlan() {
 
         try {
+            LOG.error("Karthika:localcache S");
             tepCommandHelper.createLocalCache(dpId1,tepIp1,transportZone1);
+            LOG.error("Karthika:localcache E");
         } catch (TepException e) {
             LOG.error(e.getMessage());
         }
+        LOG.error("Karthika:buildteps S");
         tepCommandHelper.buildTeps();
+        LOG.error("Karthika.buildteps E");
 
         verify(mockReadTx, times(2)).read(LogicalDatastoreType.CONFIGURATION,transportZoneIdentifier);
-        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,transportZonesIdentifier,transportZonesNew,true);
-
+        verify(mockWriteTx).mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION,transportZonesIdentifier,mergeParentTransportZones);
     }
 
     @Test
@@ -404,7 +455,7 @@ public class TepCommandHelperTest {
         tepCommandHelper.buildTeps();
 
         verify(mockReadTx, times(2)).read(LogicalDatastoreType.CONFIGURATION,transportZoneIdentifier);
-        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,transportZonesIdentifier,transportZonesNew,true);
+        verify(mockWriteTx).mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION,transportZonesIdentifier,mergeParentTransportZonesGre);
 
     }
 
@@ -419,7 +470,7 @@ public class TepCommandHelperTest {
         tepCommandHelper.buildTeps();
 
         verify(mockReadTx, times(2)).read(LogicalDatastoreType.CONFIGURATION,transportZoneIdentifier);
-        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,transportZonesIdentifier,transportZonesNew,true);
+        verify(mockWriteTx).mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION,transportZonesIdentifier,mergeParentTransportZones);
 
     }
 

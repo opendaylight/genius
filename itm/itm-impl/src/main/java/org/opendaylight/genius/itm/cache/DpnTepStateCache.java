@@ -90,7 +90,7 @@ public class DpnTepStateCache extends DataObjectCache<Uint64, DpnsTeps> {
     @Override
     protected void added(InstanceIdentifier<DpnsTeps> path, DpnsTeps dpnsTeps) {
         String srcOfTunnel = dpnsTeps.getOfTunnel();
-        for (RemoteDpns remoteDpns : dpnsTeps.nonnullRemoteDpns()) {
+        for (RemoteDpns remoteDpns : dpnsTeps.nonnullRemoteDpns().values()) {
             final String dpn = getDpnId(dpnsTeps.getSourceDpnId(), remoteDpns.getDestinationDpnId());
             DpnTepInterfaceInfo value = new DpnTepInterfaceInfoBuilder()
                 .setTunnelName(remoteDpns.getTunnelName())
@@ -162,7 +162,7 @@ public class DpnTepStateCache extends DataObjectCache<Uint64, DpnsTeps> {
 
     @Override
     protected void removed(InstanceIdentifier<DpnsTeps> path, DpnsTeps dpnsTeps) {
-        for (RemoteDpns remoteDpns : dpnsTeps.nonnullRemoteDpns()) {
+        for (RemoteDpns remoteDpns : dpnsTeps.nonnullRemoteDpns().values()) {
             String fwkey = getDpnId(dpnsTeps.getSourceDpnId(), remoteDpns.getDestinationDpnId());
             dpnTepInterfaceMap.remove(fwkey);
             tunnelEndpointMap.remove(remoteDpns.getTunnelName());
@@ -182,7 +182,7 @@ public class DpnTepStateCache extends DataObjectCache<Uint64, DpnsTeps> {
                 Optional<DpnsTeps> dpnsTeps = super.get(srcDpnId);
                 if (dpnsTeps.isPresent()) {
                     DpnsTeps teps = dpnsTeps.get();
-                    teps.nonnullRemoteDpns().forEach(remoteDpns -> {
+                    teps.nonnullRemoteDpns().values().forEach(remoteDpns -> {
                         DpnTepInterfaceInfo value = new DpnTepInterfaceInfoBuilder()
                                 .setTunnelName(remoteDpns.getTunnelName())
                                 .setIsMonitoringEnabled(remoteDpns.isMonitoringEnabled())
@@ -206,7 +206,7 @@ public class DpnTepStateCache extends DataObjectCache<Uint64, DpnsTeps> {
         Collection<DpnsTeps> dpnsTeps = this.getAllPresent();
         for (DpnsTeps dpnTep : dpnsTeps) {
             if (!Objects.equals(dpnTep.getSourceDpnId(), srcDpnId)) {
-                for (RemoteDpns remoteDpns : dpnTep.nonnullRemoteDpns()) {
+                for (RemoteDpns remoteDpns : dpnTep.nonnullRemoteDpns().values()) {
                     if (Objects.equals(remoteDpns.getDestinationDpnId(), srcDpnId)) {
                         // Remote the SrcDpnId from the remote List. Remove it from COnfig DS. 4
                         // This will be reflected in cache by the ClusteredDTCN. Not removing it here !
