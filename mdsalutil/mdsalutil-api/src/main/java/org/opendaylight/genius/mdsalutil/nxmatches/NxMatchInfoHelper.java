@@ -7,7 +7,9 @@
  */
 package org.opendaylight.genius.mdsalutil.nxmatches;
 
+import com.google.common.collect.Maps;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.opendaylight.genius.mdsalutil.NxMatchInfo;
@@ -19,6 +21,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.ge
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.general.rev140714.general.extension.grouping.ExtensionBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.general.rev140714.general.extension.list.grouping.ExtensionList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.general.rev140714.general.extension.list.grouping.ExtensionListBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.general.rev140714.general.extension.list.grouping.ExtensionListKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxAugMatchNodesNodeTableFlow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.extension.nicira.match.rev140714.NxAugMatchNodesNodeTableFlowBuilder;
 import org.opendaylight.yangtools.concepts.Builder;
@@ -68,17 +71,20 @@ public abstract class NxMatchInfoHelper<T extends DataObject, B extends Builder<
     private GeneralAugMatchNodesNodeTableFlow generalAugMatchBuilder(
             GeneralAugMatchNodesNodeTableFlow existingAugmentations, NxAugMatchNodesNodeTableFlow nxAugMatch,
             Class<? extends ExtensionKey> extentionKey) {
-        List<ExtensionList> extensions = null;
+
+        Map<ExtensionListKey, ExtensionList> extensions = null;
+
         if (existingAugmentations != null) {
             extensions = existingAugmentations.getExtensionList();
         }
         if (extensions == null) {
-            extensions = new ArrayList<>();
+            extensions = new HashMap<>();
         }
-        extensions.add(new ExtensionListBuilder().setExtensionKey(extentionKey)
-                .setExtension(
-                        new ExtensionBuilder().addAugmentation(NxAugMatchNodesNodeTableFlow.class, nxAugMatch).build())
-                .build());
+
+        ExtensionList extensionList = new ExtensionListBuilder().setExtensionKey(extentionKey)
+                .setExtension(new ExtensionBuilder().addAugmentation(NxAugMatchNodesNodeTableFlow.class, nxAugMatch).build())
+                .build();
+        extensions.put(extensionList.key(),extensionList);
         return new GeneralAugMatchNodesNodeTableFlowBuilder().setExtensionList(extensions).build();
     }
 

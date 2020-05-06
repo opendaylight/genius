@@ -109,7 +109,7 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         bind(ServiceRecoveryRegistry.class).toInstance(mock(ServiceRecoveryRegistry.class));
         EntityOwnershipService entityOwnershipService = new BindingDOMEntityOwnershipServiceAdapter(
                 new SimpleDOMEntityOwnershipService(),
-                test.getDataBrokerTestCustomizer().getBindingToNormalized());
+                test.getDataBrokerTestCustomizer().getAdapterContext());
         bind(EntityOwnershipService.class).toInstance(entityOwnershipService);
         bind(EntityOwnershipUtils.class);
         bind(AlivenessMonitorService.class).toInstance(mock(AlivenessMonitorService.class));

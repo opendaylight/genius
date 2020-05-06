@@ -14,9 +14,11 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
@@ -70,7 +72,7 @@ public class OvsVlanMemberConfigRemoveHelper {
             // Configuration changes
             futures.add(txChain.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
                 // Delete the interface child information
-                List<InterfaceChildEntry> interfaceChildEntries = interfaceParentEntry.nonnullInterfaceChildEntry();
+                Map<InterfaceChildEntryKey, InterfaceChildEntry> interfaceChildEntries = interfaceParentEntry.nonnullInterfaceChildEntry();
                 InterfaceChildEntryKey interfaceChildEntryKey = new InterfaceChildEntryKey(interfaceOld.getName());
                 InstanceIdentifier<InterfaceChildEntry> interfaceChildEntryIid = InterfaceMetaUtils
                     .getInterfaceChildEntryIdentifier(interfaceParentEntryKey, interfaceChildEntryKey);

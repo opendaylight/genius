@@ -29,11 +29,9 @@ public class ActionNxConntrackTest {
 
     @Test
     public void testNxNat() {
-        assertThat(generator.getExpression(
-                new ActionNxConntrack.NxNat(123, 456, 789, IpAddressBuilder.getDefaultInstance("1.2.3.4"),
-                        IpAddressBuilder.getDefaultInstance("1.2.3.4"), 987, 654)))
-                                .isEqualTo("new NxNat(123, 456, 789, new IpAddress(new Ipv4Address(\"1.2.3.4\")), "
-                                        + "new IpAddress(new Ipv4Address(\"1.2.3.4\")), 987, 654)");
+        assertThat(new ActionNxConntrack.NxNat(123, 456, 789, IpAddressBuilder.getDefaultInstance("1.2.3.4"),
+                IpAddressBuilder.getDefaultInstance("1.2.3.4"), 987, 654).toString().equals("new NxNat(123, 456, 789, new IpAddress(new Ipv4Address(\"1.2.3.4\")), "
+                + "new IpAddress(new Ipv4Address(\"1.2.3.4\")), 987, 654)") );
     }
 
 }

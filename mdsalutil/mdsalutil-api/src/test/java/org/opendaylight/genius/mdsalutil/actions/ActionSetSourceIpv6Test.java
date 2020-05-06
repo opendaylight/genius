@@ -47,7 +47,7 @@ public class ActionSetSourceIpv6Test {
     @Test
     public void generateAction() {
         ActionInfo actionInfo = new ActionSetSourceIpv6(IP_ADDRESS);
-        assertEquals("new ActionSetSourceIpv6(0, new Ipv6Prefix(\"" + IP_ADDRESS + "/" + IP_MASK + "\"))",
-                generator.getExpression(actionInfo));
+        assertEquals(( "Ipv6Prefix{_value=" + IP_ADDRESS + "/" + IP_MASK +"}"),
+                ((ActionSetSourceIpv6) actionInfo).getSource().toString());
     }
 }

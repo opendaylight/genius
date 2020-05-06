@@ -123,6 +123,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <dependency>
       <groupId>org.immutables</groupId>
       <artifactId>value</artifactId>
+      <classifier>annotations</classifier>
     </dependency>
     <dependency>
       <groupId>org.osgi</groupId>
@@ -147,11 +148,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <dependency>
       <groupId>org.awaitility</groupId>
       <artifactId>awaitility</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.opendaylight.mdsal</groupId>
-      <artifactId>mdsal-binding-test-utils</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -184,7 +180,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
      </dependency>!-->
     <dependency>
       <groupId>org.opendaylight.mdsal</groupId>
-      <artifactId>mdsal-binding-dom-adapter</artifactId>
+      <artifactId>mdsal-binding-test-utils</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

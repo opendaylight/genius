@@ -22,6 +22,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -183,7 +184,7 @@ public class TepCommandHelper {
                 ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tzonePath, dataBroker);
         if (transportZoneOptional.isPresent()) {
             TransportZone tz = transportZoneOptional.get();
-            for (Vteps vtep : tz.getVteps()) {
+            for (Vteps vtep : tz.getVteps().values()) {
                 if (Objects.equals(vtep.getDpnId(), dpnId)) {
                     return true;
                 }
@@ -197,55 +198,66 @@ public class TepCommandHelper {
         TransportZone transportZone = null;
         try {
             LOG.debug("no of teps added {}", CHECK);
+            LOG.error("transportZonesHashMap size {}",transportZonesHashMap.size());
             if (transportZonesHashMap != null && !transportZonesHashMap.isEmpty()) {
                 transportZoneArrayList = new ArrayList<>();
+                LOG.error("transportZoneArrayList initialized...");
                 for (Entry<String, List<Vteps>> mapEntry : transportZonesHashMap.entrySet()) {
                     String tz = mapEntry.getKey();
-                    LOG.debug("transportZonesHashMap {}", tz);
+                    LOG.error("transportZone name {}", tz);
                     List<Vteps> vtepListTemp = mapEntry.getValue();
+                    LOG.error("vtepListTemp contents: {}", vtepListTemp);
                     InstanceIdentifier<TransportZone> transportZonePath =
                             InstanceIdentifier.builder(TransportZones.class)
                                     .child(TransportZone.class, new TransportZoneKey(tz)).build();
                     Optional<TransportZone> transportZoneOptional =
                             ItmUtils.read(LogicalDatastoreType.CONFIGURATION, transportZonePath, dataBroker);
-                    LOG.debug("read container from DS");
+                    LOG.error("read container from DS");
                     if (transportZoneOptional.isPresent()) {
+                        LOG.error("transportZone present in DS");
                         TransportZone tzoneFromDs = transportZoneOptional.get();
-                        LOG.debug("read tzone container {}", tzoneFromDs);
+                        LOG.error("read tzone container {}", tzoneFromDs);
                         if (tzoneFromDs.getTunnelType() == null
                                 || tzoneFromDs.getTunnelType().equals(TunnelTypeVxlan.class)) {
+                            LOG.error("Tunnel type null or vxlan {}", tzoneFromDs.getTunnelType());
                             transportZone =
                                     new TransportZoneBuilder().withKey(new TransportZoneKey(tz))
                                             .setTunnelType(TunnelTypeVxlan.class)
                                             .setZoneName(tz).setVteps(vtepListTemp).build();
                         } else if (tzoneFromDs.getTunnelType().equals(TunnelTypeGre.class)) {
+                            LOG.error("Tunnel type GRE {}", tzoneFromDs.getTunnelType());
                             transportZone =
                                     new TransportZoneBuilder().withKey(new TransportZoneKey(tz))
                                             .setTunnelType(TunnelTypeGre.class).setVteps(vtepListTemp)
                                             .setZoneName(tz).build();
                         }
                     } else {
+                        LOG.error("transportZone ABSENT in DS");
                         transportZone =
                                 new TransportZoneBuilder().withKey(new TransportZoneKey(tz))
                                         .setTunnelType(TunnelTypeVxlan.class).setZoneName(tz).setVteps(vtepListTemp)
                                         .build();
                     }
-                    LOG.debug("tzone object {}", transportZone);
+                    LOG.error("tzone object {}", transportZone);
                     transportZoneArrayList.add(transportZone);
+                    LOG.error("transportZone added to transportZoneArrayList");
                 }
-                TransportZones transportZones =
-                        new TransportZonesBuilder().setTransportZone(transportZoneArrayList).build();
+                //TransportZones transportZones =new TransportZonesBuilder().setTransportZone(transportZoneArrayList).build();
+                TransportZones transportZones = new TransportZonesBuilder()
+                        .setTransportZone(transportZoneArrayList.stream().collect(Collectors.toList()) ).build();
                 InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
-                LOG.debug("InstanceIdentifier {}", path);
+                LOG.error("InstanceIdentifier {}", path);
+                LOG.error("transportZones {}", transportZones);
                 Futures.addCallback(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
-                    tx -> tx.merge(path, transportZones, true)), ItmUtils.DEFAULT_WRITE_CALLBACK,
-                    MoreExecutors.directExecutor());
-                LOG.debug("wrote to Config DS {}", transportZones);
+                        tx -> tx.mergeParentStructureMerge(path, transportZones)), ItmUtils.DEFAULT_WRITE_CALLBACK,
+                        MoreExecutors.directExecutor());
+                LOG.error("wrote to Config DS {}", transportZones);
                 transportZonesHashMap.clear();
                 transportZoneArrayList.clear();
-                LOG.debug("Everything cleared");
+                LOG.error("Everything cleared, transportZonesHashMap size:{}, transportZoneArrayList size:{}",
+                        transportZonesHashMap.size(), transportZoneArrayList.size());
             } else {
-                LOG.debug("NO vteps were configured");
+                LOG.error("NO vteps were configured");
             }
         } catch (RuntimeException e) {
             LOG.error("Error building TEPs", e);
@@ -275,7 +287,7 @@ public class TepCommandHelper {
                 if (tz.getVteps() == null || tz.getVteps().isEmpty()) {
                     continue;
                 }
-                for (Vteps vtep : tz.getVteps()) {
+                for (Vteps vtep : tz.getVteps().values()) {
                     flag = true;
                     String strTunnelType ;
                     if (TunnelTypeGre.class.equals(tz.getTunnelType())) {
@@ -386,8 +398,8 @@ public class TepCommandHelper {
                     allPaths.addAll(vtepPaths);
                     allPaths.addAll(subnetPaths);
                     Futures.addCallback(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
-                        tx -> allPaths.forEach(tx::delete)), ItmUtils.DEFAULT_WRITE_CALLBACK,
-                        MoreExecutors.directExecutor());
+                            tx -> allPaths.forEach(tx::delete)), ItmUtils.DEFAULT_WRITE_CALLBACK,
+                            MoreExecutors.directExecutor());
                 }
                 vtepPaths.clear();
                 subnetPaths.clear();
@@ -554,8 +566,8 @@ public class TepCommandHelper {
             TunnelMonitorParams tunnelMonitor = new TunnelMonitorParamsBuilder().setEnabled(monitorEnabled)
                     .setMonitorProtocol(monitorType).build();
             Futures.addCallback(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
-                tx -> tx.merge(path, tunnelMonitor)), ItmUtils.DEFAULT_WRITE_CALLBACK,
-                MoreExecutors.directExecutor());
+                    tx -> tx.merge(path, tunnelMonitor)), ItmUtils.DEFAULT_WRITE_CALLBACK,
+                    MoreExecutors.directExecutor());
         }
     }
 
@@ -567,8 +579,8 @@ public class TepCommandHelper {
         if (!storedTunnelMonitor.isPresent() || storedTunnelMonitor.get().getInterval().toJava() != interval) {
             TunnelMonitorInterval tunnelMonitor = new TunnelMonitorIntervalBuilder().setInterval(interval).build();
             Futures.addCallback(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
-                tx -> tx.merge(path, tunnelMonitor, true)), ItmUtils.DEFAULT_WRITE_CALLBACK,
-                MoreExecutors.directExecutor());
+                    tx -> tx.mergeParentStructureMerge(path, tunnelMonitor)), ItmUtils.DEFAULT_WRITE_CALLBACK,
+                    MoreExecutors.directExecutor());
         }
     }
 

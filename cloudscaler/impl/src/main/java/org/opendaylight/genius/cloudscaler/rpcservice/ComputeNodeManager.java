@@ -107,7 +107,7 @@ public class ComputeNodeManager {
         OvsdbBridgeAugmentation bridgeAugmentation = node.augmentation(OvsdbBridgeAugmentation.class);
         if (bridgeAugmentation != null && bridgeAugmentation.getBridgeOtherConfigs() != null) {
             Uint64 datapathid = getDpnIdFromBridge(bridgeAugmentation);
-            Optional<BridgeOtherConfigs> otherConfigOptional = bridgeAugmentation.getBridgeOtherConfigs()
+            Optional<BridgeOtherConfigs> otherConfigOptional = bridgeAugmentation.getBridgeOtherConfigs().values()
                     .stream()
                     .filter(otherConfig -> otherConfig.getBridgeOtherConfigKey().equals("dp-desc"))
                     .findFirst();
