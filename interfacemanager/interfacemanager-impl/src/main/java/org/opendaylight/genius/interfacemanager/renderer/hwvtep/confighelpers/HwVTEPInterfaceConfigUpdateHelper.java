@@ -8,7 +8,6 @@
 package org.opendaylight.genius.interfacemanager.renderer.hwvtep.confighelpers;
 
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
-import static org.opendaylight.mdsal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
@@ -69,6 +68,6 @@ public final class HwVTEPInterfaceConfigUpdateHelper {
         SouthboundUtils.fillBfdParameters(bfdParams, ifTunnel);
         tunnelsBuilder.setBfdParams(bfdParams);
         return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
-            tx -> tx.merge(tunnelsInstanceIdentifier, tunnelsBuilder.build(), CREATE_MISSING_PARENTS)));
+            tx -> tx.mergeParentStructureMerge(tunnelsInstanceIdentifier, tunnelsBuilder.build())));
     }
 }
