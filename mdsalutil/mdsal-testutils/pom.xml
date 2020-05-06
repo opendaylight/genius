@@ -40,6 +40,7 @@
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <scope>compile</scope>
+            <version>4.2.2</version>
         </dependency>
     </dependencies>
     
