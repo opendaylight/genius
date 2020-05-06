@@ -13,7 +13,6 @@ import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.Int
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.MPLS_OVER_GRE;
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.VLAN_INTERFACE;
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE;
-import static org.opendaylight.mdsal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -21,6 +20,7 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -63,6 +63,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.Fl
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.WriteMetadataCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.write.metadata._case.WriteMetadata;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.InstructionKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutput;
@@ -389,12 +390,12 @@ public final class IfmUtil {
         return new NodeId(ncId.getValue().substring(0, ncId.getValue().lastIndexOf(':')));
     }
 
-    public static Uint64[] mergeOpenflowMetadataWriteInstructions(List<Instruction> instructions) {
+    public static Uint64[] mergeOpenflowMetadataWriteInstructions(Map<InstructionKey, Instruction> instructions) {
         Uint64 metadata = Uint64.ZERO;
         Uint64 metadataMask = Uint64.ZERO;
         if (instructions != null && !instructions.isEmpty()) {
             // check if metadata write instruction is present
-            for (Instruction instruction : instructions) {
+            for (Instruction instruction : instructions.values()) {
                 org.opendaylight.yang.gen.v1.urn.opendaylight.flow
                     .types.rev131026.instruction.Instruction actualInstruction = instruction
                         .getInstruction();
@@ -557,7 +558,7 @@ public final class IfmUtil {
         LOG.info("Binding Service {} for : {}", serviceInfo.getServiceName(), interfaceName);
         InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier = buildBoundServicesIId(
             serviceInfo.getServicePriority().toJava(), interfaceName, serviceMode);
-        tx.put(boundServicesInstanceIdentifier, serviceInfo, CREATE_MISSING_PARENTS);
+        tx.mergeParentStructurePut(boundServicesInstanceIdentifier, serviceInfo);
     }
 
     public static void unbindService(ManagedNewTransactionRunner txRunner, JobCoordinator coordinator,

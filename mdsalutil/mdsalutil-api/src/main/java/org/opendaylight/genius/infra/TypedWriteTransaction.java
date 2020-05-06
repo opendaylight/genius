@@ -44,7 +44,7 @@ public interface TypedWriteTransaction<D extends Datastore> extends
      * {@link WriteTransaction#FAIL_ON_MISSING_PARENTS} to fail if parents are missing.
      * @param <T> The type of the provided object.
      */
-    <T extends DataObject> void put(InstanceIdentifier<T> path, T data, boolean createMissingParents);
+    <T extends DataObject> void mergeParentStructurePut(InstanceIdentifier<T> path, T data);
 
     /**
      * Merges an object with the data already present at the given path.
@@ -68,7 +68,7 @@ public interface TypedWriteTransaction<D extends Datastore> extends
      * {@link WriteTransaction#FAIL_ON_MISSING_PARENTS} to fail if parents are missing.
      * @param <T> The type of the provided object.
      */
-    <T extends DataObject> void merge(InstanceIdentifier<T> path, T data, boolean createMissingParents);
+    <T extends DataObject> void mergeParentStructureMerge(InstanceIdentifier<T> path, T data);
 
     /**
      * Deletes the object present at the given path.

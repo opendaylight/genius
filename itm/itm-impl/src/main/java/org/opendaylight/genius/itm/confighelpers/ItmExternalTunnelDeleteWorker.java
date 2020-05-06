@@ -9,9 +9,11 @@ package org.opendaylight.genius.itm.confighelpers;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
+import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
@@ -26,6 +28,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.Ext
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembership;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembershipKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
@@ -56,7 +59,7 @@ public final class ItmExternalTunnelDeleteWorker {
             TunnelEndPoints firstEndPt = teps.getTunnelEndPoints().get(0);
             // The membership in the listener will always be 1, to get the actual membership
             // read from the DS
-            List<TzMembership> originalTzMembership = ItmUtils.getOriginalTzMembership(firstEndPt,
+            @NonNull Map<TzMembershipKey, TzMembership> originalTzMembership = ItmUtils.getOriginalTzMembership(firstEndPt,
                     teps.getDPNID(), meshedDpnList);
             if (originalTzMembership.size() == 1) {
                 String interfaceName = firstEndPt.getInterfaceName();
@@ -123,7 +126,7 @@ public final class ItmExternalTunnelDeleteWorker {
             for (DPNTEPsInfo dpn : cfgdDpnList) {
                 if (dpn.getTunnelEndPoints() != null) {
                     for (TunnelEndPoints srcTep : dpn.getTunnelEndPoints()) {
-                        for (TzMembership zone : srcTep.nonnullTzMembership()) {
+                        for (TzMembership zone : srcTep.nonnullTzMembership().values()) {
                             deleteTunnelsInTransportZone(zone.getZoneName(), dpn, srcTep, cfgdhwVteps, tx);
                         }
                     }
@@ -143,7 +146,7 @@ public final class ItmExternalTunnelDeleteWorker {
                 }
                 // do we need to check tunnel type?
                 if (originalTZone.getDeviceVteps() != null) {
-                    for (DeviceVteps hwVtepDS : originalTZone.getDeviceVteps()) {
+                    for (DeviceVteps hwVtepDS : originalTZone.getDeviceVteps().values()) {
                         LOG.trace("hwtepDS exists {}", hwVtepDS);
                         // do i need to check node-id?
                         // for mlag case and non-m-lag case, isnt it enough to just check ipaddress?
@@ -164,7 +167,7 @@ public final class ItmExternalTunnelDeleteWorker {
                     int vlanId = itmConfig.getVlanId() != null ? itmConfig.getVlanId().toJava()
                                                                  : ITMConstants.DUMMY_VLANID;
 
-                    for (Vteps vtep : originalTZone.getVteps()) {
+                    for (Vteps vtep : originalTZone.getVteps().values()) {
                         // TOR-OVS
                         LOG.trace("deleting tor-css-tor {} and {}", hwTep, vtep);
                         String parentIf = ItmUtils.getInterfaceName(vtep.getDpnId(), portName, vlanId);
@@ -187,7 +190,7 @@ public final class ItmExternalTunnelDeleteWorker {
             TransportZone tzone = tz.get();
             // do we need to check tunnel type?
             if (tzone.getDeviceVteps() != null) {
-                for (DeviceVteps hwVtepDS : tzone.getDeviceVteps()) {
+                for (DeviceVteps hwVtepDS : tzone.getDeviceVteps().values()) {
                     // OVS-TOR-OVS
                     deleteTrunksOvsTor(dpn.getDPNID(), srcTep.getInterfaceName(),
                             srcTep.getIpAddress(), hwVtepDS.getTopologyId(), hwVtepDS.getNodeId(),

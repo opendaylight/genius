@@ -13,11 +13,14 @@ import static org.junit.Assert.assertTrue;
 import ch.vorburger.xtendbeans.XtendBeanGenerator;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Test;
 import org.opendaylight.genius.mdsalutil.InstructionInfo;
 import org.opendaylight.genius.mdsalutil.actions.ActionGroup;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.action.GroupActionCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.ActionKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.ApplyActionsCase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
 
@@ -39,9 +42,9 @@ public class InstructionApplyActionsTest {
         assertEquals(2, instruction.key().getOrder().intValue());
         assertTrue(instruction.getInstruction() instanceof ApplyActionsCase);
         ApplyActionsCase applyActionsCase = (ApplyActionsCase) instruction.getInstruction();
-        List<Action> actions = applyActionsCase.getApplyActions().getAction();
+        Map<ActionKey, Action> actions = applyActionsCase.getApplyActions().getAction();
         assertEquals(1, actions.size());
-        Action action = actions.get(0);
+        Action action = actions.values().iterator().next();
         assertTrue(action.getAction() instanceof GroupActionCase);
     }
 

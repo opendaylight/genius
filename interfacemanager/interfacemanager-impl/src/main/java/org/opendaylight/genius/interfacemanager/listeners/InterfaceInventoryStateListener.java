@@ -10,11 +10,14 @@ package org.opendaylight.genius.interfacemanager.listeners;
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
 
+import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -52,6 +55,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.port.rev130925.P
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeConnectorId;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
@@ -303,8 +307,8 @@ public class InterfaceInventoryStateListener
         public Object call() {
             List<ListenableFuture<Void>> futures = ovsInterfaceStateAddHelper.addState(nodeConnectorId,
                     interfaceName, fcNodeConnectorNew);
-            List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(interfaceName);
-            for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
+            Map<InterfaceChildEntryKey, InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(interfaceName);
+            for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries.values()) {
                 InterfaceStateAddWorker interfaceStateAddWorker = new InterfaceStateAddWorker(idManager,
                         nodeConnectorId, fcNodeConnectorNew, interfaceChildEntry.getChildInterface());
                 coordinator.enqueueJob(interfaceName, interfaceStateAddWorker);
@@ -339,8 +343,8 @@ public class InterfaceInventoryStateListener
         public List<ListenableFuture<Void>> call() {
             List<ListenableFuture<Void>> futures = ovsInterfaceStateUpdateHelper.updateState(
                     interfaceName, fcNodeConnectorNew, fcNodeConnectorOld);
-            List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(interfaceName);
-            for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
+            Map<InterfaceChildEntryKey, InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(interfaceName);
+            for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries.values()) {
                 InterfaceStateUpdateWorker interfaceStateUpdateWorker = new InterfaceStateUpdateWorker(key,
                         fcNodeConnectorOld, fcNodeConnectorNew, interfaceChildEntry.getChildInterface());
                 coordinator.enqueueJob(interfaceName, interfaceStateUpdateWorker);
@@ -394,8 +398,8 @@ public class InterfaceInventoryStateListener
 
             List<ListenableFuture<Void>> futures = removeInterfaceStateConfiguration();
 
-            List<InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(interfaceName);
-            for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
+            Map<InterfaceChildEntryKey, InterfaceChildEntry> interfaceChildEntries = getInterfaceChildEntries(interfaceName);
+            for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries.values()) {
                 // Fetch all interfaces on this port and trigger remove worker
                 // for each of them
                 InterfaceStateRemoveWorker interfaceStateRemoveWorker = new InterfaceStateRemoveWorker(idManager,
@@ -487,12 +491,12 @@ public class InterfaceInventoryStateListener
         }
     }
 
-    public List<InterfaceChildEntry> getInterfaceChildEntries(String interfaceName) {
+    public Map<InterfaceChildEntryKey, InterfaceChildEntry> getInterfaceChildEntries(String interfaceName) {
         InterfaceParentEntry interfaceParentEntry =
                 interfaceMetaUtils.getInterfaceParentEntryFromConfigDS(interfaceName);
         if (interfaceParentEntry != null && interfaceParentEntry.getInterfaceChildEntry() != null) {
             return interfaceParentEntry.getInterfaceChildEntry();
         }
-        return new ArrayList<>();
+        return new HashMap<>();
     }
 }
