@@ -332,23 +332,25 @@ public class ItmManagerRpcServiceTest {
 
         itmManagerRpcService.addExternalTunnelEndpoint(addExternalTunnelEndpointInput);
 
-        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION, interfaceIdentifier, iface, true);
-        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION, externalTunnelIdentifierNew,
-                externalTunnelNew,true);
+        verify(mockWriteTx).mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, interfaceIdentifier, iface);
+        verify(mockWriteTx).mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, externalTunnelIdentifierNew,
+                externalTunnelNew);
     }
 
     @Test
     public void testAddL2GwDevice() {
         itmManagerRpcService.addL2GwDevice(addL2GwDeviceInput);
 
-        verify(mockWriteTx).put(LogicalDatastoreType.CONFIGURATION, deviceVtepsIdentifier, deviceVteps, true);
+        verify(mockWriteTx).mergeParentStructurePut(LogicalDatastoreType.CONFIGURATION, deviceVtepsIdentifier,
+                deviceVteps);
     }
 
     @Test
     public void testAddL2GwMlagDevice() {
         itmManagerRpcService.addL2GwMlagDevice(addL2GwMlagDeviceInput);
 
-        verify(mockWriteTx).put(LogicalDatastoreType.CONFIGURATION, deviceVtepsIdentifier, deviceVteps, true);
+        verify(mockWriteTx).mergeParentStructurePut(LogicalDatastoreType.CONFIGURATION, deviceVtepsIdentifier,
+                deviceVteps);
     }
 
     @Test
@@ -373,9 +375,9 @@ public class ItmManagerRpcServiceTest {
 
         itmManagerRpcService.buildExternalTunnelFromDpns(buildExternalTunnelFromDpnsInput);
 
-        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,interfaceIdentifier,iface,true);
-        verify(mockWriteTx).merge(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifierNew,
-                externalTunnelNew,true);
+        verify(mockWriteTx).mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION,interfaceIdentifier,iface);
+        verify(mockWriteTx).mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifierNew,
+                externalTunnelNew);
     }
 
     @Ignore

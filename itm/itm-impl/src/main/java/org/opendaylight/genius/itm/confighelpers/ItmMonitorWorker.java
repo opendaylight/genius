@@ -123,7 +123,7 @@ public class ItmMonitorWorker implements Callable<List<? extends ListenableFutur
         List<RemoteDpns> remoteDpnTepNewList = new ArrayList<>();
         RemoteDpns remoteDpnNew = null;
         Optional<OvsBridgeRefEntry> ovsBridgeRefEntry = ovsBridgeRefEntryCache.get(dpnTeps.getSourceDpnId());
-        for (RemoteDpns remoteDpn : dpnTeps.nonnullRemoteDpns()) {
+        for (RemoteDpns remoteDpn : dpnTeps.nonnullRemoteDpns().values()) {
             if (enabled != null) {
                 LOG.debug("toggleMonitoring: tunnelInterfaceName: {}, monitorEnable = {} ",
                     remoteDpn.getTunnelName(), enabled);

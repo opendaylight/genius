@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-
 import org.awaitility.core.ConditionTimeoutException;
 import org.opendaylight.genius.datastoreutils.testutils.AsyncEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorCountedEventsWaiter;
@@ -266,7 +265,7 @@ public final class InterfaceManagerTestUtil {
         }
         InstanceIdentifier<Interface> interfaceInstanceIdentifier = IfmUtil.buildId(ifaceName);
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
-        tx.put(CONFIGURATION, interfaceInstanceIdentifier, interfaceInfo, true);
+        tx.mergeParentStructurePut(CONFIGURATION, interfaceInstanceIdentifier, interfaceInfo);
         tx.commit().get();
     }
 
@@ -277,7 +276,7 @@ public final class InterfaceManagerTestUtil {
                 true, L2vlan.class, parentRefs, l2vlanMode);
         InstanceIdentifier<Interface> interfaceInstanceIdentifier = IfmUtil.buildId(ifaceName);
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
-        tx.put(CONFIGURATION, interfaceInstanceIdentifier, interfaceInfo, true);
+        tx.mergeParentStructurePut(CONFIGURATION, interfaceInstanceIdentifier, interfaceInfo);
         tx.commit().get();
     }
 
@@ -289,7 +288,7 @@ public final class InterfaceManagerTestUtil {
         long portNo = Tunnel.class.equals(ifType) ? PORT_NO_1 : PORT_NO_1;
         NodeConnector nodeConnector = InterfaceManagerTestUtil
                 .buildFlowCapableNodeConnector(buildNodeConnectorId(dpnId, portNo), interfaceName, true);
-        tx.put(OPERATIONAL,buildNodeConnectorInstanceIdentifier(dpnId, portNo), nodeConnector, true);
+        tx.mergeParentStructurePut(OPERATIONAL,buildNodeConnectorInstanceIdentifier(dpnId, portNo), nodeConnector);
         tx.commit().get();
     }
 
@@ -300,7 +299,7 @@ public final class InterfaceManagerTestUtil {
         long portNo = Tunnel.class.equals(ifType) ? PORT_NO_1 : PORT_NO_1;
         NodeConnector nodeConnector = InterfaceManagerTestUtil
             .buildFlowCapableNodeConnector(buildNodeConnectorId(dpnId, portNo), interfaceName, isLive);
-        tx.merge(OPERATIONAL,buildNodeConnectorInstanceIdentifier(dpnId, portNo), nodeConnector, true);
+        tx.mergeParentStructureMerge(OPERATIONAL,buildNodeConnectorInstanceIdentifier(dpnId, portNo), nodeConnector);
         tx.commit().get();
     }
 

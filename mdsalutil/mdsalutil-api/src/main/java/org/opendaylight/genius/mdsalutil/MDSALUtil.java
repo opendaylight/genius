@@ -167,14 +167,14 @@ public class MDSALUtil {
 
     public static Flow buildFlowNew(short tableId, String flowId, int priority, String flowName, int idleTimeOut,
             int hardTimeOut, Uint64 cookie, List<? extends MatchInfoBase> listMatchInfoBase,
-            List<Instruction> listInstructionInfo) {
+                                    Map<InstructionKey, Instruction>  listInstructionInfo) {
         return MDSALUtil.buildFlowNew(tableId, flowId, priority, flowName, idleTimeOut, hardTimeOut, cookie,
                 listMatchInfoBase, listInstructionInfo, true);
     }
 
     private static Flow buildFlowNew(short tableId, String flowId, int priority, String flowName, int idleTimeOut,
                                   int hardTimeOut, Uint64 cookie, List<? extends MatchInfoBase>  listMatchInfoBase,
-                                  List<Instruction> listInstructionInfo, boolean isStrict) {
+                                  Map<InstructionKey, Instruction> listInstructionInfo, boolean isStrict) {
         FlowKey key = new FlowKey(new FlowId(flowId));
         return new FlowBuilder().setMatch(buildMatches(listMatchInfoBase)).withKey(key)
                 .setPriority(priority)

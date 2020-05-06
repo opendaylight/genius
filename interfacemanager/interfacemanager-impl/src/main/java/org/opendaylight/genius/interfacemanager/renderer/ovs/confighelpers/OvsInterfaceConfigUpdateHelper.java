@@ -14,11 +14,11 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.Datastore.Operational;
@@ -37,6 +37,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge.ref.info.BridgeRefEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
@@ -201,10 +202,10 @@ public class OvsInterfaceConfigUpdateHelper {
 
         private final ManagedNewTransactionRunner txRunner;
         private final OperStatus operStatus;
-        private final List<InterfaceChildEntry> interfaceChildEntries;
+        private final Map<InterfaceChildEntryKey, InterfaceChildEntry> interfaceChildEntries;
 
         VlanMemberStateUpdateWorker(ManagedNewTransactionRunner txRunner, OperStatus operStatus,
-                List<InterfaceChildEntry> interfaceChildEntries) {
+                Map<InterfaceChildEntryKey, InterfaceChildEntry> interfaceChildEntries) {
             this.txRunner = txRunner;
             this.operStatus = operStatus;
             this.interfaceChildEntries = interfaceChildEntries;
@@ -213,7 +214,7 @@ public class OvsInterfaceConfigUpdateHelper {
         @Override
         public List<ListenableFuture<Void>> call() {
             return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, tx -> {
-                for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries) {
+                for (InterfaceChildEntry interfaceChildEntry : interfaceChildEntries.values()) {
                     InterfaceManagerCommonUtils.updateOperStatus(interfaceChildEntry.getChildInterface(), operStatus,
                             tx);
                 }

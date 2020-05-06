@@ -13,7 +13,6 @@ import com.google.common.util.concurrent.ListenableFuture;
 import edu.umd.cs.findbugs.annotations.CheckReturnValue;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -54,6 +53,8 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.tables.table.Flow;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.InstructionKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.AllocateIdOutput;
@@ -319,9 +320,9 @@ public final class DirectTunnelUtils {
         return bfdBuilder.build();
     }
 
-    public static boolean bfdMonitoringEnabled(List<InterfaceBfd> interfaceBfds) {
+    public static boolean bfdMonitoringEnabled(Map<InterfaceBfdKey, InterfaceBfd> interfaceBfds) {
         if (interfaceBfds != null && !interfaceBfds.isEmpty()) {
-            for (InterfaceBfd interfaceBfd : interfaceBfds) {
+            for (InterfaceBfd interfaceBfd : interfaceBfds.values()) {
                 if (BFD_ENABLE_KEY.equalsIgnoreCase(interfaceBfd.getBfdKey())) {
                     return BFD_ENABLE_VALUE.equalsIgnoreCase(interfaceBfd.getBfdValue());
                 }
@@ -419,7 +420,8 @@ public final class DirectTunnelUtils {
         String flowRef = getTunnelInterfaceFlowRef(dpnId, NwConstants.EGRESS_TUNNEL_TABLE, interfaceName);
         Flow egressFlow = MDSALUtil.buildFlowNew(NwConstants.EGRESS_TUNNEL_TABLE, flowRef, 5, flowRef, 0, 0,
             NwConstants.COOKIE_ITM_EGRESS_TUNNEL_TABLE, matches,
-            Collections.singletonList(MDSALUtil.buildApplyActionsInstruction(MDSALUtil.buildActions(actions))));
+                (Map<InstructionKey, Instruction>)(MDSALUtil.buildApplyActionsInstruction(MDSALUtil
+                        .buildActions(actions))));
         mdsalApiManager.addFlow(tx, dpnId, egressFlow);
     }
 

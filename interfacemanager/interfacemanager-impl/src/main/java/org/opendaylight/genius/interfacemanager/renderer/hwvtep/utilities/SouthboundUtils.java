@@ -7,8 +7,6 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.hwvtep.utilities;
 
-import static org.opendaylight.mdsal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -207,7 +205,7 @@ public final class SouthboundUtils {
             .ietf.interfaces.rev140508.interfaces.state.Interface> ifStateId = IfmUtil
             .buildStateInterfaceId(interfaceInfo.getName());
         ifaceBuilder.withKey(IfmUtil.getStateInterfaceKeyFromName(interfaceInfo.getName()));
-        transaction.put(ifStateId, ifaceBuilder.build(), CREATE_MISSING_PARENTS);
+        transaction.mergeParentStructurePut(ifStateId, ifaceBuilder.build());
         EVENT_LOGGER.info("IFM-TepInterfaceState,ADD {}", interfaceInfo.getName());
     }
 
