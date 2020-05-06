@@ -12,10 +12,12 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
@@ -37,6 +39,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.met
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.dpn.to._interface.list.DpnToInterface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.dpn.to._interface.list.DpnToInterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.dpn.to._interface.list.dpn.to._interface.InterfaceNameEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.dpn.to._interface.list.dpn.to._interface.InterfaceNameEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
@@ -270,14 +273,14 @@ public class InterfaceManagerServiceImpl implements InterfaceManagerService {
             LOG.warn("Could not find Operational DpnToInterface info for DPN {}. Returning empty list", dpnid);
             return buildEmptyInterfaceListResult();
         }
+        Map<InterfaceNameEntryKey, InterfaceNameEntry> interfaceNameEntries = entry.get().getInterfaceNameEntry();
 
-        List<InterfaceNameEntry> interfaceNameEntries = entry.get().getInterfaceNameEntry();
         if (interfaceNameEntries == null || interfaceNameEntries.isEmpty()) {
             LOG.debug("No Interface list found in Operational for DPN {}", dpnid);
             return buildEmptyInterfaceListResult();
         }
         List<Interfaces> interfaceList = new ArrayList<>();
-        interfaceNameEntries.forEach(
+        interfaceNameEntries.values().forEach(
             (interfaceNameEntry) -> {
                 InterfacesBuilder intf = new InterfacesBuilder()
                     .setInterfaceName(interfaceNameEntry.getInterfaceName())

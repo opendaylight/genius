@@ -13,7 +13,6 @@ import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.Int
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.MPLS_OVER_GRE;
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.VLAN_INTERFACE;
 import static org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceType.VXLAN_TRUNK_INTERFACE;
-import static org.opendaylight.mdsal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -557,7 +556,7 @@ public final class IfmUtil {
         LOG.info("Binding Service {} for : {}", serviceInfo.getServiceName(), interfaceName);
         InstanceIdentifier<BoundServices> boundServicesInstanceIdentifier = buildBoundServicesIId(
             serviceInfo.getServicePriority().toJava(), interfaceName, serviceMode);
-        tx.put(boundServicesInstanceIdentifier, serviceInfo, CREATE_MISSING_PARENTS);
+        tx.mergeParentStructurePut(boundServicesInstanceIdentifier, serviceInfo);
     }
 
     public static void unbindService(ManagedNewTransactionRunner txRunner, JobCoordinator coordinator,

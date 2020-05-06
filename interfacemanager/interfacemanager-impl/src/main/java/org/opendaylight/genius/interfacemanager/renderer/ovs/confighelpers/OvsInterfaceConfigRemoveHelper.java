@@ -13,11 +13,13 @@ import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.genius.infra.Datastore.Configuration;
 import org.opendaylight.genius.infra.Datastore.Operational;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -40,6 +42,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.met
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.BridgeEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.BridgeEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.bridge.entry.BridgeInterfaceEntry;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.bridge.entry.BridgeInterfaceEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
@@ -161,7 +164,7 @@ public final class OvsInterfaceConfigRemoveHelper {
             LOG.debug("Bridge Entry not present for dpn: {}", dpId);
             return;
         }
-        List<BridgeInterfaceEntry> bridgeInterfaceEntries = bridgeEntry.getBridgeInterfaceEntry();
+        @Nullable Map<BridgeInterfaceEntryKey, BridgeInterfaceEntry> bridgeInterfaceEntries = bridgeEntry.getBridgeInterfaceEntry();
         if (bridgeInterfaceEntries == null) {
             LOG.debug("Bridge Interface Entries not present for dpn : {}", dpId);
             return;
@@ -199,7 +202,7 @@ public final class OvsInterfaceConfigRemoveHelper {
         }
     }
 
-    private static boolean canDeleteTunnelPort(List<BridgeInterfaceEntry> bridgeInterfaceEntries, IfTunnel ifTunnel) {
+    private static boolean canDeleteTunnelPort(Map<BridgeInterfaceEntryKey, BridgeInterfaceEntry> bridgeInterfaceEntries, IfTunnel ifTunnel) {
         return !SouthboundUtils.isOfTunnel(ifTunnel) || bridgeInterfaceEntries == null
                 || bridgeInterfaceEntries.size() <= 1;
     }
@@ -259,7 +262,7 @@ public final class OvsInterfaceConfigRemoveHelper {
             futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, tx -> {
                 // FIXME: If the no. of child entries exceeds 100, perform txn
                 // updates in batches of 100.
-                for (InterfaceChildEntry interfaceChildEntry : interfaceParentEntry.nonnullInterfaceChildEntry()) {
+                for (InterfaceChildEntry interfaceChildEntry : interfaceParentEntry.nonnullInterfaceChildEntry().values()) {
                     LOG.debug("removing interface state for vlan trunk member {}",
                             interfaceChildEntry.getChildInterface());
                     interfaceManagerCommonUtils.deleteInterfaceStateInformation(interfaceChildEntry.getChildInterface(),
