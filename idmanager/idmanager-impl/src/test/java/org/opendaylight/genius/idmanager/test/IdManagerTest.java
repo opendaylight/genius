@@ -410,10 +410,10 @@ public class IdManagerTest {
     private IdPool getUpdatedActualParentPool() throws ReadFailedException {
         IdPool idPoolParentFromDS = singleTxdataBroker.syncRead(LogicalDatastoreType.CONFIGURATION,
                 InstanceIdentifier.builder(IdPools.class).child(IdPool.class, new IdPoolKey(ID_POOL_NAME)).build());
-        List<ChildPools> childPool = idPoolParentFromDS.nonnullChildPools();
+        List<ChildPools> childPool = (List<ChildPools>) idPoolParentFromDS.nonnullChildPools();
         List<ChildPools> updatedChildPool = childPool.stream()
                 .map(child -> new ChildPoolsBuilder(child).setLastAccessTime(0L).build()).collect(Collectors.toList());
-        List<IdEntries> idEntries = idPoolParentFromDS.getIdEntries();
+        List<IdEntries> idEntries = (List<IdEntries>) idPoolParentFromDS.getIdEntries();
         IdPoolBuilder idPoolBuilder = new IdPoolBuilder(idPoolParentFromDS);
         if (idEntries != null) {
             List<IdEntries> sortedIdEntries = idEntries.stream().sorted(comparing(IdEntries::getIdKey))

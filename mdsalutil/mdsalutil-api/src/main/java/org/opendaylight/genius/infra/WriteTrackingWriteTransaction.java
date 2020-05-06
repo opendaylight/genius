@@ -32,9 +32,8 @@ class WriteTrackingWriteTransaction extends ForwardingWriteTransaction implement
     }
 
     @Override
-    public <T extends DataObject> void put(LogicalDatastoreType store, InstanceIdentifier<T> path, T data,
-        boolean createMissingParents) {
-        super.put(store, path, data, createMissingParents);
+    public <T extends DataObject> void mergeParentStructurePut(LogicalDatastoreType store, InstanceIdentifier<T> path, T data) {
+        super.put(store, path, data);
         written = true;
     }
 
@@ -45,9 +44,8 @@ class WriteTrackingWriteTransaction extends ForwardingWriteTransaction implement
     }
 
     @Override
-    public <T extends DataObject> void merge(LogicalDatastoreType store, InstanceIdentifier<T> path, T data,
-        boolean createMissingParents) {
-        super.merge(store, path, data, createMissingParents);
+    public <T extends DataObject> void mergeParentStructureMerge(LogicalDatastoreType store, InstanceIdentifier<T> path, T data) {
+        super.merge(store, path, data);
         written = true;
     }
 
