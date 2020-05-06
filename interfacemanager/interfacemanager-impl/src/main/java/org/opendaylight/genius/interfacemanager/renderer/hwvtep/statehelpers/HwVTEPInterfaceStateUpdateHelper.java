@@ -9,12 +9,12 @@ package org.opendaylight.genius.interfacemanager.renderer.hwvtep.statehelpers;
 
 import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
-import static org.opendaylight.mdsal.binding.api.WriteTransaction.CREATE_MISSING_PARENTS;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
@@ -25,6 +25,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hw
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.hwvtep.physical._switch.attributes.TunnelsKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.hwvtep.tunnel.attributes.BfdParams;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.hwvtep.tunnel.attributes.BfdStatus;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.hwvtep.tunnel.attributes.BfdStatusKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,10 +51,10 @@ public final class HwVTEPInterfaceStateUpdateHelper {
         }));
     }
 
-    private static OperStatus getTunnelOpState(List<BfdStatus> tunnelBfdStatus) {
+    private static OperStatus getTunnelOpState(Map<BfdStatusKey, BfdStatus> tunnelBfdStatus) {
         OperStatus livenessState = OperStatus.Down;
         if (tunnelBfdStatus != null && !tunnelBfdStatus.isEmpty()) {
-            for (BfdStatus bfdState : tunnelBfdStatus) {
+            for (BfdStatus bfdState : tunnelBfdStatus.values()) {
                 if (SouthboundUtils.BFD_OP_STATE.equalsIgnoreCase(bfdState.getBfdStatusKey())) {
                     String bfdOpState = bfdState.getBfdStatusValue();
                     if (SouthboundUtils.BFD_STATE_UP.equalsIgnoreCase(bfdOpState)) {
@@ -80,6 +81,6 @@ public final class HwVTEPInterfaceStateUpdateHelper {
         SouthboundUtils.fillBfdParameters(bfdParams, null);
         tunnelsBuilder.setBfdParams(bfdParams);
         return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
-            tx -> tx.put(tunnelsInstanceIdentifier, tunnelsBuilder.build(), CREATE_MISSING_PARENTS)));
+            tx -> tx.mergeParentStructurePut(tunnelsInstanceIdentifier, tunnelsBuilder.build())));
     }
 }

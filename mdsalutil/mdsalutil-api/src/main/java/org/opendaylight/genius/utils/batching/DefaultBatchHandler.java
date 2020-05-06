@@ -47,7 +47,7 @@ public class DefaultBatchHandler implements ResourceHandler {
         subTransaction.setInstanceIdentifier(identifier);
         transactionObjects.add(subTransaction);
 
-        tx.merge(logicalDatastoreType, identifier, (DataObject) update, true);
+        tx.mergeParentStructureMerge(logicalDatastoreType, identifier, (DataObject) update);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class DefaultBatchHandler implements ResourceHandler {
         subTransaction.setInstanceIdentifier(identifier);
         transactionObjects.add(subTransaction);
 
-        tx.put(logicalDatastoreType, identifier, (DataObject) data, true);
+        tx.mergeParentStructurePut(logicalDatastoreType, identifier, (DataObject) data);
     }
 
     @Override

@@ -22,6 +22,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -183,7 +184,7 @@ public class TepCommandHelper {
                 ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tzonePath, dataBroker);
         if (transportZoneOptional.isPresent()) {
             TransportZone tz = transportZoneOptional.get();
-            for (Vteps vtep : tz.getVteps()) {
+            for (Vteps vtep : tz.getVteps().values()) {
                 if (Objects.equals(vtep.getDpnId(), dpnId)) {
                     return true;
                 }
@@ -233,13 +234,13 @@ public class TepCommandHelper {
                     LOG.debug("tzone object {}", transportZone);
                     transportZoneArrayList.add(transportZone);
                 }
-                TransportZones transportZones =
-                        new TransportZonesBuilder().setTransportZone(transportZoneArrayList).build();
+                TransportZones transportZones = new TransportZonesBuilder()
+                        .setTransportZone(transportZoneArrayList.stream().collect(Collectors.toList()) ).build();
                 InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
                 LOG.debug("InstanceIdentifier {}", path);
                 Futures.addCallback(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
-                    tx -> tx.merge(path, transportZones, true)), ItmUtils.DEFAULT_WRITE_CALLBACK,
-                    MoreExecutors.directExecutor());
+                        tx -> tx.mergeParentStructureMerge(path, transportZones)), ItmUtils.DEFAULT_WRITE_CALLBACK,
+                        MoreExecutors.directExecutor());
                 LOG.debug("wrote to Config DS {}", transportZones);
                 transportZonesHashMap.clear();
                 transportZoneArrayList.clear();
@@ -275,7 +276,7 @@ public class TepCommandHelper {
                 if (tz.getVteps() == null || tz.getVteps().isEmpty()) {
                     continue;
                 }
-                for (Vteps vtep : tz.getVteps()) {
+                for (Vteps vtep : tz.getVteps().values()) {
                     flag = true;
                     String strTunnelType ;
                     if (TunnelTypeGre.class.equals(tz.getTunnelType())) {
@@ -386,8 +387,8 @@ public class TepCommandHelper {
                     allPaths.addAll(vtepPaths);
                     allPaths.addAll(subnetPaths);
                     Futures.addCallback(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
-                        tx -> allPaths.forEach(tx::delete)), ItmUtils.DEFAULT_WRITE_CALLBACK,
-                        MoreExecutors.directExecutor());
+                            tx -> allPaths.forEach(tx::delete)), ItmUtils.DEFAULT_WRITE_CALLBACK,
+                            MoreExecutors.directExecutor());
                 }
                 vtepPaths.clear();
                 subnetPaths.clear();
@@ -554,8 +555,8 @@ public class TepCommandHelper {
             TunnelMonitorParams tunnelMonitor = new TunnelMonitorParamsBuilder().setEnabled(monitorEnabled)
                     .setMonitorProtocol(monitorType).build();
             Futures.addCallback(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
-                tx -> tx.merge(path, tunnelMonitor)), ItmUtils.DEFAULT_WRITE_CALLBACK,
-                MoreExecutors.directExecutor());
+                    tx -> tx.merge(path, tunnelMonitor)), ItmUtils.DEFAULT_WRITE_CALLBACK,
+                    MoreExecutors.directExecutor());
         }
     }
 
@@ -567,8 +568,8 @@ public class TepCommandHelper {
         if (!storedTunnelMonitor.isPresent() || storedTunnelMonitor.get().getInterval().toJava() != interval) {
             TunnelMonitorInterval tunnelMonitor = new TunnelMonitorIntervalBuilder().setInterval(interval).build();
             Futures.addCallback(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
-                tx -> tx.merge(path, tunnelMonitor, true)), ItmUtils.DEFAULT_WRITE_CALLBACK,
-                MoreExecutors.directExecutor());
+                    tx -> tx.mergeParentStructureMerge(path, tunnelMonitor)), ItmUtils.DEFAULT_WRITE_CALLBACK,
+                    MoreExecutors.directExecutor());
         }
     }
 

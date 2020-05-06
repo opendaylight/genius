@@ -44,7 +44,7 @@ public class ActionSetFieldEthernetDestinationTest {
     public void generateAction() {
         ActionInfo actionInfo = new ActionSetFieldEthernetDestination(new MacAddress(MAC_ADDRESS));
         actionInfo.buildAction();
-        assertEquals("new ActionSetFieldEthernetDestination(0, new MacAddress(\"" + MAC_ADDRESS + "\"))",
-                generator.getExpression(actionInfo));
+        assertEquals(( "MacAddress{_value=" + MAC_ADDRESS + "}"),
+                ((ActionSetFieldEthernetDestination) actionInfo).getDestination().toString());
     }
 }

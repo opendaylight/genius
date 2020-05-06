@@ -11,10 +11,12 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.genius.cloudscaler.api.TombstonedNodeManager;
 import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
@@ -49,7 +51,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembership;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.DpnsTeps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpns;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpnsKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnelKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
@@ -153,7 +157,7 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
         } else {
             tepsToRecover.add(dpnTepsToRecover);
             //List of Internel tunnels
-            List<InternalTunnel> tunnelList = ItmUtils.getInternalTunnelsFromCache(dataBroker);
+            Map<InternalTunnelKey, InternalTunnel> tunnelList = ItmUtils.getInternalTunnelsFromCache(dataBroker);
             List<String> interfaceListToRecover = new ArrayList<>();
             LOG.debug("List of tunnel interfaces: {}" , tunnelList);
 
@@ -167,8 +171,8 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
                 if (interfaceManager.isItmDirectTunnelsEnabled()) {
                     Collection<DpnsTeps> dpnsTeps = dpnTepStateCache.getAllPresent();
                     for (DpnsTeps dpnTep : dpnsTeps) {
-                        List<RemoteDpns> rmtdpns = dpnTep.getRemoteDpns();
-                        for (RemoteDpns remoteDpn : rmtdpns) {
+                        @Nullable Map<RemoteDpnsKey, RemoteDpns> rmtdpns = dpnTep.getRemoteDpns();
+                        for (RemoteDpns remoteDpn : rmtdpns.values()) {
                             if (remoteDpn.getDestinationDpnId().equals(dpnTepsToRecover.getDPNID())
                                     || dpnTep.getSourceDpnId().equals(dpnTepsToRecover.getDPNID())) {
                                 eventRegistrationCount.incrementAndGet();
@@ -178,7 +182,7 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
                     }
                     LOG.trace("List of tunnels to be recovered : {}", interfaceListToRecover);
                 } else {
-                    tunnelList.stream().filter(internalTunnel -> Objects.equals(internalTunnel
+                    tunnelList.values().stream().filter(internalTunnel -> Objects.equals(internalTunnel
                             .getDestinationDPN(), dpnTepsToRecover.getDPNID()) || Objects.equals(
                             internalTunnel.getSourceDPN(), dpnTepsToRecover.getDPNID())).forEach(internalTunnel -> {
                                 eventRegistrationCount.incrementAndGet();
@@ -228,7 +232,7 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
         String portName = itmConfig.getPortname() == null ? ITMConstants.DUMMY_PORT : itmConfig.getPortname();
         int vlanId = itmConfig.getVlanId() != null ? itmConfig.getVlanId().toJava() : ITMConstants.DUMMY_VLANID;
 
-        for (Vteps vtep : transportZone.getVteps()) {
+        for (Vteps vtep : transportZone.getVteps().values()) {
             if (ipAddress.equals(vtep.getIpAddress().stringValue())) {
 
                 List<TzMembership> zones = ItmUtils.createTransportZoneMembership(tzName);

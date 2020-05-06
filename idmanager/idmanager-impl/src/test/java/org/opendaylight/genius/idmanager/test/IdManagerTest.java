@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
@@ -30,6 +31,8 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import junit.framework.AssertionFailedError;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Before;
 import org.junit.ComparisonFailure;
 import org.junit.Rule;
@@ -69,7 +72,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.AvailableIdsHolderBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.ChildPools;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.ChildPoolsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.ChildPoolsKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.IdEntries;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.IdEntriesKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.ReleasedIdsHolder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.ReleasedIdsHolderBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.released.ids.DelayedIdEntries;
@@ -170,8 +175,9 @@ public class IdManagerTest {
         String localPoolName = idUtils.getLocalPoolName(ID_POOL_NAME);
         IdPool parentIdPool = new IdPoolBuilder().setPoolName(ID_POOL_NAME).withKey(new IdPoolKey(ID_POOL_NAME))
                 .setAvailableIdsHolder(createAvailableIdHolder(ID_LOW, ID_HIGH, ID_HIGH + 1))
-                .setReleasedIdsHolder(createReleaseIdHolder(Arrays.asList(1L, 2L, 3L))).build();
+                .setReleasedIdsHolder(createReleaseIdHolder(Collections.emptyList())).build();
         IdPool childPool = new IdPoolBuilder().setPoolName(localPoolName).withKey(new IdPoolKey(localPoolName))
+                .setReleasedIdsHolder(createReleaseIdHolder(Arrays.asList(1L, 2L, 3L)))
                 .setAvailableIdsHolder(createAvailableIdHolder(0L, 9L, 10L)).build();
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.merge(LogicalDatastoreType.CONFIGURATION, getIdPoolIdentifier(ID_POOL_NAME), parentIdPool);
@@ -299,7 +305,6 @@ public class IdManagerTest {
         tx.commit().get();
         requestIdsConcurrently(true);
         coordinatorEventsWaiter.awaitEventsConsumption();
-
         validateIdPools(ExpectedAllocateIdFromReleasedId.idPoolParent(),
                 ExpectedAllocateIdFromReleasedId.idPoolChild());
     }
@@ -410,13 +415,17 @@ public class IdManagerTest {
     private IdPool getUpdatedActualParentPool() throws ReadFailedException {
         IdPool idPoolParentFromDS = singleTxdataBroker.syncRead(LogicalDatastoreType.CONFIGURATION,
                 InstanceIdentifier.builder(IdPools.class).child(IdPool.class, new IdPoolKey(ID_POOL_NAME)).build());
-        List<ChildPools> childPool = idPoolParentFromDS.nonnullChildPools();
-        List<ChildPools> updatedChildPool = childPool.stream()
+        @NonNull Map<ChildPoolsKey, ChildPools> childPool = idPoolParentFromDS.nonnullChildPools();
+        //List<ChildPools> updatedChildPool = childPool.values().stream().map(child -> new ChildPoolsBuilder(child).setLastAccessTime(0L).build()).collect(Collectors.toList());
+
+        List<ChildPools> childPoolList = childPool.values().stream().collect(Collectors.toList());
+        List<ChildPools> updatedChildPool = childPoolList.stream()
                 .map(child -> new ChildPoolsBuilder(child).setLastAccessTime(0L).build()).collect(Collectors.toList());
-        List<IdEntries> idEntries = idPoolParentFromDS.getIdEntries();
+
+        @Nullable Map<IdEntriesKey, IdEntries> idEntries =  idPoolParentFromDS.getIdEntries();
         IdPoolBuilder idPoolBuilder = new IdPoolBuilder(idPoolParentFromDS);
         if (idEntries != null) {
-            List<IdEntries> sortedIdEntries = idEntries.stream().sorted(comparing(IdEntries::getIdKey))
+            List<IdEntries> sortedIdEntries = idEntries.values().stream().sorted(comparing(IdEntries::getIdKey))
                     .collect(Collectors.toList());
             idPoolBuilder.setIdEntries(sortedIdEntries);
         }
