@@ -379,7 +379,7 @@ public class ItmTunnelEventListener extends AbstractSyncDataTreeChangeListener<S
                     add.getTunnelInterfaceName());
             return Collections.singletonList(txRunner
                 .callWithNewWriteOnlyTransactionAndSubmit(Datastore.OPERATIONAL,
-                    tx -> tx.mergeParentStructureMerge(identifier,
+                    tx -> tx.merge(identifier,
                         new StateTunnelListBuilder(add).setOperState(operStatus).build())));
         }
     }
