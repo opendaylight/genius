@@ -42,10 +42,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <groupId>org.opendaylight.openflowplugin.libraries</groupId>
       <artifactId>liblldp</artifactId>
     </dependency>
-    <!--<dependency>
-      <groupId>org.opendaylight.controller</groupId>
-      <artifactId>sal-binding-api</artifactId>
-    </dependency>!-->
     <dependency>
       <groupId>org.opendaylight.mdsal</groupId>
       <artifactId>mdsal-eos-binding-api</artifactId>
@@ -167,17 +163,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <groupId>com.google.guava</groupId>
       <artifactId>guava-testlib</artifactId>
     </dependency>
-    <!--<dependency>
-       <groupId>org.opendaylight.controller</groupId>
-       <artifactId>sal-binding-broker-impl</artifactId>
-       <scope>test</scope>
-     </dependency>
-     <dependency>
-       <groupId>org.opendaylight.controller</groupId>
-       <artifactId>sal-binding-broker-impl</artifactId>
-       <scope>test</scope>
-       <type>test-jar</type>
-     </dependency>!-->
     <dependency>
       <groupId>org.opendaylight.mdsal</groupId>
       <artifactId>mdsal-binding-test-utils</artifactId>
