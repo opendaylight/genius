@@ -5,19 +5,18 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.genius.mdsalutil.tests;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.opendaylight.genius.mdsalutil.NWUtil.getEtherTypeFromIpPrefix;
 import static org.opendaylight.genius.mdsalutil.NWUtil.isIpAddressInRange;
 
 import org.junit.Test;
 import org.opendaylight.genius.mdsalutil.NwConstants;
-import org.opendaylight.infrautils.testutils.Asserts;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
@@ -117,17 +116,17 @@ public class NWUtilTest {
     }
 
     private static void assertThrowsBadAddress(final String address) {
-        final IllegalArgumentException thrown = Asserts.assertThrows(IllegalArgumentException.class, () -> {
+        final IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () -> {
             getEtherTypeFromIpPrefix(address);
         });
         assertThat(thrown.getMessage()).contains(address.replaceAll("/.*", ""));
     }
 
-    private static IpAddress buildIpAddress(String ipAddress) {
+    private static IpAddress buildIpAddress(final String ipAddress) {
         return IpAddressBuilder.getDefaultInstance(ipAddress);
     }
 
-    private static IpPrefix buildIpPrefix(String cidr) {
+    private static IpPrefix buildIpPrefix(final String cidr) {
         return IpPrefixBuilder.getDefaultInstance(cidr);
     }
 }
