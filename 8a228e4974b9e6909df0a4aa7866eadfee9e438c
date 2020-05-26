@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4b923345_87c09958",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/monitoring/ItmTunnelEventListener.java",
+        "patchSetId": 27
+      },
+      "lineNbr": 382,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-05-26T17:26:16Z",
+      "side": 1,
+      "message": "this should be just \u0027merge\u0027 based on translation rules",
+      "range": {
+        "startLine": 382,
+        "startChar": 29,
+        "endLine": 382,
+        "endChar": 54
+      },
+      "revId": "8a228e4974b9e6909df0a4aa7866eadfee9e438c",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
