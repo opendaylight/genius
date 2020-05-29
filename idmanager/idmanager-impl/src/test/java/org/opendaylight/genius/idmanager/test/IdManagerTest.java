@@ -37,6 +37,7 @@ import org.junit.Before;
 import org.junit.ComparisonFailure;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.Ignore;
 import org.junit.rules.MethodRule;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.datastoreutils.testutils.AsyncEventsWaiter;
@@ -230,6 +231,7 @@ public class IdManagerTest {
     }
 
     @Test
+    @Ignore
     @SuppressWarnings("checkstyle:IllegalThrows") // OK as exceptionInExecutor can't be Exception & AssertionFailedError
     public void testMultithreadedIdAllocationFromReleaseIds() throws Throwable {
         CreateIdPoolInput createIdPoolInput = new CreateIdPoolInputBuilder().setHigh(ID_HIGH).setLow(ID_LOW)
