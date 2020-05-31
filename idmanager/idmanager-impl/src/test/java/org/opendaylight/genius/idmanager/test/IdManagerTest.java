@@ -35,7 +35,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.junit.Before;
 import org.junit.ComparisonFailure;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.MethodRule;
@@ -231,7 +230,6 @@ public class IdManagerTest {
     }
 
     @Test
-    @Ignore
     @SuppressWarnings("checkstyle:IllegalThrows") // OK as exceptionInExecutor can't be Exception & AssertionFailedError
     public void testMultithreadedIdAllocationFromReleaseIds() throws Throwable {
         CreateIdPoolInput createIdPoolInput = new CreateIdPoolInputBuilder().setHigh(ID_HIGH).setLow(ID_LOW)
