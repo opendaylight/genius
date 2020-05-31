@@ -9,9 +9,6 @@ package org.opendaylight.genius.itm.tests;
 
 import static org.mockito.Mockito.mock;
 
-import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
-import java.util.concurrent.Executors;
 import org.opendaylight.daexim.DataImportBootReady;
 import org.opendaylight.genius.cloudscaler.api.TombstonedNodeManager;
 import org.opendaylight.genius.cloudscaler.rpcservice.TombstonedNodeManagerImpl;
@@ -42,8 +39,8 @@ import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.diagstatus.DiagStatusService;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
 import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractBaseDataBrokerTest;
-import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataBrokerTestCustomizer;
+import org.opendaylight.mdsal.binding.dom.adapter.ConstantAdapterContext;
+import org.opendaylight.mdsal.binding.testutils.DataBrokerTestModule;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.binding.dom.adapter.BindingDOMEntityOwnershipServiceAdapter;
 import org.opendaylight.mdsal.eos.dom.simple.SimpleDOMEntityOwnershipService;
@@ -66,23 +63,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev16041
 public class ItmTestModule extends AbstractGuiceJsr250Module {
 
     @Override
-    protected void configureBindings() throws Exception {
+    protected void configureBindings() {
         // Bindings for services from this project
-        /*AbstractBaseDataBrokerTest test = new AbstractBaseDataBrokerTest() {
-            @Override
-            protected AbstractDataBrokerTestCustomizer createDataBrokerTestCustomizer() {
-                return new AbstractDataBrokerTestCustomizer() {
-                    @Override
-                    public ListeningExecutorService getCommitCoordinatorExecutor() {
-                        return MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
-                    }
-                };
-            }
-        };
-        test.setup();
-        DataBroker dataBroker = test.getDataBroker();
-        bind(DataBroker.class).toInstance(dataBroker);*/
-
         bind(ItmRpcService.class).to(ItmManagerRpcService.class);
         bind(ItmProvider.class);
         ItmConfig itmConfigObj = new ItmConfigBuilder()
@@ -107,34 +89,8 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
         bind(IdManagerService.class).to(IdManager.class);
         bind(LockManagerService.class).to(LockManagerServiceImpl.class);
         bind(JobCoordinatorEventsWaiter.class).to(TestableJobCoordinatorEventsWaiter.class);
-
-        AbstractBaseDataBrokerTest test = new AbstractBaseDataBrokerTest() {
-            @Override
-            protected AbstractDataBrokerTestCustomizer createDataBrokerTestCustomizer() {
-                return new AbstractDataBrokerTestCustomizer() {
-                    @Override
-                    public ListeningExecutorService getCommitCoordinatorExecutor() {
-                        return MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
-                    }
-                };
-            }
-        };
-        test.setup();
-        DataBroker dataBroker = test.getDataBroker();
-
-        /*AbstractBaseDataBrokerTest test = new AbstractBaseDataBrokerTest() {
-            protected AbstractDataBrokerTestCustomizer createDataBrokerTestCustomizer() {
-             return new ConcurrentDataBrokerTestCustomizer(false);
-            }
-        };
-        test.setup();
-        DataBroker dataBroker = test.getDataBroker();*/
-
-        /*DataBrokerTestModule dataBrokerTestModule = new DataBrokerTestModule(false);
-        DataBroker dataBroker = dataBrokerTestModule.getDataBroker();*/
-
-        /*DataBrokerTestWiring dataBrokerTestWiring = new DataBrokerTestWiring();
-        DataBroker dataBroker = DataBrokerTestWiring.dataBroker();*/
+        DataBrokerTestModule dataBrokerTestModule = new DataBrokerTestModule(false);
+        DataBroker dataBroker = dataBrokerTestModule.getDataBroker();
 
         bind(DataBroker.class).toInstance(dataBroker);
         DataTreeEventCallbackRegistrar dataTreeEventCallbackRegistrar =
@@ -146,7 +102,8 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
         bind(ServiceRecoveryRegistry.class).toInstance(mock(ServiceRecoveryRegistry.class));
         bind(ItmDiagStatusProvider.class).toInstance(mock(ItmDiagStatusProvider.class));
         EntityOwnershipService entityOwnershipService = new BindingDOMEntityOwnershipServiceAdapter(
-                new SimpleDOMEntityOwnershipService(), test.getDataBrokerTestCustomizer().getAdapterContext());
+                new SimpleDOMEntityOwnershipService(),
+                new ConstantAdapterContext(dataBrokerTestModule.getBindingToNormalizedNodeCodec()));
         bind(EntityOwnershipService.class).toInstance(entityOwnershipService);
         bind(EntityOwnershipUtils.class);
         bind(TombstonedNodeManager.class).to(TombstonedNodeManagerImpl.class);

@@ -17,11 +17,8 @@ import static org.opendaylight.controller.md.sal.test.model.util.ListsBindingUti
 import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
 import static org.opendaylight.infrautils.testutils.Asserts.assertThrows;
 
-import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -34,8 +31,7 @@ import org.opendaylight.infrautils.testutils.LogCaptureRule;
 import org.opendaylight.infrautils.testutils.LogRule;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
-import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractBaseDataBrokerTest;
-import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractDataBrokerTestCustomizer;
+import org.opendaylight.mdsal.binding.testutils.DataBrokerTestModule;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
@@ -67,20 +63,8 @@ public class ManagedNewTransactionRunnerImplTest {
     }
 
     @Before
-    public void beforeTest() throws Exception {
-        AbstractBaseDataBrokerTest test = new AbstractBaseDataBrokerTest() {
-            @Override
-            protected AbstractDataBrokerTestCustomizer createDataBrokerTestCustomizer() {
-                return new AbstractDataBrokerTestCustomizer() {
-                    @Override
-                    public ListeningExecutorService getCommitCoordinatorExecutor() {
-                        return MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
-                    }
-                };
-            }
-        };
-        test.setup();
-        testableDataBroker = new DataBrokerFailuresImpl(test.getDataBroker());
+    public void beforeTest() {
+        testableDataBroker = new DataBrokerFailuresImpl(new DataBrokerTestModule(true).getDataBroker());
         managedNewTransactionRunner = createManagedNewTransactionRunnerToTest(testableDataBroker);
         singleTransactionDataBroker = new SingleTransactionDataBroker(testableDataBroker);
     }

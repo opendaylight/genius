@@ -18,7 +18,7 @@ import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.interfaces.testutils.TestIMdsalApiManager;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
 import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractConcurrentDataBrokerTest;
+import org.opendaylight.mdsal.binding.testutils.DataBrokerTestModule;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
 
@@ -26,7 +26,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev16041
 public class IdManagerTestModule extends AbstractGuiceJsr250Module {
 
     @Override
-    protected void configureBindings() throws Exception {
+    protected void configureBindings() {
         bind(DataImportBootReady.class).toInstance(new DataImportBootReady() {});
         bind(IdManagerService.class).to(IdManager.class);
         bind(LockManagerService.class).to(LockManagerServiceImpl.class);
@@ -36,24 +36,7 @@ public class IdManagerTestModule extends AbstractGuiceJsr250Module {
         bind(LockListener.class);
         bind(IdPoolListener.class);
         bind(JobCoordinatorEventsWaiter.class).to(TestableJobCoordinatorEventsWaiter.class);
-
-        /*AbstractBaseDataBrokerTest test = new AbstractBaseDataBrokerTest() {
-            @Override
-            protected AbstractDataBrokerTestCustomizer createDataBrokerTestCustomizer() {
-                return new AbstractDataBrokerTestCustomizer() {
-                    @Override
-                    public ListeningExecutorService getCommitCoordinatorExecutor() {
-                        return MoreExecutors.listeningDecorator(Executors.newCachedThreadPool());
-                    }
-                };
-            }
-        };
-        test.setup();
-        DataBroker dataBroker = test.getDataBroker();*/
-        /***************/
-        AbstractConcurrentDataBrokerTest dataBrokerTest = new AbstractConcurrentDataBrokerTest(false) {};
-        dataBrokerTest.setup();
-        DataBroker dataBroker = dataBrokerTest.getDataBroker();
+        DataBroker dataBroker = DataBrokerTestModule.dataBroker();
         bind(DataBroker.class).toInstance(dataBroker);
     }
 }
