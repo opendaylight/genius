@@ -1027,8 +1027,7 @@ public class ItmManagerRpcService implements ItmRpcService {
 
         Map<DcGatewayIpKey, DcGatewayIp> dcGatewayIpList = new HashMap<>();
         txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION,
-            tx -> dcGatewayIpList.values().addAll(getDcGatewayIpList(tx).values())).isDone();
-
+            tx -> dcGatewayIpList.putAll(getDcGatewayIpList(tx))).isDone();
         String dcgwIpStr = input.getDcgwIp();
         IpAddress dcgwIpAddr = IpAddressBuilder.getDefaultInstance(dcgwIpStr);
         long retVal;
@@ -1199,7 +1198,7 @@ public class ItmManagerRpcService implements ItmRpcService {
     public static Map<DcGatewayIpKey, DcGatewayIp>
         getDcGatewayIpList(TypedReadWriteTransaction<Datastore.Configuration> tx)
             throws ExecutionException, InterruptedException {
-        Map<DcGatewayIpKey, DcGatewayIp> dcGatewayIpList = new HashMap<>();
+        Map<DcGatewayIpKey, DcGatewayIp> dcGatewayIpMap = new HashMap<>();
         FluentFuture<Optional<DcGatewayIpList>> future =
                 tx.read(InstanceIdentifier.builder(DcGatewayIpList.class).build());
         future.addCallback(new FutureCallback<Optional<DcGatewayIpList>>() {
@@ -1211,7 +1210,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                     if (opt.isPresent()) {
                         DcGatewayIpList list = opt.get();
                         if (list != null) {
-                            dcGatewayIpList.values().addAll(list.getDcGatewayIp().values());
+                            dcGatewayIpMap.putAll(list.getDcGatewayIp());
                         }
                     }
                 } catch (ExecutionException | InterruptedException e) {
@@ -1224,6 +1223,6 @@ public class ItmManagerRpcService implements ItmRpcService {
                 LOG.error("DcGateway IpList read failed", error);
             }
         }, MoreExecutors.directExecutor());
-        return dcGatewayIpList;
+        return dcGatewayIpMap;
     }
 }

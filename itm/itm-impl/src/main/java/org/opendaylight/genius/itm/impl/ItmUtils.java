@@ -572,16 +572,18 @@ public final class ItmUtils {
     public static Map<InternalTunnelKey, InternalTunnel> getInternalTunnelsFromCache(DataBroker dataBroker) {
         Collection<InternalTunnel> internalInterfaces = ITM_CACHE.getAllInternalTunnel();
         LOG.trace("getInternalTunnelsFromCache - List of InternalTunnels in the Cache: {} ", internalInterfaces);
-        Map<InternalTunnelKey, InternalTunnel> tunnelList = new HashMap<>();
+        Map<InternalTunnelKey, InternalTunnel> tunnelMap = new HashMap<>();
         if (internalInterfaces.isEmpty()) {
             LOG.trace("ItmUtils.getInternalTunnelsFromCache invoking getAllInternalTunnlInterfacesFromDS");
-            tunnelList = getAllInternalTunnels(dataBroker);
+            tunnelMap = getAllInternalTunnels(dataBroker);
         } else {
             LOG.debug("No. of Internal Tunnel Interfaces in cache: {} ", internalInterfaces.size());
-            tunnelList.values().addAll(internalInterfaces);
+            for (InternalTunnel internalTunnel : internalInterfaces) {
+                tunnelMap.put(internalTunnel.key(), internalTunnel);
+            }
         }
-        LOG.trace("List of Internal Tunnels: {}", tunnelList);
-        return tunnelList;
+        LOG.trace("List of Internal Tunnels: {}", tunnelMap);
+        return tunnelMap;
     }
 
     @SuppressFBWarnings("RV_CHECK_FOR_POSITIVE_INDEXOF")
