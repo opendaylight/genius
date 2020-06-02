@@ -349,8 +349,8 @@ public class HwVtepTunnelsStateHandler extends AbstractSyncDataTreeChangeListene
     }
 
     private void setBfdParamForEnable(Map<BfdParamsKey, BfdParams> bfdParams, boolean isEnabled) {
-        bfdParams.put(getBfdParams(AlivenessMonitorConstants.BFD_PARAM_ENABLE, Boolean.toString(isEnabled)).key(),
-                getBfdParams(AlivenessMonitorConstants.BFD_PARAM_ENABLE, Boolean.toString(isEnabled)));
+        BfdParams getBfdParam = getBfdParams(AlivenessMonitorConstants.BFD_PARAM_ENABLE, Boolean.toString(isEnabled));
+        bfdParams.put(getBfdParam.key(), getBfdParam);
     }
 
     private BfdParams getBfdParams(String key, String value) {

@@ -207,9 +207,9 @@ public final class FlowBasedServicesUtils {
             // incrementing instructionSize and using it as actionKey. Because
             // it won't clash with any other instructions
             int actionKey = ++serviceInstructionsSize;
-            instructionSet.put(MDSALUtil.buildAndGetPopVlanActionInstruction(actionKey,
-                    ++serviceInstructionsSize).key(), MDSALUtil.buildAndGetPopVlanActionInstruction(actionKey,
-                    ++serviceInstructionsSize));
+            Instruction getPopVlanActionInstruction = MDSALUtil.buildAndGetPopVlanActionInstruction(actionKey,
+                    ++serviceInstructionsSize);
+            instructionSet.put(getPopVlanActionInstruction.key(), getPopVlanActionInstruction);
         }
 
         if (lportTag != 0L) {
@@ -220,10 +220,9 @@ public final class FlowBasedServicesUtils {
             Uint64 metadataMask = MetaDataUtil.getMetaDataMaskForLPortDispatcher(
                     MetaDataUtil.METADATA_MASK_SERVICE_INDEX, MetaDataUtil.METADATA_MASK_LPORT_TAG_SH_FLAG,
                     metadataValues[1]);
-            instructionSet.put(
-                    MDSALUtil.buildAndGetWriteMetadaInstruction(metadata, metadataMask,
-                            ++serviceInstructionsSize).key(),
-                    MDSALUtil.buildAndGetWriteMetadaInstruction(metadata, metadataMask, ++serviceInstructionsSize));
+            Instruction writeMetadaInstruction = MDSALUtil.buildAndGetWriteMetadaInstruction(metadata, metadataMask,
+                    ++serviceInstructionsSize);
+            instructionSet.put(writeMetadaInstruction.key(), writeMetadaInstruction);
         }
 
         if (instructions != null && !instructions.isEmpty()) {
@@ -284,9 +283,10 @@ public final class FlowBasedServicesUtils {
         Uint64 metadataMask = MetaDataUtil.getWriteMetaDataMaskForDispatcherTable();
 
         // build the final instruction for LPort Dispatcher table flow entry
-        Map<InstructionKey, Instruction> instructions = new HashMap<>();
-        instructions.put(MDSALUtil.buildAndGetWriteMetadaInstruction(metadata, metadataMask, ++instructionSize).key(),
-                MDSALUtil.buildAndGetWriteMetadaInstruction(metadata, metadataMask, ++instructionSize));
+        Map<InstructionKey, Instruction> instructionsMap = new HashMap<>();
+        Instruction instruction = MDSALUtil.buildAndGetWriteMetadaInstruction(metadata, metadataMask,
+                ++instructionSize);
+        instructionsMap.put(instruction.key(),instruction);
         if (serviceInstructions != null && !serviceInstructions.isEmpty()) {
             for (Instruction info : serviceInstructions.values()) {
                 // Skip meta data write as that is handled already
@@ -300,7 +300,7 @@ public final class FlowBasedServicesUtils {
                             ((ApplyActionsCase) info.getInstruction()).getApplyActions().getAction()));
                 }
                 //instructions.values().add(info);
-                instructions.put(info.key(),info);
+                instructionsMap.put(info.key(),info);
             }
         }
 
@@ -308,7 +308,8 @@ public final class FlowBasedServicesUtils {
         String flowRef = getFlowRef(dpId, NwConstants.LPORT_DISPATCHER_TABLE, interfaceName,
                 currentServiceIndex);
         Flow ingressFlow = MDSALUtil.buildFlowNew(NwConstants.LPORT_DISPATCHER_TABLE, flowRef,
-                DEFAULT_DISPATCHER_PRIORITY, serviceRef, 0, 0, stypeOpenFlow.getFlowCookie(), matches, instructions);
+                DEFAULT_DISPATCHER_PRIORITY, serviceRef, 0, 0, stypeOpenFlow.getFlowCookie(),
+                matches, instructionsMap);
         LOG.debug("Installing LPort Dispatcher Flow on DPN {}, for interface {}, with flowRef {}", dpId,
             interfaceName, flowRef);
         installFlow(dpId, ingressFlow, tx);
@@ -348,14 +349,14 @@ public final class FlowBasedServicesUtils {
 
         // build the final instruction for LPort Dispatcher table flow entry
         List<Action> finalApplyActions = new ArrayList<>();
-        Map<InstructionKey, Instruction> instructions = new HashMap<>();
+        Map<InstructionKey, Instruction> instructionMap = new HashMap<>();
         if (boundService.getServicePriority().toJava() != ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME,
                 NwConstants.DEFAULT_EGRESS_SERVICE_INDEX)) {
             Uint64[] metadataValues = IfmUtil.mergeOpenflowMetadataWriteInstructions(serviceInstructions);
             Uint64 metadataMask = MetaDataUtil.getWriteMetaDataMaskForEgressDispatcherTable();
-            instructions.put(MDSALUtil.buildAndGetWriteMetadaInstruction(metadataValues[0], metadataMask,
-                    instructions.size()).key(),MDSALUtil.buildAndGetWriteMetadaInstruction(metadataValues[0],
-                    metadataMask, instructions.size()));
+            Instruction instruction = MDSALUtil.buildAndGetWriteMetadaInstruction(metadataValues[0], metadataMask,
+                    instructionMap.size());
+            instructionMap.put(instruction.key(), instruction);
             finalApplyActions.add(MDSALUtil.createSetReg6Action(finalApplyActions.size(), 0, 31,
                     MetaDataUtil.getReg6ValueForLPortDispatcher(interfaceTag, nextServiceIndex)));
         }
@@ -365,8 +366,9 @@ public final class FlowBasedServicesUtils {
             if (info.getInstruction() instanceof WriteActionsCase) {
                 List<Action> writeActions = ActionConverterUtil.convertServiceActionToFlowAction(
                         ((WriteActionsCase) info.getInstruction()).getWriteActions().getAction());
-                instructions.put(MDSALUtil.buildWriteActionsInstruction(writeActions, instructions.size()).key(),
-                        MDSALUtil.buildWriteActionsInstruction(writeActions, instructions.size()));
+                Instruction writeActionsInstruction = MDSALUtil.buildWriteActionsInstruction(writeActions,
+                        instructionMap.size());
+                instructionMap.put(writeActionsInstruction.key(), writeActionsInstruction);
             } else if (info.getInstruction() instanceof ApplyActionsCase) {
                 List<Action> applyActions = ActionConverterUtil.convertServiceActionToFlowAction(
                         ((ApplyActionsCase) info.getInstruction()).getApplyActions().getAction(),
@@ -374,13 +376,14 @@ public final class FlowBasedServicesUtils {
                 finalApplyActions.addAll(applyActions);
             } else if (!(info.getInstruction() instanceof WriteMetadataCase)) {
                 // Skip meta data write as that is handled already
-                instructions.put(MDSALUtil.buildInstruction(info, instructions.size()).key(),
-                        MDSALUtil.buildInstruction(info, instructions.size()));
+                Instruction buildInstruction = MDSALUtil.buildInstruction(info, instructionMap.size());
+                instructionMap.put(buildInstruction.key(), buildInstruction);
             }
         }
         if (!finalApplyActions.isEmpty()) {
-            instructions.put(MDSALUtil.buildApplyActionsInstruction(finalApplyActions, instructions.size()).key(),
-                    MDSALUtil.buildApplyActionsInstruction(finalApplyActions, instructions.size()));
+            Instruction buildApplyActionsInstruction = MDSALUtil.buildApplyActionsInstruction(finalApplyActions,
+                    instructionMap.size());
+            instructionMap.put(buildApplyActionsInstruction.key(), buildApplyActionsInstruction);
         }
 
         // build the flow and install it
@@ -391,7 +394,7 @@ public final class FlowBasedServicesUtils {
                 currentServiceIndex);
         Flow egressFlow = MDSALUtil.buildFlowNew(NwConstants.EGRESS_LPORT_DISPATCHER_TABLE, flowRef,
                 boundService.getServicePriority().toJava(), serviceRef, 0, 0, stypeOpenflow.getFlowCookie(),
-                matches, instructions);
+                matches, instructionMap);
         LOG.debug("Installing Egress Dispatcher Flow for interface : {}, with flow-ref : {}", interfaceName, flowRef);
         installFlow(dpId, egressFlow, tx);
     }
@@ -696,18 +699,20 @@ public final class FlowBasedServicesUtils {
             actions.add(MDSALUtil.createNxOfInPortAction(++actionKey, 0));
         }
         if (!actions.isEmpty()) {
-            instructions.put(MDSALUtil.buildApplyActionsInstruction(actions, instructionKey++).key(),
-                    MDSALUtil.buildApplyActionsInstruction(actions, instructionKey++));
+            Instruction buildApplyActionsInstruction = MDSALUtil.buildApplyActionsInstruction(actions,
+                    instructionKey++);
+            instructions.put(buildApplyActionsInstruction.key(), buildApplyActionsInstruction);
         }
         Uint64 metadata = MetaDataUtil.getMetaDataForLPortDispatcher(lportTag, (short) 0, Uint64.ZERO,
                 isExternal(iface));
         Uint64 metadataMask = MetaDataUtil
                 .getMetaDataMaskForLPortDispatcher(MetaDataUtil.METADATA_MASK_LPORT_TAG_SH_FLAG);
-        instructions.put(MDSALUtil.buildAndGetWriteMetadaInstruction(metadata, metadataMask, instructionKey++).key(),
-                MDSALUtil.buildAndGetWriteMetadaInstruction(metadata, metadataMask, instructionKey++));
-        instructions.put(MDSALUtil.buildAndGetGotoTableInstruction(NwConstants.LPORT_DISPATCHER_TABLE,
-                instructionKey++).key(),
-                MDSALUtil.buildAndGetGotoTableInstruction(NwConstants.LPORT_DISPATCHER_TABLE, instructionKey++));
+        Instruction metadaInstruction = MDSALUtil.buildAndGetWriteMetadaInstruction(metadata, metadataMask,
+                instructionKey++);
+        instructions.put(metadaInstruction.key(),metadaInstruction);
+        Instruction gotoTableInstruction = MDSALUtil.buildAndGetGotoTableInstruction(NwConstants.LPORT_DISPATCHER_TABLE,
+                instructionKey++);
+        instructions.put(gotoTableInstruction.key(), gotoTableInstruction);
         int priority = isVlanTransparent ? 1
                 : vlanId == 0 ? IfmConstants.FLOW_PRIORITY_FOR_UNTAGGED_VLAN : IfmConstants.FLOW_HIGH_PRIORITY;
         String flowRef = getFlowRef(IfmConstants.VLAN_INTERFACE_INGRESS_TABLE, dpId, iface.getName());
