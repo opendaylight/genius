@@ -34,12 +34,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpns;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpnsBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ItmMonitorWorker implements Callable<List<? extends ListenableFuture<?>>> {
-
     private static final Logger LOG = LoggerFactory.getLogger(ItmMonitorWorker.class);
 
     private final String tzone;
@@ -49,9 +49,9 @@ public class ItmMonitorWorker implements Callable<List<? extends ListenableFutur
     private final OvsBridgeRefEntryCache ovsBridgeRefEntryCache;
     private final ManagedNewTransactionRunner txRunner;
     private final Boolean enabled;
-    private final Integer interval;
+    private final Uint16 interval;
 
-    public <T> ItmMonitorWorker(String tzone, T monitoring,
+    private ItmMonitorWorker(String tzone, Boolean enabled, Uint16 interval,
                                 Class<? extends TunnelMonitoringTypeBase> monitorProtocol, DataBroker dataBroker,
                                 DirectTunnelUtils directTunnelUtils,
                                 DpnTepStateCache dpnTepStateCache,
@@ -62,19 +62,32 @@ public class ItmMonitorWorker implements Callable<List<? extends ListenableFutur
         this.dpnTepStateCache = dpnTepStateCache;
         this.ovsBridgeRefEntryCache = ovsBridgeRefEntryCache;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
-        LOG.trace("ItmMonitorWorker initialized with  tzone {} and toggleBoolean {}", tzone, monitoring);
-        if (monitoring instanceof Boolean) {
-            this.enabled = (Boolean) monitoring;
-            this.interval = null;
-        }
-        else {
-            this.interval = (Integer) monitoring;
-            this.enabled = null;
-        }
+        LOG.trace("ItmMonitorWorker initialized with  tzone {} and toggleBoolean {}", tzone, enabled);
+        this.enabled = enabled;
+        this.interval = interval;
         LOG.debug("Toggle monitoring enabled {} interval {} monitor protocol {}", enabled, interval, monitorProtocol);
     }
 
-    @Override public List<ListenableFuture<Void>> call() {
+    public <T> ItmMonitorWorker(String tzone, Boolean enabled,
+            Class<? extends TunnelMonitoringTypeBase> monitorProtocol, DataBroker dataBroker,
+            DirectTunnelUtils directTunnelUtils,
+            DpnTepStateCache dpnTepStateCache,
+            OvsBridgeRefEntryCache ovsBridgeRefEntryCache) {
+        this(tzone, enabled, null, monitorProtocol, dataBroker, directTunnelUtils, dpnTepStateCache,
+            ovsBridgeRefEntryCache);
+    }
+
+    public <T> ItmMonitorWorker(String tzone, Uint16 interval,
+            Class<? extends TunnelMonitoringTypeBase> monitorProtocol, DataBroker dataBroker,
+            DirectTunnelUtils directTunnelUtils,
+            DpnTepStateCache dpnTepStateCache,
+            OvsBridgeRefEntryCache ovsBridgeRefEntryCache) {
+        this(tzone, null, interval, monitorProtocol, dataBroker, directTunnelUtils, dpnTepStateCache,
+            ovsBridgeRefEntryCache);
+    }
+
+    @Override
+    public List<ListenableFuture<Void>> call() {
         LOG.debug("ItmMonitorWorker invoked with tzone = {} enabled {}", tzone, enabled);
         List<ListenableFuture<Void>> futures = new ArrayList<>();
         return toggleTunnelMonitoring(futures);
