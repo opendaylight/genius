@@ -165,4 +165,9 @@ public abstract class TestInterfaceManager implements IInterfaceManager {
     public boolean isItmDirectTunnelsEnabled() {
         return false;
     }
+
+    @Override
+    public boolean isItmOfTunnelsEnabled() {
+        return false;
+    }
 }
