@@ -18,6 +18,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNull;
@@ -38,6 +39,10 @@ import org.opendaylight.genius.itm.confighelpers.HwVtep;
 import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelAddWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmInternalTunnelAddWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmInternalTunnelDeleteWorker;
+import org.opendaylight.genius.itm.confighelpers.ItmOfPortAddWorker;
+import org.opendaylight.genius.itm.confighelpers.ItmOfPortRemoveWorker;
+import org.opendaylight.genius.itm.confighelpers.ItmOfTunnelAddWorker;
+import org.opendaylight.genius.itm.confighelpers.ItmOfTunnelDeleteWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmTepAddWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmTepRemoveWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmTepsNotHostedAddWorker;
@@ -61,6 +66,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembership;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.tep.config.OfDpnTep;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.tep.config.OfDpnTepKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.NotHostedTransportZones;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZonesBuilder;
@@ -102,6 +109,9 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
     private final ManagedNewTransactionRunner txRunner;
     private final DataTreeEventCallbackRegistrar eventCallbacks;
     private final TombstonedNodeManager tombstonedNodeManager;
+    private final IInterfaceManager interfaceManager;
+    private final ItmOfTunnelAddWorker itmOfTunnelAddWorker;
+    private final ItmOfTunnelDeleteWorker itmOfTunnelDeleteWorker;
 
     @Inject
     public TransportZoneListener(final DataBroker dataBroker,
@@ -137,6 +147,11 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
                 tunnelMonitoringConfig, itmConfig, directTunnelUtils, interfaceManager,
                 ovsBridgeRefEntryCache, ofEndPointCache, eventCallbacks);
         this.externalTunnelAddWorker = new ItmExternalTunnelAddWorker(itmConfig, dpnTEPsInfoCache);
+        this.interfaceManager = interfaceManager;
+        this.itmOfTunnelAddWorker = new ItmOfTunnelAddWorker(dataBroker, jobCoordinator,itmConfig,
+                directTunnelUtils, ovsBridgeRefEntryCache, eventCallbacks);
+        this.itmOfTunnelDeleteWorker = new ItmOfTunnelDeleteWorker(dataBroker, jobCoordinator,itmConfig,
+                directTunnelUtils, ovsBridgeRefEntryCache, eventCallbacks);
         serviceRecoveryRegistry.addRecoverableListener(ItmServiceRecoveryHandler.getServiceRegistryKey(),
                 this);
     }
@@ -221,65 +236,71 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         LOG.debug("Received Transport Zone Update Event: Old - {}, Updated - {}", originalTransportZone,
                 updatedTransportZone);
         EVENT_LOGGER.debug("ITM-Transportzone,UPDATE {}", updatedTransportZone.getZoneName());
-        List<DPNTEPsInfo> oldDpnTepsList = createDPNTepInfo(originalTransportZone);
-        List<DPNTEPsInfo> newDpnTepsList = createDPNTepInfo(updatedTransportZone);
-        List<DPNTEPsInfo> oldDpnTepsListcopy = new ArrayList<>();
-        oldDpnTepsListcopy.addAll(oldDpnTepsList);
-        LOG.trace("oldcopy0 {}", oldDpnTepsListcopy);
-        List<DPNTEPsInfo> newDpnTepsListcopy = new ArrayList<>();
-        newDpnTepsListcopy.addAll(newDpnTepsList);
-        LOG.trace("newcopy0 {}", newDpnTepsListcopy);
 
-        oldDpnTepsList.removeAll(newDpnTepsListcopy);
-        newDpnTepsList.removeAll(oldDpnTepsListcopy);
+        if (interfaceManager.isItmOfTunnelsEnabled()) {
+            updateTransportZone(originalTransportZone, updatedTransportZone);
+        } else {
+            List<DPNTEPsInfo> oldDpnTepsList = createDPNTepInfo(originalTransportZone);
+            List<DPNTEPsInfo> newDpnTepsList = createDPNTepInfo(updatedTransportZone);
+            List<DPNTEPsInfo> oldDpnTepsListcopy = new ArrayList<>();
+            oldDpnTepsListcopy.addAll(oldDpnTepsList);
+            LOG.trace("oldcopy0 {}", oldDpnTepsListcopy);
+            List<DPNTEPsInfo> newDpnTepsListcopy = new ArrayList<>();
+            newDpnTepsListcopy.addAll(newDpnTepsList);
+            LOG.trace("newcopy0 {}", newDpnTepsListcopy);
 
-        LOG.trace("oldDpnTepsList {}", oldDpnTepsList);
-        LOG.trace("newDpnTepsList {}", newDpnTepsList);
-        LOG.trace("oldcopy {}", oldDpnTepsListcopy);
-        LOG.trace("newcopy {}", newDpnTepsListcopy);
-        LOG.trace("oldcopy Size {}", oldDpnTepsList.size());
-        LOG.trace("newcopy Size {}", newDpnTepsList.size());
+            oldDpnTepsList.removeAll(newDpnTepsListcopy);
+            newDpnTepsList.removeAll(oldDpnTepsListcopy);
 
-        boolean equalLists = newDpnTepsList.size() == oldDpnTepsList.size()
-                && newDpnTepsList.containsAll(oldDpnTepsList);
-        LOG.trace("Is List Duplicate {} ", equalLists);
-        if (!newDpnTepsList.isEmpty() && !equalLists) {
-            LOG.trace("Adding TEPs ");
-            jobCoordinator.enqueueJob(updatedTransportZone.getZoneName(),
-                    new ItmTepAddWorker(newDpnTepsList, Collections.emptyList(), dataBroker, mdsalManager,
-                            itmInternalTunnelAddWorker, externalTunnelAddWorker));
-        }
-        if (!oldDpnTepsList.isEmpty() && !equalLists) {
-            LOG.trace("Removing TEPs ");
-            jobCoordinator.enqueueJob(updatedTransportZone.getZoneName(),
-                    new ItmTepRemoveWorker(oldDpnTepsList, Collections.emptyList(), originalTransportZone, mdsalManager,
-                            itmInternalTunnelDeleteWorker, dpnTEPsInfoCache, txRunner, itmConfig));
-        }
-        List<HwVtep> oldHwList = createhWVteps(originalTransportZone);
-        List<HwVtep> newHwList = createhWVteps(updatedTransportZone);
-        List<HwVtep> oldHwListcopy = new ArrayList<>();
-        oldHwListcopy.addAll(oldHwList);
-        LOG.trace("oldHwListcopy0 {}", oldHwListcopy);
-        List<HwVtep> newHwListcopy = new ArrayList<>();
-        newHwListcopy.addAll(newHwList);
-        LOG.trace("newHwListcopy0 {}", newHwListcopy);
+            LOG.trace("oldDpnTepsList {}", oldDpnTepsList);
+            LOG.trace("newDpnTepsList {}", newDpnTepsList);
+            LOG.trace("oldcopy {}", oldDpnTepsListcopy);
+            LOG.trace("newcopy {}", newDpnTepsListcopy);
+            LOG.trace("oldcopy Size {}", oldDpnTepsList.size());
+            LOG.trace("newcopy Size {}", newDpnTepsList.size());
 
-        oldHwList.removeAll(newHwListcopy);
-        newHwList.removeAll(oldHwListcopy);
-        LOG.trace("oldHwList {}", oldHwList);
-        LOG.trace("newHwList {}", newHwList);
-        LOG.trace("oldHwListcopy {}", oldHwListcopy);
-        LOG.trace("newHwListcopy {}", newHwListcopy);
-        if (!newHwList.isEmpty()) {
-            LOG.trace("Adding HW TEPs ");
-            jobCoordinator.enqueueJob(updatedTransportZone.getZoneName(), new ItmTepAddWorker(Collections.emptyList(),
-                    newHwList, dataBroker, mdsalManager, itmInternalTunnelAddWorker, externalTunnelAddWorker));
-        }
-        if (!oldHwList.isEmpty()) {
-            LOG.trace("Removing HW TEPs ");
-            jobCoordinator.enqueueJob(updatedTransportZone.getZoneName(),
-                    new ItmTepRemoveWorker(Collections.emptyList(), oldHwList, originalTransportZone, mdsalManager,
-                            itmInternalTunnelDeleteWorker, dpnTEPsInfoCache, txRunner, itmConfig));
+            boolean equalLists = newDpnTepsList.size() == oldDpnTepsList.size()
+                    && newDpnTepsList.containsAll(oldDpnTepsList);
+            LOG.trace("Is List Duplicate {} ", equalLists);
+            if (!newDpnTepsList.isEmpty() && !equalLists) {
+                LOG.trace("Adding TEPs ");
+                jobCoordinator.enqueueJob(updatedTransportZone.getZoneName(),
+                        new ItmTepAddWorker(newDpnTepsList, Collections.emptyList(), dataBroker, mdsalManager,
+                                itmInternalTunnelAddWorker, externalTunnelAddWorker));
+            }
+            if (!oldDpnTepsList.isEmpty() && !equalLists) {
+                LOG.trace("Removing TEPs ");
+                jobCoordinator.enqueueJob(updatedTransportZone.getZoneName(),
+                        new ItmTepRemoveWorker(oldDpnTepsList, Collections.emptyList(), originalTransportZone,
+                                mdsalManager, itmInternalTunnelDeleteWorker, dpnTEPsInfoCache, txRunner, itmConfig));
+            }
+            List<HwVtep> oldHwList = createhWVteps(originalTransportZone);
+            List<HwVtep> newHwList = createhWVteps(updatedTransportZone);
+            List<HwVtep> oldHwListcopy = new ArrayList<>();
+            oldHwListcopy.addAll(oldHwList);
+            LOG.trace("oldHwListcopy0 {}", oldHwListcopy);
+            List<HwVtep> newHwListcopy = new ArrayList<>();
+            newHwListcopy.addAll(newHwList);
+            LOG.trace("newHwListcopy0 {}", newHwListcopy);
+
+            oldHwList.removeAll(newHwListcopy);
+            newHwList.removeAll(oldHwListcopy);
+            LOG.trace("oldHwList {}", oldHwList);
+            LOG.trace("newHwList {}", newHwList);
+            LOG.trace("oldHwListcopy {}", oldHwListcopy);
+            LOG.trace("newHwListcopy {}", newHwListcopy);
+            if (!newHwList.isEmpty()) {
+                LOG.trace("Adding HW TEPs ");
+                jobCoordinator.enqueueJob(updatedTransportZone.getZoneName(),
+                        new ItmTepAddWorker(Collections.emptyList(),
+                        newHwList, dataBroker, mdsalManager, itmInternalTunnelAddWorker, externalTunnelAddWorker));
+            }
+            if (!oldHwList.isEmpty()) {
+                LOG.trace("Removing HW TEPs ");
+                jobCoordinator.enqueueJob(updatedTransportZone.getZoneName(),
+                        new ItmTepRemoveWorker(Collections.emptyList(), oldHwList, originalTransportZone, mdsalManager,
+                                itmInternalTunnelDeleteWorker, dpnTEPsInfoCache, txRunner, itmConfig));
+            }
         }
     }
 
@@ -287,30 +308,41 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
     public void add(@NonNull TransportZone transportZone) {
         LOG.debug("Received Transport Zone Add Event: {}", transportZone);
         EVENT_LOGGER.debug("ITM-Transportzone,ADD {}", transportZone.getZoneName());
-        List<DPNTEPsInfo> opDpnList = createDPNTepInfo(transportZone);
-        //avoiding adding duplicates from nothosted to new dpnlist.
-        List<DPNTEPsInfo> duplicateFound = new ArrayList<>();
-        List<DPNTEPsInfo> notHostedDpnList = getDPNTepInfoFromNotHosted(transportZone, opDpnList);
-        for (DPNTEPsInfo notHostedDPN:notHostedDpnList) {
-            for (DPNTEPsInfo newlyAddedDPN:opDpnList) {
-                if (newlyAddedDPN.getDPNID().compareTo(notHostedDPN.getDPNID()) == 0
-                        || newlyAddedDPN.getTunnelEndPoints().get(0).getIpAddress()
-                        .equals(notHostedDPN.getTunnelEndPoints().get(0).getIpAddress())) {
-                    duplicateFound.add(notHostedDPN);
+        if (interfaceManager.isItmOfTunnelsEnabled()) {
+            Map<OfDpnTepKey, OfDpnTep> dpnTepMap = createOfTepInfo(transportZone);
+
+            if (!dpnTepMap.isEmpty()) {
+                jobCoordinator.enqueueJob(transportZone.getZoneName(),
+                        new ItmOfPortAddWorker(dpnTepMap, itmOfTunnelAddWorker));
+            } else {
+                EVENT_LOGGER.debug("DPN List in TZ is empty");
+            }
+        } else {
+            List<DPNTEPsInfo> opDpnList = createDPNTepInfo(transportZone);
+            //avoiding adding duplicates from nothosted to new dpnlist.
+            List<DPNTEPsInfo> duplicateFound = new ArrayList<>();
+            List<DPNTEPsInfo> notHostedDpnList = getDPNTepInfoFromNotHosted(transportZone, opDpnList);
+            for (DPNTEPsInfo notHostedDPN : notHostedDpnList) {
+                for (DPNTEPsInfo newlyAddedDPN : opDpnList) {
+                    if (newlyAddedDPN.getDPNID().compareTo(notHostedDPN.getDPNID()) == 0
+                            || newlyAddedDPN.getTunnelEndPoints().get(0).getIpAddress()
+                            .equals(notHostedDPN.getTunnelEndPoints().get(0).getIpAddress())) {
+                        duplicateFound.add(notHostedDPN);
+                    }
                 }
             }
-        }
-        notHostedDpnList.removeAll(duplicateFound);
-        opDpnList.addAll(notHostedDpnList);
+            notHostedDpnList.removeAll(duplicateFound);
+            opDpnList.addAll(notHostedDpnList);
 
-        List<HwVtep> hwVtepList = createhWVteps(transportZone);
-        LOG.trace("Add: Operational dpnTepInfo - Before invoking ItmManager {}", opDpnList);
-        if (!opDpnList.isEmpty() || !hwVtepList.isEmpty()) {
-            LOG.trace("Add: Invoking ItmManager with DPN List {} ", opDpnList);
-            LOG.trace("Add: Invoking ItmManager with hwVtep List {} ", hwVtepList);
-            jobCoordinator.enqueueJob(transportZone.getZoneName(),
-                    new ItmTepAddWorker(opDpnList, hwVtepList, dataBroker, mdsalManager, itmInternalTunnelAddWorker,
-                            externalTunnelAddWorker));
+            List<HwVtep> hwVtepList = createhWVteps(transportZone);
+            LOG.trace("Add: Operational dpnTepInfo - Before invoking ItmManager {}", opDpnList);
+            if (!opDpnList.isEmpty() || !hwVtepList.isEmpty()) {
+                LOG.trace("Add: Invoking ItmManager with DPN List {} ", opDpnList);
+                LOG.trace("Add: Invoking ItmManager with hwVtep List {} ", hwVtepList);
+                jobCoordinator.enqueueJob(transportZone.getZoneName(),
+                        new ItmTepAddWorker(opDpnList, hwVtepList, dataBroker, mdsalManager, itmInternalTunnelAddWorker,
+                                externalTunnelAddWorker));
+            }
         }
     }
 
@@ -320,6 +352,43 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
             notHostedOpDpnList = createDPNTepInfoFromNotHosted(tzNew, opDpnList);
         }
         return notHostedOpDpnList;
+    }
+
+    private void updateTransportZone(TransportZone originalTransportZone, TransportZone updatedTransportZone) {
+        Map<OfDpnTepKey, OfDpnTep> oldDpnTepMap = createOfTepInfo(originalTransportZone);
+        Map<OfDpnTepKey, OfDpnTep> newDpnTepMap  = createOfTepInfo(updatedTransportZone);
+        List<OfDpnTep> oldDpnTepList = oldDpnTepMap.values().stream().collect(Collectors.toList());
+        List<OfDpnTep> newDpnTepList = newDpnTepMap.values().stream().collect(Collectors.toList());
+        List<OfDpnTep> oldDpnTepListcopy = new ArrayList<>();
+        oldDpnTepListcopy.addAll(oldDpnTepList);
+        List<OfDpnTep> newDpnTepListcopy = new ArrayList<>();
+        newDpnTepListcopy.addAll(newDpnTepList);
+
+        oldDpnTepList.removeAll(newDpnTepListcopy);
+        newDpnTepList.removeAll(oldDpnTepListcopy);
+        oldDpnTepMap.clear();
+        newDpnTepMap.clear();
+        for (OfDpnTep tep:oldDpnTepList) {
+            oldDpnTepMap.put(tep.key(), tep);
+        }
+
+        for (OfDpnTep tep:newDpnTepList) {
+            newDpnTepMap.put(tep.key(), tep);
+        }
+
+        boolean equalLists = newDpnTepList.size() == oldDpnTepList.size()
+                && newDpnTepList.containsAll(oldDpnTepList);
+        LOG.trace("Is List Duplicate? {} ", equalLists);
+
+        if (!newDpnTepList.isEmpty() && !equalLists) {
+            jobCoordinator.enqueueJob(updatedTransportZone.getZoneName(),
+                    new ItmOfPortAddWorker(newDpnTepMap, itmOfTunnelAddWorker));
+        }
+
+        if (!oldDpnTepList.isEmpty() && !equalLists) {
+            jobCoordinator.enqueueJob(updatedTransportZone.getZoneName(),
+                    new ItmOfPortRemoveWorker(oldDpnTepMap, dataBroker, itmOfTunnelDeleteWorker));
+        }
     }
 
     private List<DPNTEPsInfo> createDPNTepInfoFromNotHosted(TransportZone tzNew, List<DPNTEPsInfo> opDpnList) {
@@ -502,5 +571,22 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         }
         LOG.trace("returning hwvteplist {}", hwVtepsList);
         return hwVtepsList;
+    }
+
+    private Map<OfDpnTepKey, OfDpnTep> createOfTepInfo(TransportZone transportZone) {
+        String tunnelType = ItmUtils.convertTunnelTypetoString(transportZone.getTunnelType());
+        Map<OfDpnTepKey, OfDpnTep> dpnTepMap = new HashMap<>();
+        Map<VtepsKey, Vteps> vtepsMap = transportZone.getVteps();
+        if (vtepsMap != null && !vtepsMap.isEmpty()) {
+            for (Vteps vteps : vtepsMap.values()) {
+                Uint64 dpnID = vteps.getDpnId();
+                IpAddress ipAddress = vteps.getIpAddress();
+                String ofPortName = ItmUtils.generateOfPortName(dpnID, ipAddress, tunnelType);
+                OfDpnTep dpnTep = ItmUtils.createDpnOFTepInfo(dpnID, ipAddress, ofPortName,
+                        transportZone.getTunnelType());
+                dpnTepMap.put(dpnTep.key(), dpnTep);
+            }
+        }
+        return dpnTepMap;
     }
 }
