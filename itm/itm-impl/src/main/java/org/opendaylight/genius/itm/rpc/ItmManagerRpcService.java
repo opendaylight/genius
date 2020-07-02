@@ -18,6 +18,8 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
+
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -43,6 +45,8 @@ import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.interfacemanager.interfaces.InterfaceManagerService;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
+import org.opendaylight.genius.itm.cache.OfDpnTepConfigCache;
+import org.opendaylight.genius.itm.cache.OfTepStateCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.cache.TunnelStateCache;
 import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelAddWorker;
@@ -83,6 +87,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.Ext
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfoKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.tep.config.OfDpnTep;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.DpnsTeps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.DpnsTepsKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpns;
@@ -90,6 +95,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpnsKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnelKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.of.teps.state.OfTep;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.DcGatewayIpList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
@@ -133,6 +139,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.G
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetInternalOrExternalInterfaceNameOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetTepIpInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetTepIpOutput;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetTepIpOutputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetTunnelInterfaceNameInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetTunnelInterfaceNameOutput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.GetTunnelInterfaceNameOutputBuilder;
@@ -190,6 +197,8 @@ public class ItmManagerRpcService implements ItmRpcService {
     private final ManagedNewTransactionRunner txRunner;
     private final RetryingManagedNewTransactionRunner retryingTxRunner;
     private final ItmConfig itmConfig;
+    private final OfDpnTepConfigCache ofDpnTepConfigCache;
+    private final OfTepStateCache ofTepStateCache;
 
     @Inject
     public ItmManagerRpcService(final DataBroker dataBroker, final IMdsalApiManager mdsalManager,
@@ -198,7 +207,8 @@ public class ItmManagerRpcService implements ItmRpcService {
                                 final TunnelStateCache tunnelStateCache,
                                 final InterfaceManagerService interfaceManagerService,
                                 final OvsBridgeRefEntryCache ovsBridgeRefEntryCache,
-                                final DirectTunnelUtils directTunnelUtils) {
+                                final DirectTunnelUtils directTunnelUtils, OfDpnTepConfigCache ofDpnTepConfigCache,
+                                OfTepStateCache ofTepStateCache) {
         this.dataBroker = dataBroker;
         this.mdsalManager = mdsalManager;
         this.dpnTEPsInfoCache = dpnTEPsInfoCache;
@@ -213,6 +223,8 @@ public class ItmManagerRpcService implements ItmRpcService {
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.retryingTxRunner = new RetryingManagedNewTransactionRunner(dataBroker);
         this.itmConfig = itmConfig;
+        this.ofDpnTepConfigCache = ofDpnTepConfigCache;
+        this.ofTepStateCache = ofTepStateCache;
     }
 
     @PostConstruct
@@ -233,6 +245,27 @@ public class ItmManagerRpcService implements ItmRpcService {
         Uint64 destinationDpn = input.getDestinationDpid();
         Optional<InternalTunnel> optTunnel = Optional.empty();
 
+        if (interfaceManager.isItmOfTunnelsEnabled()) {
+            //Destination DPN Id is not relevant in OF Tunnel scenario and so is ignored
+            try {
+                Optional<OfDpnTep> dpnstep = ofDpnTepConfigCache.get(sourceDpn.toJava());
+                if (dpnstep.isPresent()) {
+                    resultBld = RpcResultBuilder.success();
+                    resultBld.withResult(new GetTunnelInterfaceNameOutputBuilder()
+                            .setInterfaceName(dpnstep.get().getOfPortName())).build();
+                    return Futures.immediateFuture(resultBld.build());
+                } else {
+                    LOG.error("OF tunnel is not available in ITM for source dpn {}", sourceDpn);
+                    resultBld = RpcResultBuilder.failed();
+                    return Futures.immediateFuture(resultBld.build());
+                }
+            } catch (ReadFailedException e) {
+                LOG.error("ReadFailedException: cache read failed for source dpn {} reason: {}", sourceDpn,
+                        e.getMessage());
+                resultBld = RpcResultBuilder.failed();
+                return Futures.immediateFuture(resultBld.build());
+            }
+        }
         if (interfaceManager.isItmDirectTunnelsEnabled()) {
             DpnTepInterfaceInfo interfaceInfo = dpnTepStateCache.getDpnTepInterface(sourceDpn, destinationDpn);
             if (interfaceInfo != null) {
@@ -546,6 +579,29 @@ public class ItmManagerRpcService implements ItmRpcService {
         RpcResultBuilder<GetExternalTunnelInterfaceNameOutput> resultBld;
         String sourceNode = input.getSourceNode();
         String dstNode = input.getDestinationNode();
+        if (interfaceManager.isItmOfTunnelsEnabled()) {
+            Optional<OfDpnTep> tepDetail;
+            try {
+                tepDetail = ofDpnTepConfigCache.get(new BigInteger(sourceNode));
+            } catch (ReadFailedException e) {
+                LOG.error("ReadFailedException: OF tunnel interface is not available in config DS for "
+                        + "source dpn {} reason: {}", sourceNode, e.getMessage());
+                resultBld = failed();
+                return Futures.immediateFuture(resultBld.build());
+            }
+            if (tepDetail.isPresent()) {
+                GetExternalTunnelInterfaceNameOutputBuilder output =
+                        new GetExternalTunnelInterfaceNameOutputBuilder()
+                                .setInterfaceName(tepDetail.get().getOfPortName());
+                resultBld = RpcResultBuilder.success();
+                resultBld.withResult(output.build());
+                return Futures.immediateFuture(resultBld.build());
+            } else {
+                LOG.error("OF tunnel interface is not available in config DS for source dpn {}", sourceNode);
+                resultBld = failed();
+                return Futures.immediateFuture(resultBld.build());
+            }
+        }
         ExternalTunnelKey externalTunnelKey = new ExternalTunnelKey(dstNode, sourceNode, input.getTunnelType());
         InstanceIdentifier<ExternalTunnel> path = InstanceIdentifier.create(
                 ExternalTunnelList.class)
@@ -651,7 +707,28 @@ public class ItmManagerRpcService implements ItmRpcService {
             GetInternalOrExternalInterfaceNameInput input) {
         RpcResultBuilder<GetInternalOrExternalInterfaceNameOutput> resultBld = failed();
         Uint64 srcDpn = input.getSourceDpid();
-        IpAddress dstIp = input.getDestinationIp() ;
+        IpAddress dstIp = input.getDestinationIp();
+        if (interfaceManager.isItmOfTunnelsEnabled()) {
+            Optional<OfDpnTep> tepDetail;
+            try {
+                tepDetail = ofDpnTepConfigCache.get(srcDpn.toJava());
+            } catch (ReadFailedException e) {
+                LOG.error("ReadFailedException: OF tunnel interface is not available in config DS for "
+                        + "source dpn {} reason: {}", srcDpn, e.getMessage());
+                return Futures.immediateFuture(resultBld.build());
+            }
+            if (tepDetail.isPresent()) {
+                GetInternalOrExternalInterfaceNameOutputBuilder output =
+                        new GetInternalOrExternalInterfaceNameOutputBuilder()
+                                .setInterfaceName(tepDetail.get().getOfPortName());
+                resultBld = RpcResultBuilder.success();
+                resultBld.withResult(output.build());
+                return Futures.immediateFuture(resultBld.build());
+            } else {
+                LOG.error("OF tunnel interface is not available in config DS for source dpn {}", srcDpn);
+                return Futures.immediateFuture(resultBld.build());
+            }
+        }
         InstanceIdentifier<ExternalTunnel> path1 = InstanceIdentifier.create(ExternalTunnelList.class)
                 .child(ExternalTunnel.class,
                         new ExternalTunnelKey(dstIp.stringValue(), srcDpn.toString(), input.getTunnelType()));
@@ -868,7 +945,27 @@ public class ItmManagerRpcService implements ItmRpcService {
     }
 
     public ListenableFuture<RpcResult<GetTepIpOutput>> getTepIp(GetTepIpInput input) {
-        return null;
+        RpcResultBuilder<GetTepIpOutput> resultBld;
+        Uint64 sourceDpn = input.getDpnId();
+        Optional<OfDpnTep> dpnstep;
+        try {
+            dpnstep = ofDpnTepConfigCache.get(sourceDpn.toJava());
+        } catch (ReadFailedException e) {
+            LOG.error("ReadFailedException: OF tunnel is not available in ITM for source dpn {} reason: {}",sourceDpn,
+                    e.getMessage());
+            resultBld = RpcResultBuilder.failed();
+            return Futures.immediateFuture(resultBld.build());
+        }
+        if (dpnstep.isPresent()) {
+            resultBld = RpcResultBuilder.success();
+            resultBld.withResult(new GetTepIpOutputBuilder()
+                    .setTepIp(dpnstep.get().getTepIp())).build();
+            return Futures.immediateFuture(resultBld.build());
+        } else {
+            LOG.error("OF tunnel is not available in ITM for source dpn {}",sourceDpn);
+            resultBld = RpcResultBuilder.failed();
+            return Futures.immediateFuture(resultBld.build());
+        }
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
@@ -1165,40 +1262,66 @@ public class ItmManagerRpcService implements ItmRpcService {
         getEgressActionsForInternalTunnels(String interfaceName, Long tunnelKey, Integer actionKey)
             throws ExecutionException, InterruptedException, OperationFailedException {
 
-        DpnTepInterfaceInfo interfaceInfo = dpnTepStateCache.getTunnelFromCache(interfaceName);
-        if (interfaceInfo == null) {
-            throw new IllegalStateException("Interface information not present in config DS for" + interfaceName);
-        }
-
-        String tunnelType = ItmUtils.convertTunnelTypetoString(interfaceInfo.getTunnelType());
-        if (!tunnelType.equalsIgnoreCase(ITMConstants.TUNNEL_TYPE_VXLAN)) {
-            throw new IllegalArgumentException(tunnelType + " tunnel not handled by ITM");
-        }
-
-        Optional<DPNTEPsInfo> dpntePsInfoOptional = dpnTEPsInfoCache.get(InstanceIdentifier.builder(DpnEndpoints.class)
-                .child(DPNTEPsInfo.class, new DPNTEPsInfoKey(
-                    // FIXME: the cache should be caching this value, not just as a String
-                    Uint64.valueOf(dpnTepStateCache.getTunnelEndPointInfoFromCache(interfaceInfo.getTunnelName())
-                        .getDstEndPointInfo())))
-                .build());
-        Integer dstId;
-        if (dpntePsInfoOptional.isPresent()) {
-            dstId = dpntePsInfoOptional.get().getDstId();
+        if (interfaceName.startsWith("of")) {
+            Optional<OfTep> oftep = ofTepStateCache.get(interfaceName);
+            if (!oftep.isPresent()) {
+                throw new IllegalStateException("Interface information not present in oper DS for" + interfaceName);
+            }
+            List<ActionInfo> actions = getEgressActionInfosForOpenFlowTunnel(oftep.get().getIfIndex(),
+                    oftep.get().getTepIp(), tunnelKey, actionKey);
+            return Futures.immediateFuture(new GetEgressActionsForTunnelOutputBuilder()
+                    .setAction(actions.stream().map(ActionInfo::buildAction).collect(Collectors.toList())).build());
         } else {
-            dstId = directTunnelUtils.allocateId(ITMConstants.ITM_IDPOOL_NAME, interfaceInfo.getRemoteDPN().toString());
-        }
+            DpnTepInterfaceInfo interfaceInfo = dpnTepStateCache.getTunnelFromCache(interfaceName);
+            if (interfaceInfo == null) {
+                throw new IllegalStateException("Interface information not present in config DS for" + interfaceName);
+            }
 
+            String tunnelType = ItmUtils.convertTunnelTypetoString(interfaceInfo.getTunnelType());
+            if (!tunnelType.equalsIgnoreCase(ITMConstants.TUNNEL_TYPE_VXLAN)) {
+                throw new IllegalArgumentException(tunnelType + " tunnel not handled by ITM");
+            }
+
+            Optional<DPNTEPsInfo> dpntePsInfoOptional = dpnTEPsInfoCache.get(InstanceIdentifier.builder(DpnEndpoints.class)
+                    .child(DPNTEPsInfo.class, new DPNTEPsInfoKey(
+                            // FIXME: the cache should be caching this value, not just as a String
+                            Uint64.valueOf(dpnTepStateCache.getTunnelEndPointInfoFromCache(interfaceInfo.getTunnelName())
+                                    .getDstEndPointInfo())))
+                    .build());
+            Integer dstId;
+            if (dpntePsInfoOptional.isPresent()) {
+                dstId = dpntePsInfoOptional.get().getDstId();
+            } else {
+                dstId = directTunnelUtils.allocateId(ITMConstants.ITM_IDPOOL_NAME, interfaceInfo.getRemoteDPN().toString());
+            }
+
+            List<ActionInfo> result = new ArrayList<>();
+            long regValue = MetaDataUtil.getRemoteDpnMetadatForEgressTunnelTable(dstId);
+            int actionKeyStart = actionKey == null ? 0 : actionKey;
+            result.add(new ActionSetFieldTunnelId(actionKeyStart++,
+                    Uint64.valueOf(tunnelKey != null ? tunnelKey : 0L)));
+            result.add(new ActionRegLoad(actionKeyStart++, NxmNxReg6.class, MetaDataUtil.REG6_START_INDEX,
+                    MetaDataUtil.REG6_END_INDEX, regValue));
+            result.add(new ActionNxResubmit(actionKeyStart, NwConstants.EGRESS_TUNNEL_TABLE));
+
+            return Futures.immediateFuture(new GetEgressActionsForTunnelOutputBuilder()
+                    .setAction(result.stream().map(ActionInfo::buildAction).collect(Collectors.toList())).build());
+        }
+    }
+
+    private static List<ActionInfo> getEgressActionInfosForOpenFlowTunnel(Uint16 ifIndex, IpAddress ipAddress,
+                                                                          Long tunnelKey, Integer actionKey) {
         List<ActionInfo> result = new ArrayList<>();
-        long regValue = MetaDataUtil.getRemoteDpnMetadatForEgressTunnelTable(dstId);
         int actionKeyStart = actionKey == null ? 0 : actionKey;
         result.add(new ActionSetFieldTunnelId(actionKeyStart++,
                 Uint64.valueOf(tunnelKey != null ? tunnelKey : 0L)));
-        result.add(new ActionRegLoad(actionKeyStart++, NxmNxReg6.class, MetaDataUtil.REG6_START_INDEX,
-                MetaDataUtil.REG6_END_INDEX, regValue));
-        result.add(new ActionNxResubmit(actionKeyStart, NwConstants.EGRESS_TUNNEL_TABLE));
+        long regValue = MetaDataUtil.getReg6ValueForLPortDispatcher(ifIndex.intValue() ,
+                NwConstants.DEFAULT_SERVICE_INDEX);
+        result.add(new ActionRegLoad(actionKeyStart++, NxmNxReg6.class, ITMConstants.REG6_START_INDEX,
+                ITMConstants.REG6_END_INDEX, regValue));
+        result.add(new ActionNxResubmit(actionKeyStart, NwConstants.EGRESS_LPORT_DISPATCHER_TABLE));
 
-        return Futures.immediateFuture(new GetEgressActionsForTunnelOutputBuilder()
-                .setAction(result.stream().map(ActionInfo::buildAction).collect(Collectors.toList())).build());
+        return result;
     }
 
     public static Map<DcGatewayIpKey, DcGatewayIp>

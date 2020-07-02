@@ -25,12 +25,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.interfacemanager.interfaces.InterfaceManagerService;
-import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
-import org.opendaylight.genius.itm.cache.DpnTepStateCache;
-import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
-import org.opendaylight.genius.itm.cache.TunnelStateCache;
-import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorCache;
-import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorEndPointCache;
+import org.opendaylight.genius.itm.cache.*;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
@@ -229,10 +224,15 @@ public class ItmManagerRpcServiceTest {
                 new TunnelStateCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl()));
         OvsBridgeRefEntryCache ovsBridgeRefEntryCache =
             new OvsBridgeRefEntryCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl()));
+        OfDpnTepConfigCache ofDpnTepConfigCache = new OfDpnTepConfigCache(dataBroker, new GuavaCacheProvider(
+                new CacheManagersRegistryImpl()));
+
+        OfTepStateCache ofTepStateCache = new OfTepStateCache(dataBroker, new GuavaCacheProvider(
+                new CacheManagersRegistryImpl()));
 
         itmManagerRpcService = new ItmManagerRpcService(dataBroker, mdsalApiManager, itmConfig,
             dpntePsInfoCache, interfaceManager, dpnTepStateCache, tunnelStateCache, interfaceManagerService,
-            ovsBridgeRefEntryCache, directTunnelUtils);
+            ovsBridgeRefEntryCache, directTunnelUtils, ofDpnTepConfigCache, ofTepStateCache);
     }
 
     @After

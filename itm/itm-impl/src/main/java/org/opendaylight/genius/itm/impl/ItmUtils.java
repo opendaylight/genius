@@ -100,6 +100,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembership;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembershipBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembershipKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.tep.config.OfDpnTep;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.tep.config.OfDpnTepBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.tep.config.OfDpnTepKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnelBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.external.tunnel.list.ExternalTunnelKey;
@@ -128,6 +131,7 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeKey;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1123,5 +1127,24 @@ public final class ItmUtils {
             }
         }
         return listOfDpId;
+    }
+
+    public static String generateOfPortName(Uint64 dpId, IpAddress tepIp, String tunnelType) {
+        String trunkInterfaceName = String.format("%s:%s:%s", dpId.toString(), tepIp.stringValue(),
+                tunnelType);
+        String uuidStr = UUID.nameUUIDFromBytes(trunkInterfaceName.getBytes(StandardCharsets.UTF_8)).toString()
+                .substring(0, 12).replace("-", "");
+        return String.format("%s%s", "of", uuidStr);
+    }
+
+    public static OfDpnTep createDpnOFTepInfo(Uint64 dpnID, IpAddress ipAddress,
+                                              String ofPortName, Class<? extends TunnelTypeBase> tunnelType) {
+        OfDpnTepBuilder tepBuilder = new OfDpnTepBuilder();
+        tepBuilder.withKey(new OfDpnTepKey(dpnID));
+        tepBuilder.setOfPortName(ofPortName);
+        tepBuilder.setSourceDpnId(dpnID);
+        tepBuilder.setTepIp(ipAddress);
+        tepBuilder.setTunnelType(tunnelType);
+        return tepBuilder.build();
     }
 }
