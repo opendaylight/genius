@@ -76,7 +76,7 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
                 .setUseOfTunnels(true)
                 .build();
         bind(ItmConfig.class).toInstance(itmConfigObj);
-        IfmConfig interfaceConfig = new IfmConfigBuilder().setItmDirectTunnels(false).build();
+        IfmConfig interfaceConfig = new IfmConfigBuilder().setItmDirectTunnels(false).setItmOfTunnels(false).build();
         bind(IfmConfig.class).toInstance(interfaceConfig);
         bind(TunnelMonitorIntervalListener.class);
         bind(TransportZoneListener.class);
