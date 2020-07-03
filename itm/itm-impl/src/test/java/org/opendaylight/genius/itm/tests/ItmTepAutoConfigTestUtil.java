@@ -37,7 +37,8 @@ public final class ItmTepAutoConfigTestUtil {
 
     /* transaction methods */
     public static ListenableFuture<Void> addTep(String tepIp, String strDpnId, String tzName, boolean ofTunnel,
-                                                DataBroker dataBroker, ManagedNewTransactionRunner tx) {
+                                                DataBroker dataBroker, ManagedNewTransactionRunner tx)
+                                                throws Exception {
         return
             OvsdbTepAddConfigHelper.addTepReceivedFromOvsdb(tepIp, strDpnId, tzName, ofTunnel, dataBroker, tx).get(0);
     }
