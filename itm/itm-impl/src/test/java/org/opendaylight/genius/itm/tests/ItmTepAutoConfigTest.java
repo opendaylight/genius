@@ -878,6 +878,8 @@ public class ItmTepAutoConfigTest {
         InstanceIdentifier<TepsInNotHostedTransportZone> notHostedPath =
                 ItmTepAutoConfigTestUtil.getTepNotHostedInTZIid(ItmTestConstants.TZ_NAME);
         Assert.assertNotNull(notHostedPath);
+        // wait for TransportZoneListener to perform DS update
+        coordinatorEventsWaiter.awaitEventsConsumption();
         Assert.assertEquals(ItmTestConstants.TZ_NAME, dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.OPERATIONAL, notHostedPath).get().get().getZoneName());
 
