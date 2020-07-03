@@ -66,8 +66,8 @@ public final class OvsdbTepAddConfigHelper {
 
     public static List<ListenableFuture<Void>> addTepReceivedFromOvsdb(String tepIp, String strDpnId, String tzName,
                                                                        boolean ofTunnel, DataBroker dataBroker,
-                                                                       ManagedNewTransactionRunner txRunner) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
+                                                                       ManagedNewTransactionRunner txRunner)
+                                                                       throws Exception {
         Uint64 dpnId = Uint64.ZERO;
 
         if (strDpnId != null && !strDpnId.isEmpty()) {
@@ -77,6 +77,19 @@ public final class OvsdbTepAddConfigHelper {
         // Get tep IP
         IpAddress tepIpAddress = IpAddressBuilder.getDefaultInstance(tepIp);
         TransportZone tzone = null;
+
+        // check if TEP received is already present in any other TZ.
+        TransportZone transportZone = ItmUtils.getTransportZoneOfVtep(dpnId, dataBroker);
+        if (transportZone != null) {
+            LOG.trace("Vtep (tep-ip: {} and dpid: {}) is already present in transport-zone: {}",
+                    tepIpAddress, dpnId, transportZone.getZoneName());
+            if (!transportZone.getZoneName().equals(tzName)) {
+                // remove TEP from TZ because TZ is updated for TEP from southbound in this case
+                OvsdbTepRemoveWorker ovsdbTepRemoveWorkerObj = new OvsdbTepRemoveWorker(tepIp, strDpnId,
+                        transportZone.getZoneName(), dataBroker);
+                ovsdbTepRemoveWorkerObj.call();
+            }
+        }
 
         // Case: TZ name is not given with OVS TEP.
         if (tzName == null) {
@@ -103,7 +116,7 @@ public final class OvsdbTepAddConfigHelper {
             }
         }
 
-
+        List<ListenableFuture<Void>> futures = new ArrayList<>();
         final Uint64 id = dpnId;
         final String name = tzName;
         futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,

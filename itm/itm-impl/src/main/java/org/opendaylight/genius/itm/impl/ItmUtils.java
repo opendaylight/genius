@@ -1097,6 +1097,33 @@ public final class ItmUtils {
         return null;
     }
 
+    /**
+     * Returns the transport zone of vtep from Configuration datastore.
+     *
+     * @param dpid datapath id of vtep
+     * @param dataBroker data broker handle to perform operations on datastore
+     * @return the TransportZone object in Config DS
+     */
+    public static TransportZone getTransportZoneOfVtep(Uint64 dpid, DataBroker dataBroker) {
+        InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
+        Optional<TransportZones> transportZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
+                path, dataBroker);
+        if (transportZonesOptional.isPresent()) {
+            TransportZones tzones = transportZonesOptional.get();
+            for (TransportZone tzone : tzones.getTransportZone()) {
+                List<Vteps> vtepList = new ArrayList<Vteps>(tzone.nonnullVteps().values());
+                if (vtepList != null && !vtepList.isEmpty()) {
+                    for (Vteps vtep : vtepList) {
+                        if (vtep.getDpnId().equals(dpid)) {
+                            return tzone;
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     public static Class<? extends TunnelTypeBase> convertStringToTunnelType(String tunnelType) {
         Class<? extends TunnelTypeBase> tunType = TunnelTypeVxlan.class;
         if (STRING_CLASS_IMMUTABLE_BI_MAP.containsKey(tunnelType)) {
