@@ -7,10 +7,16 @@
  */
 package org.opendaylight.genius.itm.cache;
 
+import com.google.common.util.concurrent.ListenableFuture;
+import java.util.ArrayList;
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.opendaylight.genius.itm.servicebinding.BindServiceUtils;
 import org.opendaylight.genius.mdsalutil.cache.DataObjectCache;
 import org.opendaylight.infrautils.caches.CacheProvider;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.OfTepsState;
@@ -24,6 +30,8 @@ import org.slf4j.LoggerFactory;
 @Singleton
 public class OfTepStateCache extends DataObjectCache<String, OfTep> {
 
+    private final ManagedNewTransactionRunner txRunner;
+    List<ListenableFuture<Void>> futures = new ArrayList<>();
     private static final Logger LOG = LoggerFactory.getLogger(OfTepStateCache.class);
 
     @Inject
@@ -32,5 +40,13 @@ public class OfTepStateCache extends DataObjectCache<String, OfTep> {
             InstanceIdentifier.builder(OfTepsState.class).child(OfTep.class).build(), cacheProvider,
             (iid, ofTepList) -> ofTepList.getOfPortName(), ofPortName -> InstanceIdentifier.builder(OfTepsState.class)
                     .child(OfTep.class, new OfTepKey(ofPortName)).build());
+        this.txRunner =  new ManagedNewTransactionRunnerImpl(dataBroker);
+    }
+
+    protected void added(InstanceIdentifier<OfTep> path, OfTep ofTep) {
+        LOG.info("Binding default egress dispatcher service for{}", ofTep.getOfPortName());
+        BindServiceUtils.bindDefaultEgressDispatcherService(txRunner, futures, "VXLAN_TRUNK_INTERFACE",
+                String.valueOf(ofTep.getPortNumber()), ofTep.getOfPortName(),
+                ofTep.getIfIndex());
     }
 }
