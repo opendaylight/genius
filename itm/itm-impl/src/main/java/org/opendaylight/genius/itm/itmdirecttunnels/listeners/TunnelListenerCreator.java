@@ -13,10 +13,12 @@ import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.BfdStateCache;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
+import org.opendaylight.genius.itm.cache.OfDpnTepConfigCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeEntryCache;
 import org.opendaylight.genius.itm.cache.TunnelStateCache;
 import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorCache;
 import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorEndPointCache;
+import org.opendaylight.genius.itm.cache.UnprocessedOFNodeConnectorCache;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.itm.listeners.RemoteDpnListener;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
@@ -50,14 +52,17 @@ public class TunnelListenerCreator implements AutoCloseable {
                                  final TunnelStateCache tunnelStateCache,
                                  final UnprocessedNodeConnectorCache unprocessedNodeConnectorCache,
                                  final UnprocessedNodeConnectorEndPointCache
-                                    unprocessedNodeConnectorEndPointCache) {
+                                    unprocessedNodeConnectorEndPointCache,
+                                 final UnprocessedOFNodeConnectorCache unprocessedOFNodeConnectorCache,
+                                 final OfDpnTepConfigCache ofDpnTepConfigCache) {
         if (interfaceManager.isItmDirectTunnelsEnabled()) {
             LOG.debug("ITM Direct Tunnels is enabled. Initializing the listeners");
             this.tunnelTopologyStateListener = new TunnelTopologyStateListener(dataBroker, coordinator,
                 directTunnelUtils, dpnTepStateCache, ovsBridgeEntryCache);
             this.tunnelInventoryStateListener = new TunnelInventoryStateListener(dataBroker, coordinator,
                 tunnelStateCache, dpnTepStateCache, dpntePsInfoCache, unprocessedNodeConnectorCache,
-                unprocessedNodeConnectorEndPointCache, directTunnelUtils);
+                unprocessedNodeConnectorEndPointCache, directTunnelUtils, unprocessedOFNodeConnectorCache,
+                    ofDpnTepConfigCache, interfaceManager);
             this.terminationPointStateListener = new TerminationPointStateListener(dataBroker, entityOwnershipUtils,
                 coordinator, bfdStateCache, dpnTepStateCache,tunnelStateCache);
             this.interfaceConfigListener = new InterfaceConfigListener(dataBroker, coordinator);
