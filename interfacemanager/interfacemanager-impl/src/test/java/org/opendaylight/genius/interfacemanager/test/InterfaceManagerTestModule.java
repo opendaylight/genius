@@ -10,6 +10,7 @@ package org.opendaylight.genius.interfacemanager.test;
 import static org.mockito.Mockito.mock;
 
 import org.opendaylight.daexim.DataImportBootReady;
+import org.opendaylight.genius.cloudscaler.api.TombstonedNodeManager;
 import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
 import org.opendaylight.genius.datastoreutils.testutils.AbstractTestableListener;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorCountedEventsWaiter;
@@ -98,6 +99,7 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         bind(EntityOwnershipService.class).toInstance(entityOwnershipService);
         bind(EntityOwnershipUtils.class);
         bind(AlivenessMonitorService.class).toInstance(mock(AlivenessMonitorService.class));
+        bind(TombstonedNodeManager.class).toInstance(mock(TombstonedNodeManager.class));
         bind(OdlInterfaceRpcService.class).to(InterfaceManagerRpcService.class);
         bind(CacheBridgeEntryConfigListener.class);
         bind(CacheBridgeRefEntryListener.class);
