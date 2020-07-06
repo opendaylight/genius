@@ -20,6 +20,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.eclipse.jdt.annotation.Nullable;
+import org.opendaylight.genius.cloudscaler.api.TombstonedNodeManager;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
@@ -36,6 +37,7 @@ import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
 import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.mdsal.binding.util.TypedReadWriteTransaction;
 import org.opendaylight.mdsal.binding.util.TypedWriteTransaction;
+import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
@@ -68,6 +70,7 @@ public final class OvsInterfaceConfigRemoveHelper {
     private final AlivenessMonitorUtils alivenessMonitorUtils;
     private final InterfaceMetaUtils interfaceMetaUtils;
     private final SouthboundUtils southboundUtils;
+    private final TombstonedNodeManager tombstonedNodeManager;
 
     @Inject
     public OvsInterfaceConfigRemoveHelper(@Reference DataBroker dataBroker,
@@ -76,7 +79,8 @@ public final class OvsInterfaceConfigRemoveHelper {
                                           @Reference JobCoordinator coordinator,
                                           InterfaceManagerCommonUtils interfaceManagerCommonUtils,
                                           InterfaceMetaUtils interfaceMetaUtils,
-                                          SouthboundUtils southboundUtils) {
+                                          SouthboundUtils southboundUtils,
+                                          TombstonedNodeManager tombstonedNodeManager) {
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.mdsalApiManager = mdsalApiManager;
@@ -85,6 +89,7 @@ public final class OvsInterfaceConfigRemoveHelper {
         this.alivenessMonitorUtils = alivenessMonitorUtils;
         this.interfaceMetaUtils = interfaceMetaUtils;
         this.southboundUtils = southboundUtils;
+        this.tombstonedNodeManager = tombstonedNodeManager;
     }
 
     public List<? extends ListenableFuture<?>> removeConfiguration(Interface interfaceOld, ParentRefs parentRefs) {
@@ -104,7 +109,8 @@ public final class OvsInterfaceConfigRemoveHelper {
 
     private void removeVlanConfiguration(ParentRefs parentRefs, String interfaceName,
             IfL2vlan ifL2vlan, TypedWriteTransaction<Operational> tx,
-            List<ListenableFuture<?>> futures) {
+            List<ListenableFuture<?>> futures) throws ReadFailedException {
+
         if (parentRefs == null || ifL2vlan == null || IfL2vlan.L2vlanMode.Trunk != ifL2vlan.getL2vlanMode()
                 && IfL2vlan.L2vlanMode.Transparent != ifL2vlan.getL2vlanMode()) {
             return;
@@ -145,7 +151,7 @@ public final class OvsInterfaceConfigRemoveHelper {
 
     private void removeTunnelConfiguration(ParentRefs parentRefs, String interfaceName, IfTunnel ifTunnel,
             TypedWriteTransaction<Operational> operTx, TypedReadWriteTransaction<Configuration> confTx)
-            throws ExecutionException, InterruptedException {
+            throws ExecutionException, InterruptedException, ReadFailedException {
         LOG.info("removing tunnel configuration for interface {}", interfaceName);
         Uint64 dpId = null;
         if (parentRefs != null) {
@@ -228,14 +234,16 @@ public final class OvsInterfaceConfigRemoveHelper {
     public org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
         .ietf.interfaces.rev140508.interfaces.state.Interface cleanUpInterfaceWithUnknownState(
             String interfaceName, ParentRefs parentRefs, IfTunnel ifTunnel,
-            TypedWriteTransaction<Operational> transaction) {
+            TypedWriteTransaction<Operational> transaction) throws ReadFailedException {
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508
             .interfaces.state.Interface ifState = interfaceManagerCommonUtils.getInterfaceState(interfaceName);
         if (ifState != null && ifState
                 .getOperStatus() == org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
-                .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Unknown) {
+                .ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus.Unknown
+                || tombstonedNodeManager.isDpnTombstoned(parentRefs.getDatapathNodeIdentifier())) {
             String staleInterface = ifTunnel != null ? interfaceName : parentRefs.getParentInterface();
-            LOG.debug("cleaning up parent-interface for {}, since the oper-status is UNKNOWN", interfaceName);
+            LOG.debug("cleaning up parent-interface for {}, in the case oper-status is UNKNOWN or the DPN:{}"
+                    + " is tombstoned", interfaceName, parentRefs.getDatapathNodeIdentifier());
             interfaceManagerCommonUtils.deleteInterfaceStateInformation(staleInterface, transaction);
         }
         return ifState;
