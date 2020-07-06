@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -24,14 +25,19 @@ import org.opendaylight.genius.infra.Datastore.Operational;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
+import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
+import org.opendaylight.genius.itm.cache.OfDpnTepConfigCache;
 import org.opendaylight.genius.itm.cache.TunnelStateCache;
 import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorCache;
 import org.opendaylight.genius.itm.cache.UnprocessedNodeConnectorEndPointCache;
+import org.opendaylight.genius.itm.cache.UnprocessedOFNodeConnectorCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
+import org.opendaylight.genius.itm.itmdirecttunnels.workers.OfPortStateAddWorker;
+import org.opendaylight.genius.itm.itmdirecttunnels.workers.OfPortStateAddWorkerForNodeConnector;
 import org.opendaylight.genius.itm.itmdirecttunnels.workers.TunnelStateAddWorker;
 import org.opendaylight.genius.itm.itmdirecttunnels.workers.TunnelStateAddWorkerForNodeConnector;
 import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfo;
@@ -50,6 +56,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.port.rev130925.PortReason;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.tep.config.OfDpnTep;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
@@ -81,6 +88,9 @@ public class TunnelInventoryStateListener extends
     private final UnprocessedNodeConnectorEndPointCache unprocessedNodeConnectorEndPointCache;
     private final DirectTunnelUtils directTunnelUtils;
     private final ConcurrentMap<String, NodeConnectorInfo> meshedMap = new ConcurrentHashMap<>();
+    private final UnprocessedOFNodeConnectorCache unprocessedOFNCCache;
+    private final OfDpnTepConfigCache ofDpnTepConfigCache;
+    private final IInterfaceManager interfaceManager;
 
     public TunnelInventoryStateListener(final DataBroker dataBroker,
                                         final JobCoordinator coordinator,
@@ -90,7 +100,10 @@ public class TunnelInventoryStateListener extends
                                         final UnprocessedNodeConnectorCache unprocessedNCCache,
                                         final UnprocessedNodeConnectorEndPointCache
                                             unprocessedNodeConnectorEndPointCache,
-                                        final DirectTunnelUtils directTunnelUtils) {
+                                        final DirectTunnelUtils directTunnelUtils,
+                                        UnprocessedOFNodeConnectorCache unprocessedOFNCCache,
+                                        final OfDpnTepConfigCache ofDpnTepConfigCache,
+                                        final IInterfaceManager interfaceManager) {
         super(dataBroker, LogicalDatastoreType.OPERATIONAL, InstanceIdentifier.create(Nodes.class).child(Node.class)
             .child(NodeConnector.class).augmentation(FlowCapableNodeConnector.class));
         this.coordinator = coordinator;
@@ -101,6 +114,9 @@ public class TunnelInventoryStateListener extends
         this.unprocessedNCCache = unprocessedNCCache;
         this.unprocessedNodeConnectorEndPointCache = unprocessedNodeConnectorEndPointCache;
         this.directTunnelUtils = directTunnelUtils;
+        this.unprocessedOFNCCache = unprocessedOFNCCache;
+        this.ofDpnTepConfigCache = ofDpnTepConfigCache;
+        this.interfaceManager = interfaceManager;
         super.register();
     }
 
@@ -152,7 +168,7 @@ public class TunnelInventoryStateListener extends
                        @NonNull FlowCapableNodeConnector fcNodeConnectorNew) {
         EVENT_LOGGER.debug("ITM-TunnelInventoryState,UPDATE DTCN received for {}", fcNodeConnectorOld.getName());
         String portName = fcNodeConnectorNew.getName();
-        if (!DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName)) {
+        if (!DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName) && !portName.startsWith("of")) {
             LOG.debug("Node Connector Update - {} Interface is not a tunnel I/f, so no-op", portName);
             return;
         } else if (!dpnTepStateCache.isInternal(portName)) {
@@ -190,40 +206,39 @@ public class TunnelInventoryStateListener extends
             return;
         }
 
+        Optional<OfDpnTep> dpnTepOptional = null;
         NodeConnectorInfo nodeConnectorInfo =
                 new NodeConnectorInfoBuilder().setNodeConnectorId(key).setNodeConnector(fcNodeConnectorNew).build();
 
-        if (portName.startsWith("of")) {
+        if (portName.startsWith("of") && interfaceManager.isItmOfTunnelsEnabled()) {
             NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class))
                     .getId();
-            String srcDpn = DirectTunnelUtils.getDpnFromNodeConnectorId(nodeConnectorId).toString();
+            Uint64 srcDpn = DirectTunnelUtils.getDpnFromNodeConnectorId(nodeConnectorId);
 
-            if (meshedMap.isEmpty()) {
-                meshedMap.put(srcDpn, nodeConnectorInfo);
-                return;
-            } else {
-                for (Map.Entry<String, NodeConnectorInfo> entry : meshedMap.entrySet()) {
-                    DpnTepInterfaceInfo infInfoForward = dpnTepStateCache.getDpnTepInterface(Uint64.valueOf(srcDpn),
-                        Uint64.valueOf(entry.getKey()));
-                    if (infInfoForward == null) {
-                        unprocessedNCCache.add(srcDpn + ":" + entry.getKey(),
-                                new TunnelStateInfoBuilder().setNodeConnectorInfo(nodeConnectorInfo).build());
-                    } else {
-                        addTunnelState(nodeConnectorInfo, infInfoForward.getTunnelName());
+
+            try (Acquired lock = directTunnelUtils.lockTunnel(portName)) {
+                try {
+                    dpnTepOptional = ofDpnTepConfigCache.get(srcDpn.toJava());
+                    if (!dpnTepOptional.isPresent()) {
+                        // Park the notification
+                        LOG.debug("Unable to process the NodeConnector ADD event for {} as Config not available."
+                                + "Hence parking it", portName);
+                        unprocessedOFNCCache.add(portName, nodeConnectorInfo);
+                        return;
                     }
-
-                    DpnTepInterfaceInfo infInfoReverse = dpnTepStateCache.getDpnTepInterface(
-                        Uint64.valueOf(entry.getKey()), Uint64.valueOf(srcDpn));
-
-                    if (infInfoReverse == null) {
-                        unprocessedNCCache.add(entry.getKey() + ":" + srcDpn,
-                                new TunnelStateInfoBuilder().setNodeConnectorInfo(entry.getValue()).build());
-                    } else {
-                        addTunnelState(entry.getValue(), infInfoReverse.getTunnelName());
-                    }
+                } catch (ReadFailedException e) {
+                    LOG.error("unable to get ofDpnTepConfigCache");
                 }
             }
-            meshedMap.put(srcDpn, nodeConnectorInfo);
+
+            if (dpnTepOptional.isPresent()) {
+                OfPortStateAddWorkerForNodeConnector ifOfStateAddWorker =
+                        new OfPortStateAddWorkerForNodeConnector(new OfPortStateAddWorker(directTunnelUtils,
+                                dpnTepOptional.get(), txRunner), nodeConnectorInfo);
+                EVENT_LOGGER.debug("ITM-Of-tepInventoryState Entity Owner,ADD {} {}",
+                        nodeConnectorId.getValue(), portName);
+                coordinator.enqueueJob(portName, ifOfStateAddWorker, ITMConstants.JOB_MAX_RETRIES);
+            }
         } else {
             addTunnelState(nodeConnectorInfo, portName);
         }
@@ -289,7 +304,7 @@ public class TunnelInventoryStateListener extends
         }
 
         if (tunnelEndPtInfo != null && tunnelStateInfo.getSrcDpnTepsInfo() != null
-            && tunnelStateInfo.getDstDpnTepsInfo() != null && directTunnelUtils.isEntityOwner()) {
+            && tunnelStateInfo.getDstDpnTepsInfo() != null) {
             EVENT_LOGGER.debug("ITM-TunnelInventoryState Entity Owner,ADD {}", portName);
             coordinator.enqueueJob(portName,
                 new TunnelStateAddWorkerForNodeConnector(new TunnelStateAddWorker(directTunnelUtils, txRunner),
