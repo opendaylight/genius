@@ -171,7 +171,7 @@ public class ItmInternalTunnelDeleteTest {
             new OvsBridgeEntryCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())),
             new OvsBridgeRefEntryCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())),
             new TunnelStateCache(dataBroker, new GuavaCacheProvider(new CacheManagersRegistryImpl())),
-            directTunnelUtils, ofEndPointCache, itmConfig, tombstonedNodeManager);
+            directTunnelUtils, tombstonedNodeManager);
     }
 
     @After
