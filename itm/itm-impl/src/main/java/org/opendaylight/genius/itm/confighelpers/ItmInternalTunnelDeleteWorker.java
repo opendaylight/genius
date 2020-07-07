@@ -28,7 +28,6 @@ import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
-import org.opendaylight.genius.itm.cache.OfEndPointCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeEntryCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.cache.TunnelStateCache;
@@ -51,7 +50,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeLogicalGroup;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.bridge.tunnel.info.OvsBridgeEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.bridge.tunnel.info.OvsBridgeEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.meta.rev171210.bridge.tunnel.info.ovs.bridge.entry.OvsBridgeTunnelEntry;
@@ -91,8 +89,6 @@ public class ItmInternalTunnelDeleteWorker {
     private final OvsBridgeRefEntryCache ovsBridgeRefEntryCache;
     private final TunnelStateCache tunnelStateCache;
     private final DirectTunnelUtils directTunnelUtils;
-    private final OfEndPointCache ofEndPointCache;
-    private final ItmConfig itmConfig;
     private final TombstonedNodeManager tombstonedNodeManager;
 
     public ItmInternalTunnelDeleteWorker(DataBroker dataBroker, JobCoordinator jobCoordinator,
@@ -102,8 +98,6 @@ public class ItmInternalTunnelDeleteWorker {
                                          OvsBridgeRefEntryCache ovsBridgeRefEntryCache,
                                          TunnelStateCache tunnelStateCache,
                                          DirectTunnelUtils directTunnelUtils,
-                                         OfEndPointCache ofEndPointCache,
-                                         ItmConfig itmConfig,
                                          TombstonedNodeManager tombstonedNodeManager) {
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
@@ -115,8 +109,6 @@ public class ItmInternalTunnelDeleteWorker {
         this.ovsBridgeRefEntryCache = ovsBridgeRefEntryCache;
         this.tunnelStateCache = tunnelStateCache;
         this.directTunnelUtils = directTunnelUtils;
-        this.ofEndPointCache = ofEndPointCache;
-        this.itmConfig = itmConfig;
         this.tombstonedNodeManager = tombstonedNodeManager;
     }
 
@@ -199,14 +191,14 @@ public class ItmInternalTunnelDeleteWorker {
                                     // Remove the deleted TZ membership from the TEP
                                     LOG.debug("Removing TZ list {} from Existing TZ list {} ", srcTZones,
                                             dstTep.getTzMembership());
-                                    List<TzMembership> updatedList =
+                                    Map<TzMembershipKey, TzMembership> updatedMap =
                                             ItmUtils.removeTransportZoneMembership(dstTep, srcTZones);
-                                    if (updatedList.isEmpty()) {
+                                    if (updatedMap.isEmpty()) {
                                         LOG.debug(" This TEP can be deleted {}", srcTep);
                                         tepDeleteFlag = true;
                                     } else {
                                         TunnelEndPointsBuilder modifiedTepBld = new TunnelEndPointsBuilder(dstTep);
-                                        modifiedTepBld.setTzMembership(updatedList);
+                                        modifiedTepBld.setTzMembership(updatedMap);
                                         TunnelEndPoints modifiedTep = modifiedTepBld.build() ;
                                         InstanceIdentifier<TunnelEndPoints> tepPath = InstanceIdentifier
                                                 .builder(DpnEndpoints.class)
@@ -471,41 +463,6 @@ public class ItmInternalTunnelDeleteWorker {
             return;
         }
 
-        OvsdbBridgeRef ovsdbBridgeRef = getOvsdbBridgeRef(dpId);
-        Optional<OvsBridgeEntry> ovsBridgeEntryOptional = ovsBridgeEntryCache.get(dpId);
-
-        // delete bridge to tunnel interface mappings
-        OvsBridgeEntryKey bridgeEntryKey = new OvsBridgeEntryKey(dpId);
-        InstanceIdentifier<OvsBridgeEntry> bridgeEntryIid =
-                DirectTunnelUtils.getOvsBridgeEntryIdentifier(bridgeEntryKey);
-
-
-        if (ovsBridgeEntryOptional.isPresent()) {
-            @NonNull Map<OvsBridgeTunnelEntryKey, OvsBridgeTunnelEntry> bridgeTunnelEntries =
-                    ovsBridgeEntryOptional.get().nonnullOvsBridgeTunnelEntry();
-
-            if (ovsdbBridgeRef != null) {
-                if (!itmConfig.isUseOfTunnels()) {
-                    removeTerminationEndPoint(ovsdbBridgeRef.getValue(), interfaceName);
-                } else if (bridgeTunnelEntries.size() <= 1) {
-                    removeTerminationEndPoint(ovsdbBridgeRef.getValue(), ofEndPointCache.get(dpId));
-                    ofEndPointCache.remove(dpId);
-                }
-            }
-
-            deleteBridgeInterfaceEntry(bridgeEntryKey, bridgeTunnelEntries, bridgeEntryIid, interfaceName);
-            // IfIndex needs to be removed only during State Clean up not Config
-        }
-
-        directTunnelUtils.deleteTunnelStateEntry(interfaceName);
-        // delete tunnel ingress flow
-        removeTunnelIngressFlow(tx, interfaceName, dpId);
-        directTunnelUtils.removeTunnelEgressFlow(tx, dpId, interfaceName);
-        cleanUpInterfaceWithUnknownState(interfaceName, parentRefs, ifTunnel);
-        directTunnelUtils.removeLportTagInterfaceMap(interfaceName);
-    }
-
-    private OvsdbBridgeRef getOvsdbBridgeRef(Uint64 dpId) throws ReadFailedException {
         Optional<OvsBridgeRefEntry> ovsBridgeRefEntryOptional = ovsBridgeRefEntryCache.get(dpId);
         Optional<OvsBridgeEntry> ovsBridgeEntryOptional;
         OvsdbBridgeRef ovsdbBridgeRef = null;
@@ -517,7 +474,28 @@ public class ItmInternalTunnelDeleteWorker {
                 ovsdbBridgeRef = ovsBridgeEntryOptional.get().getOvsBridgeReference();
             }
         }
-        return ovsdbBridgeRef;
+
+        if (ovsdbBridgeRef != null) {
+            removeTerminationEndPoint(ovsdbBridgeRef.getValue(), interfaceName);
+        }
+        removeTunnelIngressFlow(tx, interfaceName, dpId);
+
+        // delete bridge to tunnel interface mappings
+        OvsBridgeEntryKey bridgeEntryKey = new OvsBridgeEntryKey(dpId);
+        InstanceIdentifier<OvsBridgeEntry> bridgeEntryIid =
+                DirectTunnelUtils.getOvsBridgeEntryIdentifier(bridgeEntryKey);
+        ovsBridgeEntryOptional = ovsBridgeEntryCache.get(dpId);
+
+
+        if (ovsBridgeEntryOptional.isPresent()) {
+            @NonNull Map<OvsBridgeTunnelEntryKey, OvsBridgeTunnelEntry> bridgeTunnelEntries =
+                    ovsBridgeEntryOptional.get().nonnullOvsBridgeTunnelEntry();
+
+            deleteBridgeInterfaceEntry(bridgeEntryKey, bridgeTunnelEntries, bridgeEntryIid, interfaceName);
+            // IfIndex needs to be removed only during State Clean up not Config
+            cleanUpInterfaceWithUnknownState(interfaceName, parentRefs, ifTunnel);
+            directTunnelUtils.removeLportTagInterfaceMap(interfaceName);
+        }
     }
 
     private void removeTerminationEndPoint(InstanceIdentifier<?> bridgeIid, String interfaceName) {

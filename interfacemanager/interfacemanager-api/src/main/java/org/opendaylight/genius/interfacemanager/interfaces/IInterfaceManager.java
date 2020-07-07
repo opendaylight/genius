@@ -196,4 +196,13 @@ public interface IInterfaceManager {
     Map getBridgeRefEntryMap();
 
     boolean isItmOfTunnelsEnabled();
+
+    void addInternalTunnelToCache(String tunnelName, org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
+            .ietf.interfaces.rev140508.interfaces.state.Interface iface);
+
+    org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface
+        getInternalTunnelCacheInfo(String tunnelName);
+
+    org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface
+        removeInternalTunnelFromCache(String tunnelName);
 }
