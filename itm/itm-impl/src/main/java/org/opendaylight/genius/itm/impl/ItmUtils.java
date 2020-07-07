@@ -909,15 +909,16 @@ public final class ItmUtils {
         return TUNNEL_TYPE_MAP.get(tunnelType);
     }
 
-    public static List<TzMembership> removeTransportZoneMembership(TunnelEndPoints endPts, Map<TzMembershipKey,
-            TzMembership> zones) {
+    public static Map<TzMembershipKey, TzMembership> removeTransportZoneMembership(TunnelEndPoints endPts,
+                                                                                   Map<TzMembershipKey,
+                                                                                           TzMembership> zones) {
         LOG.trace(" RemoveTransportZoneMembership TEPs {}, Membership to be removed {} ", endPts, zones);
-        List<TzMembership> existingTzList = new ArrayList<>(endPts.nonnullTzMembership().values());
+        Map<TzMembershipKey, TzMembership> existingTzMap = endPts.nonnullTzMembership();
         for (TzMembership membership : zones.values()) {
-            existingTzList.remove(new TzMembershipBuilder().setZoneName(membership.getZoneName()).build());
+            existingTzMap.remove(membership.key());
         }
-        LOG.debug("Modified Membership List {}", existingTzList);
-        return existingTzList;
+        LOG.debug("Modified Membership Map {}", existingTzMap);
+        return existingTzMap;
     }
 
     @NonNull

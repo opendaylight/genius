@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.itm.itmdirecttunnels.listeners;
 
+import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
 
 import com.google.common.util.concurrent.ListenableFuture;
@@ -14,7 +15,6 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -24,6 +24,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.genius.infra.Datastore.Operational;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
@@ -57,6 +58,9 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.inventory.rev130819.FlowCapableNodeConnector;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.port.rev130925.PortReason;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.tep.config.OfDpnTep;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.of.teps.state.OfTep;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.of.teps.state.OfTepBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.of.teps.state.OfTepKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListKey;
@@ -124,30 +128,37 @@ public class TunnelInventoryStateListener extends
     public void remove(@NonNull InstanceIdentifier<FlowCapableNodeConnector> key,
                        @NonNull FlowCapableNodeConnector flowCapableNodeConnector) {
         String portName = flowCapableNodeConnector.getName();
+        NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
         LOG.debug("InterfaceInventoryState Remove for {}", portName);
         EVENT_LOGGER.debug("ITM-TunnelInventoryState,REMOVE DTCN received for {}",
                 flowCapableNodeConnector.getName());
-        // ITM Direct Tunnels Return if its not tunnel port and if its not Internal
-        if (!DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName) && !portName.startsWith("of")) {
-            LOG.debug("Node Connector Remove - {} Interface is not a tunnel I/f, so no-op", portName);
-            return;
-        } else {
-            try {
-                if (DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName)
-                        && !tunnelStateCache.isInternalBasedOnState(portName)) {
-                    LOG.debug("Node Connector Remove {} Interface is not a internal tunnel I/f, so no-op", portName);
-                    return;
-                }
-            } catch (ReadFailedException e) {
-                LOG.error("Tunnel {} is not present in operational DS ", portName);
-                return;
-            }
-        }
+
         if (!directTunnelUtils.isEntityOwner()) {
             return;
         }
+        // ITM Direct Tunnels Return if its not tunnel port or of-ports
+        if (portName.startsWith("of") && interfaceManager.isItmOfTunnelsEnabled()) {
+            LOG.debug("OfPortState REMOVE for {}", portName);
+            EVENT_LOGGER.debug("ITM-OfPortStateState Entity Owner, REMOVE {} {}", nodeConnectorId.getValue(), portName);
+            OfPortStateRemoveWorker ofPortStateRemoveWorker = new OfPortStateRemoveWorker(nodeConnectorId,
+                    null, flowCapableNodeConnector, portName);
+            coordinator.enqueueJob(portName, ofPortStateRemoveWorker, ITMConstants.JOB_MAX_RETRIES);
+            return;
+        } else if (!DirectTunnelUtils.TUNNEL_PORT_PREDICATE.test(portName)) {
+            LOG.debug("Node Connector Remove - {} Interface is not a tunnel I/f, so no-op", portName);
+            return;
+        }
+
+        try {
+            if (!tunnelStateCache.isInternalBasedOnState(portName)) {
+                LOG.debug("Node Connector Remove {} Interface is not a internal tunnel I/f, so no-op", portName);
+                return;
+            }
+        } catch (ReadFailedException e) {
+            LOG.error("Tunnel {} is not present in operational DS ", portName);
+            return;
+        }
         LOG.debug("Received NodeConnector Remove Event: {}, {}", key, flowCapableNodeConnector);
-        NodeConnectorId nodeConnectorId = InstanceIdentifier.keyOf(key.firstIdentifierOf(NodeConnector.class)).getId();
         remove(nodeConnectorId, flowCapableNodeConnector, portName);
     }
 
@@ -360,6 +371,32 @@ public class TunnelInventoryStateListener extends
                 Interface.OperStatus.Unknown);
     }
 
+    private void updateOfTepStateOnNodeRemove(Uint64 srcDpn, String ofTepName,
+                                              FlowCapableNodeConnector flowCapableNodeConnector,
+                                              TypedReadWriteTransaction<Operational> tx) throws ReadFailedException {
+        LOG.debug("Updating oftep oper-status to UNKNOWN for : {}", ofTepName);
+        Optional<OfDpnTep> dpnTepInfo = ofDpnTepConfigCache.get(srcDpn.toJava());
+        if (dpnTepInfo == null || !ofTepName.equals(flowCapableNodeConnector.getName())) {
+            return;
+        }
+        handleOfTepStateUpdates(dpnTepInfo, tx, true, ofTepName,
+                Interface.OperStatus.Unknown);
+    }
+
+    private void handleOfTepStateUpdates(Optional<OfDpnTep> dpnTepInfo, TypedReadWriteTransaction<Operational> tx,
+                                         boolean opStateModified, String ofTepName, Interface.OperStatus opState) {
+        LOG.debug("updating oftep state entry for {}", ofTepName);
+        InstanceIdentifier<OfTep> ofTepStateId = ItmUtils.buildStateOfTepListId(new OfTepKey(ofTepName));
+        OfTepBuilder ofTepBuilder = new OfTepBuilder();
+        ofTepBuilder.withKey(new OfTepKey(ofTepName));
+        if (opStateModified) {
+            LOG.debug("updating oftep oper status as {} for {}", opState.getName(), ofTepName);
+            ofTepBuilder.setOfTepState(DirectTunnelUtils.convertInterfaceToTunnelOperState(opState));
+            LOG.trace("updated to {} for {}",opState.getName(), ofTepName);
+        }
+        tx.merge(ofTepStateId, ofTepBuilder.build());
+    }
+
     private Interface.OperStatus getOpState(FlowCapableNodeConnector flowCapableNodeConnector) {
         return flowCapableNodeConnector.getState().isLive()
                 && !flowCapableNodeConnector.getConfiguration().isPORTDOWN()
@@ -412,33 +449,59 @@ public class TunnelInventoryStateListener extends
             //Remove event is because of connection lost between controller and switch, or switch shutdown.
             // Hence, dont remove the interface but set the status as "unknown"
 
-            if (interfaceName.startsWith("of")) {
-                LOG.debug("Received remove state for dpid {}", dpId.intValue());
-                for (Map.Entry<String, NodeConnectorInfo> entry : meshedMap.entrySet()) {
-                    if (!dpId.toString().equals(entry.getKey())) {
-                        String fwdTunnel = dpnTepStateCache.getDpnTepInterface(dpId, Uint64.valueOf(entry.getKey()))
-                                .getTunnelName();
-                        LOG.debug("Fwd Tunnel name for {} : {} is {}", dpId.intValue(), entry.getKey(), fwdTunnel);
-                        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
-                            tx -> updateInterfaceStateOnNodeRemove(tx, fwdTunnel, flowCapableNodeConnector)));
-                        String bwdTunnel = dpnTepStateCache.getDpnTepInterface(Uint64.valueOf(entry.getKey()), dpId)
-                                .getTunnelName();
-                        LOG.debug("Bwd Tunnel name for {} : {} is {}", entry.getKey(), dpId.intValue(), bwdTunnel);
-                        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
-                            tx -> updateInterfaceStateOnNodeRemove(tx, bwdTunnel,
-                                    entry.getValue().getNodeConnector())));
-                    }
-                }
-            } else {
-                futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
-                    tx -> updateInterfaceStateOnNodeRemove(tx, interfaceName, flowCapableNodeConnector)));
-            }
+            futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
+                tx -> updateInterfaceStateOnNodeRemove(tx, interfaceName, flowCapableNodeConnector)));
+
         } else {
             LOG.debug("removing interface state for interface: {}", interfaceName);
+            directTunnelUtils.deleteTunnelStateEntry(interfaceName);
+            DpnTepInterfaceInfo dpnTepInfo = dpnTepStateCache.getTunnelFromCache(interfaceName);
+            if (dpnTepInfo != null) {
+                futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION, tx -> {
+                    // Do if-index and ingress flow clean-up only for tunnel-interfaces
+                    directTunnelUtils.removeLportTagInterfaceMap(interfaceName);
+                    directTunnelUtils.removeTunnelIngressFlow(tx, dpId, interfaceName);
+                    directTunnelUtils.removeTunnelEgressFlow(tx, dpId, interfaceName);
+                }));
+            } else {
+                LOG.error("DPNTEPInfo is null for Tunnel Interface {}", interfaceName);
+            }
             EVENT_LOGGER.debug("ITM-TunnelInventoryState,REMOVE Table 0 flow for {} completed", interfaceName);
-            // removing interfaces are already done in delete worker
-            meshedMap.remove(dpId.toString());
         }
+        return futures;
+    }
+
+    private List<ListenableFuture<Void>> removeOfTepStateConfiguration(NodeConnectorId nodeConnectorIdNew,
+                                                                       NodeConnectorId nodeConnectorIdOld,
+                                                                       String ofTepName,
+                                                                       FlowCapableNodeConnector
+                                                                               fcNodeConnectorOld) {
+        List<ListenableFuture<Void>> futures = new ArrayList<>();
+
+        NodeConnectorId nodeConnectorId = (nodeConnectorIdOld != null && !nodeConnectorIdNew.equals(nodeConnectorIdOld))
+                ? nodeConnectorIdOld : nodeConnectorIdNew;
+
+        Uint64 dpId = DirectTunnelUtils.getDpnFromNodeConnectorId(nodeConnectorId);
+
+            // In a genuine port delete scenario, the reason will be there in the incoming event, for all remaining
+            // cases treat the event as DPN disconnect, if old and new ports are same. Else, this is a VM migration
+            // scenario, and should be treated as port removal.
+        if (fcNodeConnectorOld.getReason() != PortReason.Delete) {
+            //Remove event is because of connection lost between controller and switch, or switch shutdown.
+            // Hence, dont remove the interface but set the status as "unknown"
+            futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL, tx -> {
+                updateOfTepStateOnNodeRemove(dpId, ofTepName, fcNodeConnectorOld, tx);
+            }));
+        } else {
+            LOG.debug("removing oftep state for oftep: {}", ofTepName);
+            futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION, tx -> {
+                directTunnelUtils.deleteOfTepStateEntry(ofTepName);
+                directTunnelUtils.removeLportTagInterfaceMap(ofTepName);
+                directTunnelUtils.removeTunnelIngressFlow(tx, dpId, ofTepName);
+            }));
+            EVENT_LOGGER.debug("ITM-OfTepInventoryState,REMOVE Table 0 flow for {} completed", ofTepName);
+        }
+
         return futures;
     }
 
@@ -495,6 +558,35 @@ public class TunnelInventoryStateListener extends
         public String toString() {
             return "TunnelInterfaceStateRemoveWorker{nodeConnectorId=" + nodeConnectorId + ", fcNodeConnector"
                     + flowCapableNodeConnector + ", interfaceName='" + interfaceName + '\'' + '}';
+        }
+    }
+
+    private class OfPortStateRemoveWorker implements Callable {
+        private final NodeConnectorId nodeconnectorIdNew;
+        private final NodeConnectorId nodeconnectorIdOld;
+        private final FlowCapableNodeConnector fcNodeConnectorOld;
+        private final String ofTepName;
+
+        OfPortStateRemoveWorker(NodeConnectorId nodeconnectorIdNew, NodeConnectorId nodeconnectorIdOld,
+                                FlowCapableNodeConnector fcNodeConnectorOld, String ofTepName) {
+            this.nodeconnectorIdNew = nodeconnectorIdNew;
+            this.nodeconnectorIdOld = nodeconnectorIdOld;
+            this.fcNodeConnectorOld = fcNodeConnectorOld;
+            this.ofTepName = ofTepName;
+        }
+
+        @Override
+        public Object call() throws Exception {
+            // If another renderer(for eg : OVS) needs to be supported, check can be performed here
+            // to call the respective helpers.
+            return removeOfTepStateConfiguration(nodeconnectorIdNew, nodeconnectorIdOld, ofTepName, fcNodeConnectorOld);
+        }
+
+        @Override
+        public String toString() {
+            return "OfTepStateRemoveWorker{nodeConnectorInfo=" + nodeconnectorIdNew + ", nodeConnectorIdOld="
+                    + nodeconnectorIdOld + ", fcNodeConnectorOld=" + fcNodeConnectorOld + ", ofTepName='"
+                    + ofTepName + '\'' + '}';
         }
     }
 }
