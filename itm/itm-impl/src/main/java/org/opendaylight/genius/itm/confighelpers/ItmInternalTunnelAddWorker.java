@@ -12,10 +12,11 @@ import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Callable;
@@ -61,6 +62,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.Dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfoBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfoKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.DpnsTeps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.DpnsTepsBuilder;
@@ -73,6 +75,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tun
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.OperationFailedException;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -142,10 +145,12 @@ public final class ItmInternalTunnelAddWorker {
         DirectTunnelUtils directTunnelUtils) throws ExecutionException, InterruptedException, OperationFailedException {
         LOG.debug("Updating CONFIGURATION datastore with DPN {} ", dpn);
         InstanceIdentifier<DpnEndpoints> dep = InstanceIdentifier.create(DpnEndpoints.class) ;
-        List<DPNTEPsInfo> dpnList = new ArrayList<>() ;
-        dpnList.add(new DPNTEPsInfoBuilder(dpn)
-            .setDstId(directTunnelUtils.allocateId(ITMConstants.ITM_IDPOOL_NAME, dpn.getDPNID().toString())).build());
-        DpnEndpoints tnlBuilder = new DpnEndpointsBuilder().setDPNTEPsInfo(dpnList).build() ;
+        Map<DPNTEPsInfoKey, DPNTEPsInfo> dpnMap = new HashMap<>() ;
+        DPNTEPsInfo info = new DPNTEPsInfoBuilder(dpn)
+                .setDstId(directTunnelUtils
+                        .allocateId(ITMConstants.ITM_IDPOOL_NAME, dpn.getDPNID().toString())).build();
+        dpnMap.put(info.key(), info);
+        DpnEndpoints tnlBuilder = new DpnEndpointsBuilder().setDPNTEPsInfo(dpnMap).build() ;
         tx.merge(dep, tnlBuilder);
     }
 
@@ -341,42 +346,36 @@ public final class ItmInternalTunnelAddWorker {
                         + " destination IP - {} gateway IP - {}", trunkInterfaceName, parentInterfaceName,
                 srcte.getIpAddress(), dstte.getIpAddress(), gwyIpAddress) ;
 
-        boolean useOfTunnel = itmCfg.isUseOfTunnels();
+        //boolean useOfTunnel = itmCfg.isUseOfTunnels();
 
         List<TunnelOptions> tunOptions = ItmUtils.buildTunnelOptions(srcte, itmCfg);
         Boolean isMonitorEnabled = !tunType.isAssignableFrom(TunnelTypeLogicalGroup.class) && isTunnelMonitoringEnabled;
         Interface iface = ItmUtils.buildTunnelInterface(srcDpnId, trunkInterfaceName,
                 trunkInterfaceDecription(ItmUtils.convertTunnelTypetoString(srcte.getTunnelType())),
                 true, tunType, srcte.getIpAddress(), dstte.getIpAddress(), true,
-                isMonitorEnabled, monitorProtocol, monitorInterval, useOfTunnel, parentInterfaceName, tunOptions);
+                isMonitorEnabled, monitorProtocol, monitorInterval, false, parentInterfaceName, tunOptions);
         LOG.debug("Trunk Interface builder - {} ", iface);
 
         final DpnTepsStateBuilder dpnTepsStateBuilder = new DpnTepsStateBuilder();
         final DpnsTepsBuilder dpnsTepsBuilder = new DpnsTepsBuilder();
-        final List<DpnsTeps> dpnTeps = new ArrayList<>();
-        final List<RemoteDpns> remoteDpns = new ArrayList<>();
-        String ofTunnelPortName = null;
+        final Map<DpnsTepsKey, DpnsTeps> dpnTeps = new HashMap<>();
+        final Map<RemoteDpnsKey, RemoteDpns> remoteDpns = new HashMap<>();
         dpnsTepsBuilder.withKey(new DpnsTepsKey(srcDpnId));
         dpnsTepsBuilder.setTunnelType(srcte.getTunnelType());
         dpnsTepsBuilder.setSourceDpnId(srcDpnId);
-        if (useOfTunnel) {
-            String tunnelType = ItmUtils.convertTunnelTypetoString(srcte.getTunnelType());
-            ofTunnelPortName = DirectTunnelUtils.generateOfPortName(srcDpnId, tunnelType);
-            dpnsTepsBuilder.setOfTunnel(ofTunnelPortName);
-        }
         RemoteDpnsBuilder remoteDpn = new RemoteDpnsBuilder();
         remoteDpn.withKey(new RemoteDpnsKey(dstDpnId));
         remoteDpn.setDestinationDpnId(dstDpnId);
         remoteDpn.setTunnelName(trunkInterfaceName);
         remoteDpn.setMonitoringEnabled(isTunnelMonitoringEnabled);
-        remoteDpn.setMonitoringInterval(monitorInterval);
+        remoteDpn.setMonitoringInterval(Uint16.valueOf(monitorInterval));
         remoteDpn.setInternal(true);
-        remoteDpns.add(remoteDpn.build());
+        remoteDpns.put(remoteDpn.key(),remoteDpn.build());
         dpnsTepsBuilder.setRemoteDpns(remoteDpns);
-        dpnTeps.add(dpnsTepsBuilder.build());
+        dpnTeps.put(dpnsTepsBuilder.key(), dpnsTepsBuilder.build());
         dpnTepsStateBuilder.setDpnsTeps(dpnTeps);
         updateDpnTepInterfaceInfoToConfig(dpnTepsStateBuilder.build());
-        addTunnelConfiguration(iface, ofTunnelPortName);
+        addTunnelConfiguration(iface, iface.getName());
     }
 
     private static void updateDpnTepInterfaceInfoToConfig(DpnTepsState dpnTeps) {
@@ -385,13 +384,13 @@ public final class ItmInternalTunnelAddWorker {
         ITMBatchingUtils.updateContainer(dpnTepsII, dpnTeps, ITMBatchingUtils.EntityType.DEFAULT_CONFIG);
     }
 
-    private void addTunnelConfiguration(Interface iface, String ofTunnelPortName)
-                                                                throws ReadFailedException {
+    private void addTunnelConfiguration(Interface iface, String tunnelName)
+            throws ReadFailedException {
         // ITM Direct Tunnels This transaction is not being used -- CHECK
         ParentRefs parentRefs = iface.augmentation(ParentRefs.class);
         if (parentRefs == null) {
             LOG.warn("ParentRefs for interface: {} Not Found. Creation of Tunnel OF-Port not supported"
-                    + " when dpid not provided.", iface.getName());
+                    + " when dpid not provided.", tunnelName);
             return;
         }
 
@@ -401,45 +400,39 @@ public final class ItmInternalTunnelAddWorker {
                     iface.getName());
             return;
         }
-        String tunnelName = ofTunnelPortName != null ? ofTunnelPortName : iface.getName();
         // create bridge on switch, if switch is connected
-        Optional<OvsBridgeRefEntry> ovsBridgeRefEntry = ovsBridgeRefEntryCache.get(dpId);
         LOG.info("adding tunnel port configuration for tunnelName: {}", tunnelName);
-        if (createTunnelPort(dpId)) {
-            LOG.debug("creating dpn tunnel mapping  for dpn: {} tunnelName: {}", dpId, tunnelName);
-            DirectTunnelUtils.createBridgeTunnelEntryInConfigDS(dpId, iface.getName());
-            if (ofTunnelPortName != null) {
-                ofEndPointCache.add(dpId, tunnelName);
-            }
-            if (ovsBridgeRefEntry.isPresent()) {
-                LOG.debug("creating bridge interface on dpn {}", dpId);
-                InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid =
-                        (InstanceIdentifier<OvsdbBridgeAugmentation>) ovsBridgeRefEntry.get()
-                                .getOvsBridgeReference().getValue();
-                LOG.debug("adding port to the bridge:{} tunnelName: {}", bridgeIid, tunnelName);
-                addPortToBridge(bridgeIid, iface, tunnelName);
-            } else {
-                LOG.debug("Bridge not found. Registering Eventcallback for dpid {}", dpId);
+        LOG.debug("creating dpn tunnel mapping  for dpn: {} tunnelName: {}", dpId, tunnelName);
+        Optional<OvsBridgeRefEntry> ovsBridgeRefEntry = ovsBridgeRefEntryCache.get(dpId);
+        DirectTunnelUtils.createBridgeTunnelEntryInConfigDS(dpId, iface.getName());
+        if (ovsBridgeRefEntry.isPresent()) {
+            LOG.debug("creating bridge interface on dpn {}", dpId);
+            InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid =
+                    (InstanceIdentifier<OvsdbBridgeAugmentation>) ovsBridgeRefEntry.get()
+                            .getOvsBridgeReference().getValue();
+            LOG.debug("adding port to the bridge:{} tunnelName: {}", bridgeIid, tunnelName);
+            addPortToBridge(bridgeIid, iface, tunnelName);
+        } else {
+            LOG.debug("Bridge not found. Registering Eventcallback for dpid {}", dpId);
 
-                InstanceIdentifier<OvsBridgeRefEntry> bridgeRefEntryFromDS =
-                        InstanceIdentifier.builder(OvsBridgeRefInfo.class)
-                                .child(OvsBridgeRefEntry.class, new OvsBridgeRefEntryKey(dpId)).build();
+            InstanceIdentifier<OvsBridgeRefEntry> bridgeRefEntryFromDS =
+                    InstanceIdentifier.builder(OvsBridgeRefInfo.class)
+                            .child(OvsBridgeRefEntry.class, new OvsBridgeRefEntryKey(dpId)).build();
 
-                eventCallbacks.onAdd(LogicalDatastoreType.OPERATIONAL, bridgeRefEntryFromDS, (refEntryIid) -> {
-                    addPortToBridgeOnCallback(iface, tunnelName, refEntryIid);
-                    return DataTreeEventCallbackRegistrar.NextAction.UNREGISTER;
-                }, Duration.ofMillis(5000), (id) -> {
-                        try {
-                            Optional<OvsBridgeRefEntry> ovsBridgeRefEntryOnCallback = ovsBridgeRefEntryCache.get(dpId);
-                            InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIidOnCallback =
-                                    (InstanceIdentifier<OvsdbBridgeAugmentation>) ovsBridgeRefEntryOnCallback.get()
-                                            .getOvsBridgeReference().getValue();
-                            addPortToBridge(bridgeIidOnCallback, iface, tunnelName);
-                        }   catch (ReadFailedException e) {
-                            LOG.error("Bridge not found in DS/cache for dpId {}", dpId);
-                        }
-                    });
-            }
+            eventCallbacks.onAdd(LogicalDatastoreType.OPERATIONAL, bridgeRefEntryFromDS, (refEntryIid) -> {
+                addPortToBridgeOnCallback(iface, tunnelName, refEntryIid);
+                return DataTreeEventCallbackRegistrar.NextAction.UNREGISTER;
+            }, Duration.ofMillis(5000), (id) -> {
+                    try {
+                        Optional<OvsBridgeRefEntry> ovsBridgeRefEntryOnCallback = ovsBridgeRefEntryCache.get(dpId);
+                        InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIidOnCallback =
+                                (InstanceIdentifier<OvsdbBridgeAugmentation>) ovsBridgeRefEntryOnCallback.get()
+                                        .getOvsBridgeReference().getValue();
+                        addPortToBridge(bridgeIidOnCallback, iface, tunnelName);
+                    }   catch (ReadFailedException e) {
+                        LOG.error("Bridge not found in DS/cache for dpId {}", dpId);
+                    }
+                });
         }
     }
 
@@ -448,13 +441,6 @@ public final class ItmInternalTunnelAddWorker {
         if (ifTunnel != null) {
             directTunnelUtils.addTunnelPortToBridge(ifTunnel, bridgeIid, iface, portName);
         }
-    }
-
-    private boolean createTunnelPort(Uint64 dpId) {
-        if (!itmCfg.isUseOfTunnels()) {
-            return true;
-        }
-        return ofEndPointCache.get(dpId) == null;
     }
 
     private void addPortToBridgeOnCallback(Interface iface, String portName, OvsBridgeRefEntry bridgeRefEntry) {

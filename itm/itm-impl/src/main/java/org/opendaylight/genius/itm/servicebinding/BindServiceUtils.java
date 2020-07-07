@@ -187,4 +187,24 @@ public final class BindServiceUtils {
                 .child(ServicesInfo.class, new ServicesInfoKey(interfaceName, serviceMode))
                 .child(BoundServices.class, new BoundServicesKey(servicePriority)).build();
     }
+
+    public static void unbindService(List<ListenableFuture<Void>> futures,
+                                     ManagedNewTransactionRunner txRunner,
+                                     String interfaceName) {
+        LOG.info("Unbinding service for : {}", interfaceName);
+        futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
+            tx -> tx.delete(buildDefaultServiceId(interfaceName))));
+    }
+
+    public static InstanceIdentifier<BoundServices> buildDefaultServiceId(String interfaceName) {
+        return buildServiceId(interfaceName, ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME,
+                NwConstants.DEFAULT_EGRESS_SERVICE_INDEX), ServiceModeEgress.class);
+    }
+
+    public static InstanceIdentifier<BoundServices> buildServiceId(String interfaceName, short serviceIndex,
+                                                                   Class<? extends ServiceModeBase> serviceMode) {
+        return InstanceIdentifier.builder(ServiceBindings.class)
+                .child(ServicesInfo.class, new ServicesInfoKey(interfaceName, serviceMode))
+                .child(BoundServices.class, new BoundServicesKey(Uint8.valueOf(serviceIndex))).build();
+    }
 }

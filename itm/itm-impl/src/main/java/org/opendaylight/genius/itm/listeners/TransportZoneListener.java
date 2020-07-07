@@ -31,7 +31,9 @@ import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
+import org.opendaylight.genius.itm.cache.OfDpnTepConfigCache;
 import org.opendaylight.genius.itm.cache.OfEndPointCache;
+import org.opendaylight.genius.itm.cache.OfTepStateCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeEntryCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.cache.TunnelStateCache;
@@ -112,6 +114,8 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
     private final IInterfaceManager interfaceManager;
     private final ItmOfTunnelAddWorker itmOfTunnelAddWorker;
     private final ItmOfTunnelDeleteWorker itmOfTunnelDeleteWorker;
+    private final OfDpnTepConfigCache ofDpnTepConfigCache;
+    private final OfTepStateCache ofTepStateCache;
 
     @Inject
     public TransportZoneListener(final DataBroker dataBroker,
@@ -127,7 +131,9 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
                                  final OfEndPointCache ofEndPointCache,
                                  final ServiceRecoveryRegistry serviceRecoveryRegistry,
                                  final DataTreeEventCallbackRegistrar eventCallbacks,
-                                 final TombstonedNodeManager tombstonedNodeManager) {
+                                 final TombstonedNodeManager tombstonedNodeManager,
+                                 final OfDpnTepConfigCache ofDpnTepConfigCache,
+                                 final OfTepStateCache ofTepStateCache) {
         super(dataBroker, LogicalDatastoreType.CONFIGURATION,
                 InstanceIdentifier.create(TransportZones.class).child(TransportZone.class));
         this.dataBroker = dataBroker;
@@ -139,10 +145,11 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         this.eventCallbacks = eventCallbacks;
         initializeTZNode();
+        this.ofDpnTepConfigCache = ofDpnTepConfigCache;
+        this.ofTepStateCache = ofTepStateCache;
         this.itmInternalTunnelDeleteWorker = new ItmInternalTunnelDeleteWorker(dataBroker, jobCoordinator,
                 tunnelMonitoringConfig, interfaceManager, dpnTepStateCache, ovsBridgeEntryCache,
-                ovsBridgeRefEntryCache, tunnelStateCache, directTunnelUtils, ofEndPointCache, itmConfig,
-                tombstonedNodeManager);
+                ovsBridgeRefEntryCache, tunnelStateCache, directTunnelUtils, tombstonedNodeManager);
         this.itmInternalTunnelAddWorker = new ItmInternalTunnelAddWorker(dataBroker, jobCoordinator,
                 tunnelMonitoringConfig, itmConfig, directTunnelUtils, interfaceManager,
                 ovsBridgeRefEntryCache, ofEndPointCache, eventCallbacks);
@@ -150,8 +157,9 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         this.interfaceManager = interfaceManager;
         this.itmOfTunnelAddWorker = new ItmOfTunnelAddWorker(dataBroker, jobCoordinator,itmConfig,
                 directTunnelUtils, ovsBridgeRefEntryCache, eventCallbacks);
-        this.itmOfTunnelDeleteWorker = new ItmOfTunnelDeleteWorker(dataBroker, jobCoordinator,itmConfig,
-                directTunnelUtils, ovsBridgeRefEntryCache, eventCallbacks);
+        this.itmOfTunnelDeleteWorker = new ItmOfTunnelDeleteWorker(dataBroker, ofDpnTepConfigCache,
+                tombstonedNodeManager, interfaceManager, directTunnelUtils, ovsBridgeRefEntryCache, ovsBridgeEntryCache,
+                ofTepStateCache);
         serviceRecoveryRegistry.addRecoverableListener(ItmServiceRecoveryHandler.getServiceRegistryKey(),
                 this);
     }
@@ -184,47 +192,58 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         LOG.debug("Received Transport Zone Remove Event: {}", transportZone);
         boolean allowTunnelDeletion;
 
-        // check if TZ received for removal is default-transport-zone,
-        // if yes, then check if it is received from northbound, then
-        // do not entertain request and skip tunnels remove operation
-        // if def-tz removal request is due to def-tz-enabled flag is disabled or
-        // due to change in def-tz-tunnel-type, then allow def-tz tunnels deletion
-        if (ITMConstants.DEFAULT_TRANSPORT_ZONE.equalsIgnoreCase(transportZone.getZoneName())) {
-            // Get TunnelTypeBase object for tunnel-type configured in config file
-            Class<? extends TunnelTypeBase> tunType = ItmUtils.getTunnelType(itmConfig.getDefTzTunnelType());
+        if (interfaceManager.isItmOfTunnelsEnabled()) {
+            Map<OfDpnTepKey, OfDpnTep> dpnTepMap = createOfTepInfo(transportZone);
 
-            if (!itmConfig.isDefTzEnabled() || !Objects.equals(transportZone.getTunnelType(), tunType)) {
-                allowTunnelDeletion = true;
+            if (!dpnTepMap.isEmpty()) {
+                jobCoordinator.enqueueJob(transportZone.getZoneName(),
+                        new ItmOfPortRemoveWorker(dpnTepMap, itmOfTunnelDeleteWorker));
             } else {
-                // this is case when def-tz removal request is from Northbound.
-                allowTunnelDeletion = false;
-                LOG.error("Deletion of {} is an incorrect usage",ITMConstants.DEFAULT_TRANSPORT_ZONE);
+                EVENT_LOGGER.debug("DPN List in TZ is empty");
             }
         } else {
-            allowTunnelDeletion = true;
-        }
+            // check if TZ received for removal is default-transport-zone,
+            // if yes, then check if it is received from northbound, then
+            // do not entertain request and skip tunnels remove operation
+            // if def-tz removal request is due to def-tz-enabled flag is disabled or
+            // due to change in def-tz-tunnel-type, then allow def-tz tunnels deletion
+            if (ITMConstants.DEFAULT_TRANSPORT_ZONE.equalsIgnoreCase(transportZone.getZoneName())) {
+                // Get TunnelTypeBase object for tunnel-type configured in config file
+                Class<? extends TunnelTypeBase> tunType = ItmUtils.getTunnelType(itmConfig.getDefTzTunnelType());
 
-        if (allowTunnelDeletion) {
-            //TODO : DPList code can be refactor with new specific class
-            // which implement TransportZoneValidator
-            EVENT_LOGGER.debug("ITM-Transportzone,TunnelDeletion {}", transportZone.getZoneName());
-            List<DPNTEPsInfo> opDpnList = createDPNTepInfo(transportZone);
-            List<HwVtep> hwVtepList = createhWVteps(transportZone);
-            LOG.trace("Delete: Invoking deleteTunnels in ItmManager with DpnList {}", opDpnList);
-            if (!opDpnList.isEmpty() || !hwVtepList.isEmpty()) {
-                LOG.trace("Delete: Invoking ItmManager with hwVtep List {} ", hwVtepList);
-                jobCoordinator.enqueueJob(transportZone.getZoneName(),
-                        new ItmTepRemoveWorker(opDpnList, hwVtepList, transportZone, mdsalManager,
-                                itmInternalTunnelDeleteWorker, dpnTEPsInfoCache, txRunner, itmConfig));
+                if (!itmConfig.isDefTzEnabled() || !Objects.equals(transportZone.getTunnelType(), tunType)) {
+                    allowTunnelDeletion = true;
+                } else {
+                    // this is case when def-tz removal request is from Northbound.
+                    allowTunnelDeletion = false;
+                    LOG.error("Deletion of {} is an incorrect usage", ITMConstants.DEFAULT_TRANSPORT_ZONE);
+                }
+            } else {
+                allowTunnelDeletion = true;
+            }
 
-                if (transportZone.getVteps() != null && !transportZone.getVteps().isEmpty()) {
-                    Map<UnknownVtepsKey, UnknownVteps> unknownVteps =
-                            convertVtepListToUnknownVtepList(transportZone.getVteps());
-                    LOG.trace("Moving Transport Zone {} to tepsInNotHostedTransportZone Oper Ds.",
-                            transportZone.getZoneName());
+            if (allowTunnelDeletion) {
+                //TODO : DPList code can be refactor with new specific class
+                // which implement TransportZoneValidator
+                EVENT_LOGGER.debug("ITM-Transportzone,TunnelDeletion {}", transportZone.getZoneName());
+                List<DPNTEPsInfo> opDpnList = createDPNTepInfo(transportZone);
+                List<HwVtep> hwVtepList = createhWVteps(transportZone);
+                LOG.trace("Delete: Invoking deleteTunnels in ItmManager with DpnList {}", opDpnList);
+                if (!opDpnList.isEmpty() || !hwVtepList.isEmpty()) {
+                    LOG.trace("Delete: Invoking ItmManager with hwVtep List {} ", hwVtepList);
                     jobCoordinator.enqueueJob(transportZone.getZoneName(),
-                            new ItmTepsNotHostedAddWorker(unknownVteps, transportZone.getZoneName(),
-                                    dataBroker, txRunner));
+                            new ItmTepRemoveWorker(opDpnList, hwVtepList, transportZone, mdsalManager,
+                                    itmInternalTunnelDeleteWorker, dpnTEPsInfoCache, txRunner, itmConfig));
+
+                    if (transportZone.getVteps() != null && !transportZone.getVteps().isEmpty()) {
+                        Map<UnknownVtepsKey, UnknownVteps> unknownVteps =
+                                convertVtepListToUnknownVtepList(transportZone.getVteps());
+                        LOG.trace("Moving Transport Zone {} to tepsInNotHostedTransportZone Oper Ds.",
+                                transportZone.getZoneName());
+                        jobCoordinator.enqueueJob(transportZone.getZoneName(),
+                                new ItmTepsNotHostedAddWorker(unknownVteps, transportZone.getZoneName(),
+                                        dataBroker, txRunner));
+                    }
                 }
             }
         }
@@ -378,7 +397,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
 
         if (!oldDpnTepMap.isEmpty() && !equalLists) {
             jobCoordinator.enqueueJob(updatedTransportZone.getZoneName(),
-                    new ItmOfPortRemoveWorker(oldDpnTepMap, dataBroker, itmOfTunnelDeleteWorker));
+                    new ItmOfPortRemoveWorker(oldDpnTepMap, itmOfTunnelDeleteWorker));
         }
     }
 
