@@ -235,7 +235,7 @@ public class ItmManagerRpcServiceTest {
                 new CacheManagersRegistryImpl()));
 
         OfTepStateCache ofTepStateCache = new OfTepStateCache(dataBroker, new GuavaCacheProvider(
-                new CacheManagersRegistryImpl()));
+                new CacheManagersRegistryImpl()), interfaceManager, directTunnelUtils);
 
         itmManagerRpcService = new ItmManagerRpcService(dataBroker, mdsalApiManager, itmConfig,
             dpntePsInfoCache, interfaceManager, dpnTepStateCache, tunnelStateCache, interfaceManagerService,

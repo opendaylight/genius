@@ -115,8 +115,7 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
                 dpntePsInfoCache);
         this.itmInternalTunnelDeleteWorker = new ItmInternalTunnelDeleteWorker(dataBroker, jobCoordinator,
                 tunnelMonitoringConfig, interfaceManager, dpnTepStateCache, ovsBridgeEntryCache,
-                ovsBridgeRefEntryCache, tunnelStateCache, directTunnelUtils, ofEndPointCache, itmConfig,
-                tombstonedNodeManager);
+                ovsBridgeRefEntryCache, tunnelStateCache, directTunnelUtils, tombstonedNodeManager);
         serviceRecoveryRegistry.registerServiceRecoveryRegistry(getServiceRegistryKey(), this);
         this.interfaceManager = interfaceManager;
         this.dpnTepStateCache = dpnTepStateCache;
