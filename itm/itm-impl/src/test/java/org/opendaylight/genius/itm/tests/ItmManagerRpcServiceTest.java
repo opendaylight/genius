@@ -27,6 +27,7 @@ import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorTestModule
 import org.opendaylight.genius.datastoreutils.testutils.TestableDataTreeChangeListenerModule;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.rpc.ItmManagerRpcService;
+import org.opendaylight.genius.itm.tests.xtend.ExpectedDcGatewayIp;
 import org.opendaylight.genius.itm.tests.xtend.ExpectedDeviceVtepsObjects;
 import org.opendaylight.genius.itm.tests.xtend.ExpectedExternalTunnelObjects;
 import org.opendaylight.genius.itm.tests.xtend.ExpectedInternalTunnelIdentifierObjects;
@@ -55,7 +56,10 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.ext
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnelBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnelKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.DcGatewayIpList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.dc.gateway.ip.list.DcGatewayIp;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.dc.gateway.ip.list.DcGatewayIpKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZone;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.TransportZoneKey;
@@ -142,6 +146,8 @@ public class ItmManagerRpcServiceTest {
     DeleteL2GwMlagDeviceInput deleteL2GwMlagDeviceInput;
     GetTunnelInterfaceNameInput getTunnelInterfaceNameInput;
 
+    InstanceIdentifier<DcGatewayIp> dcGatewayIpIdentifier = InstanceIdentifier.builder(DcGatewayIpList.class)
+            .child(DcGatewayIp.class, new DcGatewayIpKey(ItmTestConstants.IP_ADDRESS_3)).build();
     InstanceIdentifier<ExternalTunnel> externalTunnelIdentifier = InstanceIdentifier.create(ExternalTunnelList.class)
             .child(ExternalTunnel.class, new ExternalTunnelKey(ItmTestConstants.IP_ADDRESS_3.stringValue(),
                     ItmTestConstants.DP_ID_1.toString(), TunnelTypeMplsOverGre.class));
@@ -337,10 +343,10 @@ public class ItmManagerRpcServiceTest {
         // check RPC response is SUCCESS
         assertThat(rpcRes.get().isSuccessful()).isTrue();
 
-        // check ExternalTunnelEndpoint is added in config DS
-        assertEqualBeans(ExpectedExternalTunnelObjects.newExternalTunnelForRpcTest(),
+        // check DCGatewayIp is added in config DS
+        assertEqualBeans(ExpectedDcGatewayIp.newDcGatewayIpForRpcTest(),
                 dataBroker.newReadOnlyTransaction()
-                        .read(LogicalDatastoreType.CONFIGURATION,externalTunnelIdentifierNew).get().get());
+                        .read(LogicalDatastoreType.CONFIGURATION, dcGatewayIpIdentifier).get().get());
     }
 
     @Test
