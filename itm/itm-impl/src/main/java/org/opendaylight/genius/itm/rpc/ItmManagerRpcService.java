@@ -450,11 +450,8 @@ public class ItmManagerRpcService implements ItmRpcService {
             RemoveExternalTunnelEndpointInput input) {
         //Ignore the Futures for now
         final SettableFuture<RpcResult<RemoveExternalTunnelEndpointOutput>> result = SettableFuture.create();
-        Collection<DPNTEPsInfo> meshedDpnList = dpnTEPsInfoCache.getAllPresent();
         FluentFuture<?> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
             tx -> {
-                ItmExternalTunnelDeleteWorker.deleteTunnels(meshedDpnList, input.getDestinationIp(),
-                        input.getTunnelType(), tx);
                 InstanceIdentifier<DcGatewayIp> extPath = InstanceIdentifier.builder(DcGatewayIpList.class)
                         .child(DcGatewayIp.class, new DcGatewayIpKey(input.getDestinationIp())).build();
                 tx.delete(extPath);
@@ -538,7 +535,6 @@ public class ItmManagerRpcService implements ItmRpcService {
 
         //Ignore the Futures for now
         final SettableFuture<RpcResult<AddExternalTunnelEndpointOutput>> result = SettableFuture.create();
-        Collection<DPNTEPsInfo> meshedDpnList = dpnTEPsInfoCache.getAllPresent();
         InstanceIdentifier<DcGatewayIp> extPath = InstanceIdentifier.builder(DcGatewayIpList.class)
                 .child(DcGatewayIp.class, new DcGatewayIpKey(input.getDestinationIp())).build();
         DcGatewayIp dcGatewayIp =
@@ -547,8 +543,6 @@ public class ItmManagerRpcService implements ItmRpcService {
 
         FluentFuture<?> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
             tx -> {
-                externalTunnelAddWorker.buildTunnelsToExternalEndPoint(meshedDpnList, input.getDestinationIp(),
-                    input.getTunnelType(), tx);
                 tx.mergeParentStructurePut(extPath, dcGatewayIp);
             }
         );
