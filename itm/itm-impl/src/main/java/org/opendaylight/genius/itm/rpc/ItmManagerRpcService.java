@@ -415,16 +415,12 @@ public class ItmManagerRpcService implements ItmRpcService {
             RemoveExternalTunnelEndpointInput input) {
         //Ignore the Futures for now
         final SettableFuture<RpcResult<RemoveExternalTunnelEndpointOutput>> result = SettableFuture.create();
-        Collection<DPNTEPsInfo> meshedDpnList = dpnTEPsInfoCache.getAllPresent();
         FluentFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
             tx -> {
-                ItmExternalTunnelDeleteWorker.deleteTunnels(meshedDpnList, input.getDestinationIp(),
-                        input.getTunnelType(), tx);
                 InstanceIdentifier<DcGatewayIp> extPath = InstanceIdentifier.builder(DcGatewayIpList.class)
                         .child(DcGatewayIp.class, new DcGatewayIpKey(input.getDestinationIp())).build();
                 tx.delete(extPath);
-            }
-        );
+            });
         future.addCallback(new FutureCallback<Void>() {
             @Override public void onSuccess(Void voidInstance) {
                 result.set(RpcResultBuilder.<RemoveExternalTunnelEndpointOutput>success().build());
@@ -504,20 +500,15 @@ public class ItmManagerRpcService implements ItmRpcService {
 
         //Ignore the Futures for now
         final SettableFuture<RpcResult<AddExternalTunnelEndpointOutput>> result = SettableFuture.create();
-        Collection<DPNTEPsInfo> meshedDpnList = dpnTEPsInfoCache.getAllPresent();
         InstanceIdentifier<DcGatewayIp> extPath = InstanceIdentifier.builder(DcGatewayIpList.class)
                 .child(DcGatewayIp.class, new DcGatewayIpKey(input.getDestinationIp())).build();
         DcGatewayIp dcGatewayIp =
                 new DcGatewayIpBuilder().setIpAddress(input.getDestinationIp())
                         .setTunnnelType(input.getTunnelType()).build();
 
-        FluentFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
-            tx -> {
-                externalTunnelAddWorker.buildTunnelsToExternalEndPoint(meshedDpnList, input.getDestinationIp(),
-                    input.getTunnelType(), tx);
-                tx.mergeParentStructurePut(extPath, dcGatewayIp);
-            }
-        );
+        FluentFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
+            tx.mergeParentStructurePut(extPath, dcGatewayIp);
+        });
         future.addCallback(new FutureCallback<Void>() {
             @Override public void onSuccess(Void voidInstance) {
                 result.set(RpcResultBuilder.<AddExternalTunnelEndpointOutput>success().build());
