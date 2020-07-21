@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "548b327f_9dc73a1e",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/DcGatewayIpListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 103,
+      "author": {
+        "id": 8775
+      },
+      "writtenOn": "2020-07-21T11:34:23Z",
+      "side": 1,
+      "message": "As suggested, I have used new Callable Signature",
+      "parentUuid": "8a499b67_3590957a",
+      "range": {
+        "startLine": 103,
+        "startChar": 53,
+        "endLine": 103,
+        "endChar": 62
+      },
+      "revId": "9ef4161ee3427ce4ff8a4c88aedcc7f230f30a76",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "bbbb3caa_388bdd8d",
         "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/DcGatewayIpListener.java",
         "patchSetId": 1
@@ -45,6 +69,30 @@
       "revId": "9ef4161ee3427ce4ff8a4c88aedcc7f230f30a76",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b0208c7a_9df9f3a7",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/listeners/DcGatewayIpListener.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 8775
+      },
+      "writtenOn": "2020-07-21T11:34:23Z",
+      "side": 1,
+      "message": "Done, Same changes has been taken care for add worker as well.",
+      "parentUuid": "bbbb3caa_388bdd8d",
+      "range": {
+        "startLine": 113,
+        "startChar": 22,
+        "endLine": 113,
+        "endChar": 26
+      },
+      "revId": "9ef4161ee3427ce4ff8a4c88aedcc7f230f30a76",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
