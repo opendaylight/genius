@@ -22,6 +22,30 @@
       "revId": "b8abf4b227765e7356cb2091c1b9b430c914cab1",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f69dc6a6_d39e9db2",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 11
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 7615
+      },
+      "writtenOn": "2020-07-22T07:35:11Z",
+      "side": 1,
+      "message": "Deleted this line.",
+      "parentUuid": "bf04e855_4075054d",
+      "range": {
+        "startLine": 21,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 68
+      },
+      "revId": "b8abf4b227765e7356cb2091c1b9b430c914cab1",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
     }
   ]
 }
