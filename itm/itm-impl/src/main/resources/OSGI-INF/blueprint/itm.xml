@@ -125,6 +125,12 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
                 <property name="itmProvider" ref="itmProvider" />
             </action>
         </command>
+        <command>
+            <action class="org.opendaylight.genius.itm.cli.TepShowOfPorts">
+                <argument ref="itmProvider" />
+                <argument ref="ofTepStateCache" />
+            </action>
+        </command>
     </command-bundle>
 
 </blueprint>
