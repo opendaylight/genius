@@ -57,6 +57,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdManagerService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.of.teps.state.OfTep;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.AddExternalTunnelEndpointInputBuilder;
@@ -370,6 +371,14 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     @Override
     public Optional<StateTunnelList> getTunnelState(String interfaceName) throws ReadFailedException {
         return tunnelStateCache.get(tunnelStateCache.getStateTunnelListIdentifier(interfaceName));
+    }
+
+    @Override
+    public void showOfPorts(Collection<OfTep> ofTeps) {
+        if (ofTeps != null) {
+            tepCommandHelper.showOfPorts(ofTeps); }
+        else {
+            LOG.debug("No ofports available"); }
     }
 
     public void handleOwnershipChange(EntityOwnershipChange ownershipChange,
