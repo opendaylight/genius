@@ -50,6 +50,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorIntervalBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParams;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParamsBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.of.teps.state.OfTep;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TepTypeInternal;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelOperStatus;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
@@ -575,5 +576,24 @@ public class TepCommandHelper {
 
     public void handleError(String errorMessage) throws TepException {
         throw new TepException(errorMessage);
+    }
+
+    @SuppressWarnings("checkstyle:RegexpSinglelineJava")
+    public void showOfPorts(Collection<OfTep> ofTeps) {
+        List<String> result = new ArrayList<String>();
+
+        result.add(String.format("%-16s  %-40s %-16s %-16s %-16s", "Source_DPN", "OfTep_Ip", "OfPort_Name",
+                "OfPort_Number", "State"));
+        result.add("-------------------------------------------------------------------------------------------------");
+
+        for (OfTep ofTep : ofTeps) {
+            result.add(String.format("%-16s  %-40s %-16s %-16s %-16s", ofTep.getSourceDpnId(),
+                    ofTep.getTepIp().getIpv4Address().getValue(), ofTep.getOfPortName(),ofTep.getPortNumber(),
+                    ofTep.getOfTepState()));
+        }
+
+        for (String p : result) {
+            System.out.println(p);
+        }
     }
 }
