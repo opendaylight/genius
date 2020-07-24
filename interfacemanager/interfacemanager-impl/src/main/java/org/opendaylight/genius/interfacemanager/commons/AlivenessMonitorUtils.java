@@ -24,7 +24,7 @@ import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.infra.TypedReadTransaction;
 import org.opendaylight.genius.infra.TypedReadWriteTransaction;
-import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
+import org.opendaylight.infrautils.utils.concurrent.LoggingFutures;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.AlivenessMonitorService;
@@ -101,7 +101,7 @@ public final class AlivenessMonitorUtils {
                 RpcResult<MonitorStartOutput> rpcResult = result.get();
                 if (rpcResult.isSuccessful()) {
                     long monitorId = rpcResult.getResult().getMonitorId().toJava();
-                    ListenableFutures.addErrorLogging(
+                    LoggingFutures.addErrorLogging(
                         txRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL, tx -> {
                             createOrUpdateInterfaceMonitorIdMap(tx, trunkInterfaceName, monitorId);
                             createOrUpdateMonitorIdInterfaceMap(tx, trunkInterfaceName, monitorId);
@@ -121,7 +121,7 @@ public final class AlivenessMonitorUtils {
             return;
         }
         LOG.debug("stop LLDP monitoring for {}", trunkInterface);
-        ListenableFutures.addErrorLogging(txRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL, tx -> {
+        LoggingFutures.addErrorLogging(txRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL, tx -> {
             List<Uint32> monitorIds = getMonitorIdForInterface(tx, trunkInterface);
             if (monitorIds == null) {
                 LOG.error("Monitor Id doesn't exist for Interface {}", trunkInterface);
@@ -133,7 +133,7 @@ public final class AlivenessMonitorUtils {
                     MonitorStopInput input = new MonitorStopInputBuilder().setMonitorId(monitorId).build();
 
                     ListenableFuture<RpcResult<MonitorStopOutput>> future = alivenessMonitorService.monitorStop(input);
-                    ListenableFutures.addErrorLogging(future, LOG, "Stop LLDP monitoring for {}", trunkInterface);
+                    LoggingFutures.addErrorLogging(future, LOG, "Stop LLDP monitoring for {}", trunkInterface);
 
                     removeMonitorIdInterfaceMap(tx, monitorId);
                     removeMonitorIdFromInterfaceMonitorIdMap(tx, interfaceName, monitorId);
@@ -210,7 +210,7 @@ public final class AlivenessMonitorUtils {
 
                 ListenableFuture<RpcResult<MonitorProfileDeleteOutput>> future =
                         alivenessMonitorService.monitorProfileDelete(profileDeleteInput);
-                ListenableFutures.addErrorLogging(future, LOG, "Delete monitor profile {}", interfaceName);
+                LoggingFutures.addErrorLogging(future, LOG, "Delete monitor profile {}", interfaceName);
             }
         }
     }

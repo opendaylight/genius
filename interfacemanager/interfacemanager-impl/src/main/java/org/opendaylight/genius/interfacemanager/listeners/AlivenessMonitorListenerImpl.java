@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.genius.interfacemanager.listeners;
 
 import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
@@ -19,7 +18,7 @@ import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
-import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
+import org.opendaylight.infrautils.utils.concurrent.LoggingFutures;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.NotificationService;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
@@ -59,7 +58,7 @@ public class AlivenessMonitorListenerImpl implements AlivenessMonitorListener {
 
     @Override
     public void onMonitorEvent(MonitorEvent notification) {
-        ListenableFutures.addErrorLogging(txRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL, tx -> {
+        LoggingFutures.addErrorLogging(txRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL, tx -> {
             Uint32 monitorId = notification.getEventData().getMonitorId();
             String tunnelInterface = AlivenessMonitorUtils.getInterfaceFromMonitorId(tx, monitorId);
             if (tunnelInterface == null) {
