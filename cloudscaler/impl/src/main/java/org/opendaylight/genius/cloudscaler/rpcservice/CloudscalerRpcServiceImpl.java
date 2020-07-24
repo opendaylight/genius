@@ -22,7 +22,7 @@ import javax.inject.Singleton;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.infrautils.utils.concurrent.Executors;
-import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
+import org.opendaylight.infrautils.utils.concurrent.LoggingFutures;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
@@ -209,13 +209,13 @@ public class CloudscalerRpcServiceImpl implements CloudscalerRpcService {
                 LOG.info("Cloudscaler Deleting compute node details {}",
                         buildOpenflowNodeIid(computeNode));
                 LOG.info("Cloudscaler Deleting compute node details {}", buildOvsdbNodeId(computeNode));
-                ListenableFutures.addErrorLogging(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
+                LoggingFutures.addErrorLogging(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
                     computeNodeManager.deleteComputeNode(tx, computeNode);
                 }), LOG, "Cloudscaler Failed to delete the compute node");
-                ListenableFutures.addErrorLogging(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
+                LoggingFutures.addErrorLogging(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
                     tx.delete(LogicalDatastoreType.CONFIGURATION, buildOpenflowNodeIid(computeNode));
                 }), LOG, "Cloudscaler Failed to delete the config inventory");
-                ListenableFutures.addErrorLogging(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
+                LoggingFutures.addErrorLogging(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
                     tx.delete(LogicalDatastoreType.CONFIGURATION, buildOvsdbNodeId(computeNode));
                 }), LOG, "Cloudscaler Failed to delete the config topology");
             }
@@ -313,7 +313,7 @@ public class CloudscalerRpcServiceImpl implements CloudscalerRpcService {
                                         .child(TransportZone.class, zone.key())
                                         .child(Vteps.class, vteps.key());
                                 LOG.error("Cloudscaler deleting dpn {}", vteps);
-                                ListenableFutures.addErrorLogging(
+                                LoggingFutures.addErrorLogging(
                                         txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
                                             tx.delete(LogicalDatastoreType.CONFIGURATION, dpnVtepIid);
                                         }), LOG, "Cloudscaler Failed to delete the itm tep");

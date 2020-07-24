@@ -42,7 +42,7 @@ import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilit
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.infrautils.diagstatus.ServiceState;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
-import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
+import org.opendaylight.infrautils.utils.concurrent.LoggingFutures;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
@@ -428,7 +428,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
                 .getInterfaceIdentifier(new InterfaceKey(interfaceName));
         ListenableFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
             tx -> tx.mergeParentStructurePut(interfaceIId, interfaceBuilder.build()));
-        ListenableFutures.addErrorLogging(future, LOG, "Failed to (async) write {}", interfaceIId);
+        LoggingFutures.addErrorLogging(future, LOG, "Failed to (async) write {}", interfaceIId);
         return future;
     }
 
@@ -465,7 +465,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     public void bindService(String interfaceName, Class<? extends ServiceModeBase> serviceMode,
             BoundServices serviceInfo, TypedWriteTransaction<Configuration> tx) {
         if (tx == null) {
-            ListenableFutures.addErrorLogging(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
+            LoggingFutures.addErrorLogging(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
                 wtx -> IfmUtil.bindService(wtx, interfaceName, serviceInfo, serviceMode)), LOG,
                 "Error binding the InterfacemgrProvider service");
         } else {
