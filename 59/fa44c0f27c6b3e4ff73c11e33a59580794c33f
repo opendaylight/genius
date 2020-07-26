@@ -1,0 +1,8 @@
+Verified+1: jenkins-releng <jenkins-releng@opendaylight.org>
+Code-Review+2: Hema Gopalakrishnan <hema.gopalkrishnan@ericsson.com>
+Code-Review+1: Stephen Kitt <skitt@redhat.com>
+Submitted-by: Hema Gopalakrishnan <hema.gopalkrishnan@ericsson.com>
+Submitted-at: Sun, 26 Jul 2020 11:20:27 +0000
+Reviewed-on: https://git.opendaylight.org/gerrit/c/genius/+/82542
+Project: genius
+Branch: refs/heads/master
