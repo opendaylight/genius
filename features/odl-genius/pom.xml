@@ -140,12 +140,6 @@
     </dependency>
     <dependency>
       <groupId>org.opendaylight.infrautils</groupId>
-      <artifactId>odl-infrautils-inject</artifactId>
-      <type>xml</type>
-      <classifier>features</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.opendaylight.infrautils</groupId>
       <artifactId>odl-infrautils-jobcoordinator</artifactId>
       <type>xml</type>
       <classifier>features</classifier>
