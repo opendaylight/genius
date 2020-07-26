@@ -54,9 +54,5 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <groupId>commons-net</groupId>
       <artifactId>commons-net</artifactId>
     </dependency>
-    <dependency>
-      <groupId>javax.inject</groupId>
-      <artifactId>javax.inject</artifactId>
-    </dependency>
   </dependencies>
 </project>

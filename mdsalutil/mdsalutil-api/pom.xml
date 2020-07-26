@@ -91,8 +91,10 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <artifactId>infrautils-util</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.opendaylight.infrautils</groupId>
-      <artifactId>inject</artifactId>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <scope>provided</scope>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>javax.annotation</groupId>
