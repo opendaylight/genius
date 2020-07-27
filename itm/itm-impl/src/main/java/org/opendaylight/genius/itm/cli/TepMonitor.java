@@ -12,6 +12,7 @@ import org.apache.karaf.shell.commands.Command;
 import org.apache.karaf.shell.console.OsgiCommandSupport;
 import org.opendaylight.genius.itm.api.IITMProvider;
 import org.opendaylight.genius.itm.globals.ITMConstants;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +21,7 @@ public class TepMonitor extends OsgiCommandSupport {
 
     @Argument(index = 0, name = "interval", description = "monitoring interval", required = true,
             multiValued = false)
-    private Integer interval;
+    private Uint16 interval;
 
     private static final Logger LOG = LoggerFactory.getLogger(TepMonitor.class);
     private IITMProvider itmProvider;
@@ -34,7 +35,8 @@ public class TepMonitor extends OsgiCommandSupport {
     protected Object doExecute() {
         try {
             LOG.debug("Executing TEP monitor command with interval:{}", interval);
-            if (!(interval >= ITMConstants.MIN_MONITOR_INTERVAL && interval <= ITMConstants.MAX_MONITOR_INTERVAL)) {
+            if (!(interval.toJava() >= ITMConstants.MIN_MONITOR_INTERVAL
+                    && interval.toJava() <= ITMConstants.MAX_MONITOR_INTERVAL)) {
                 session.getConsole().println("Monitoring Interval must be in the range 100 - 30000");
             } else {
                 itmProvider.configureTunnelMonitorInterval(interval);

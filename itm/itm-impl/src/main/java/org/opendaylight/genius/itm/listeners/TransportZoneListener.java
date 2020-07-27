@@ -61,6 +61,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembership;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembershipKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.NotHostedTransportZones;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZones;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.TransportZonesBuilder;
@@ -326,7 +327,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
         Map<Uint64, List<TunnelEndPoints>> mapNotHostedDPNToTunnelEndpt = new ConcurrentHashMap<>();
         List<DPNTEPsInfo> notHostedDpnTepInfo = new ArrayList<>();
         String newZoneName = tzNew.getZoneName();
-        List<TzMembership> zones = ItmUtils.createTransportZoneMembership(newZoneName);
+        Map<TzMembershipKey, TzMembership> zones = ItmUtils.createTransportZoneMembershipMap(newZoneName);
         Class<? extends TunnelTypeBase> tunnelType  = tzNew.getTunnelType();
 
         TepsInNotHostedTransportZone tepsInNotHostedTransportZone = getNotHostedTransportZone(newZoneName).get();
@@ -427,7 +428,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
                 .builder(NotHostedTransportZones.class).child(TepsInNotHostedTransportZone.class,
                         new TepsInNotHostedTransportZoneKey(transportZoneName)).build();
         Optional<TepsInNotHostedTransportZone> tepsInNotHostedTransportZoneOptional =
-                ItmUtils.read(LogicalDatastoreType.OPERATIONAL, notHostedTzPath, dataBroker);
+                ItmUtils.syncRead(LogicalDatastoreType.OPERATIONAL, notHostedTzPath, dataBroker);
         return tepsInNotHostedTransportZoneOptional;
     }
 
@@ -435,7 +436,8 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
 
         Map<Uint64, List<TunnelEndPoints>> mapDPNToTunnelEndpt = new ConcurrentHashMap<>();
         List<DPNTEPsInfo> dpnTepInfo = new ArrayList<>();
-        List<TzMembership> zones = ItmUtils.createTransportZoneMembership(transportZone.getZoneName());
+        Map<TzMembershipKey, TzMembership> zones
+                = ItmUtils.createTransportZoneMembershipMap(transportZone.getZoneName());
         Class<? extends TunnelTypeBase> tunnelType = transportZone.getTunnelType();
         LOG.trace("Transport Zone_name: {}", transportZone.getZoneName());
         @Nullable Map<VtepsKey, Vteps> vtepsList = transportZone.getVteps();

@@ -9,7 +9,6 @@
 package org.opendaylight.genius.itm.listeners;
 
 import java.time.Duration;
-import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -37,6 +36,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfoKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembership;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembershipKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbNodeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.node.attributes.OpenvswitchExternalIds;
@@ -231,7 +231,7 @@ public class OvsdbNodeListener extends AbstractSyncDataTreeChangeListener<Node> 
                 Uint64 dpnId = MDSALUtil.getDpnId(strNewDpnId);
                 String tos = itmConfig.getDefaultTunnelTos();
                 Class<? extends TunnelTypeBase> tunnelType  = TunnelTypeVxlan.class;
-                List<TzMembership> zones = ItmUtils.createTransportZoneMembership(oldTzName);
+                Map<TzMembershipKey, TzMembership> zones = ItmUtils.createTransportZoneMembershipMap(oldTzName);
 
                 String portName = itmConfig.getPortname() == null ? ITMConstants.DUMMY_PORT : itmConfig.getPortname();
                 int vlanId = itmConfig.getVlanId() != null ? itmConfig.getVlanId().toJava()

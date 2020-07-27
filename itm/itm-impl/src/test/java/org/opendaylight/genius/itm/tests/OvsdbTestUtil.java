@@ -23,10 +23,8 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.PortNumber;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.DatapathId;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentationBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeName;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbNodeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbNodeAugmentationBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbNodeRef;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.node.attributes.ConnectionInfo;
@@ -40,6 +38,7 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeBuilder;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint16;
 
 public final class OvsdbTestUtil {
     private OvsdbTestUtil() {
@@ -47,7 +46,7 @@ public final class OvsdbTestUtil {
     }
 
     /* methods */
-    public static ConnectionInfo getConnectionInfo(int port, String strIpAddress) {
+    public static ConnectionInfo getConnectionInfo(Uint16 port, String strIpAddress) {
         IpAddress ipAddress = IpAddressBuilder.getDefaultInstance(strIpAddress);
         PortNumber portNumber = new PortNumber(port);
 
@@ -115,7 +114,7 @@ public final class OvsdbTestUtil {
         ovsdbNodeAugBuilder.setOpenvswitchOtherConfigs(otherConfigsList);
 
         // add OvsdbNodeAugmentation into Node
-        nodeBuilder.addAugmentation(OvsdbNodeAugmentation.class, ovsdbNodeAugBuilder.build());
+        nodeBuilder.addAugmentation(ovsdbNodeAugBuilder.build());
         Node ovsdbNode = nodeBuilder.build();
 
         WriteTransaction transaction = dataBroker.newWriteOnlyTransaction();
@@ -185,7 +184,7 @@ public final class OvsdbTestUtil {
         ovsdbNodeAugBuilder.setOpenvswitchOtherConfigs(otherConfigsList);
 
         // add OvsdbNodeAugmentation into Node
-        nodeBuilder.addAugmentation(OvsdbNodeAugmentation.class, ovsdbNodeAugBuilder.build());
+        nodeBuilder.addAugmentation(ovsdbNodeAugBuilder.build());
         Node ovsdbNode = nodeBuilder.build();
 
         //ReadWriteTransaction transaction = dataBroker.newReadWriteTransaction();
@@ -212,7 +211,7 @@ public final class OvsdbTestUtil {
         ovsdbBridgeAugmentationBuilder.setManagedBy(new OvsdbNodeRef(
             SouthboundUtils.createInstanceIdentifier(nodeKey.getNodeId())));
 
-        bridgeNodeBuilder.addAugmentation(OvsdbBridgeAugmentation.class, ovsdbBridgeAugmentationBuilder.build());
+        bridgeNodeBuilder.addAugmentation(ovsdbBridgeAugmentationBuilder.build());
 
         Node bridgeNode = bridgeNodeBuilder.build();
 

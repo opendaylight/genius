@@ -69,6 +69,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.VtepsKey;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,7 +79,7 @@ public class TepCommandHelperTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(TepCommandHelper.class);
 
-    private final int interval = 1000;
+    private final Uint16 interval = Uint16.valueOf(1000);
     private final Boolean enabled = false ;
     private final Class<? extends TunnelMonitoringTypeBase> monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
     private final String tepIp1 = "192.168.56.30";
@@ -234,7 +235,7 @@ public class TepCommandHelperTest {
         mergeParentTransportZoneListGre.add(mergeTransportZoneGre);
         mergeParentTransportZonesGre = new TransportZonesBuilder().setTransportZone(mergeParentTransportZoneListGre)
                 .build();
-        tunnelMonitorInterval = new TunnelMonitorIntervalBuilder().setInterval(10000).build();
+        tunnelMonitorInterval = new TunnelMonitorIntervalBuilder().setInterval(Uint16.valueOf(10000)).build();
         tunnelMonitorParams = new TunnelMonitorParamsBuilder().setEnabled(true).build();
         InternalTunnel internalTunnelTest = new InternalTunnelBuilder().setSourceDPN(dpId1).setDestinationDPN(dpId2)
                 .setTunnelInterfaceNames(Collections.singletonList(tunnelInterfaceName))
