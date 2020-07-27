@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5c9b406d_d802c78d",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 144,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2020-07-27T07:28:49Z",
+      "side": 1,
+      "message": "can we add pending retry count as well in the log.",
+      "range": {
+        "startLine": 144,
+        "startChar": 16,
+        "endLine": 144,
+        "endChar": 98
+      },
+      "revId": "5a3e9548f05a2e4af6d89fba02c8738d01e424f4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d4acf90a_f3188263",
+        "filename": "idmanager/idmanager-impl/src/main/java/org/opendaylight/genius/idmanager/IdManager.java",
+        "patchSetId": 14
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 7802
+      },
+      "writtenOn": "2020-07-27T07:28:49Z",
+      "side": 1,
+      "message": "we can move this code to same 141 if condition.",
+      "range": {
+        "startLine": 147,
+        "startChar": 12,
+        "endLine": 150,
+        "endChar": 13
+      },
+      "revId": "5a3e9548f05a2e4af6d89fba02c8738d01e424f4",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
