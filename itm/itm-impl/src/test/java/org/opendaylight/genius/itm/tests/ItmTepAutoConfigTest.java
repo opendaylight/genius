@@ -12,8 +12,7 @@ import static org.opendaylight.mdsal.binding.util.Datastore.CONFIGURATION;
 
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.ListenableFuture;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import javax.inject.Inject;
@@ -949,7 +948,7 @@ public class ItmTepAutoConfigTest {
                 .read(LogicalDatastoreType.OPERATIONAL, notHostedPath).get().get().getZoneName());
 
         //create vtepList form unknownVtepList
-        List<Vteps> vtepsList = new ArrayList<>();
+        Map<VtepsKey, Vteps> vtepsList = new HashMap<>();
         @Nullable Map<UnknownVtepsKey, UnknownVteps> unknownVtepsList = dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.OPERATIONAL, notHostedPath).get().get().getUnknownVteps();
 
@@ -957,7 +956,7 @@ public class ItmTepAutoConfigTest {
             Vteps vteps = new VtepsBuilder().setDpnId(unknownVtep.getDpnId())
                     .setIpAddress(unknownVtep.getIpAddress())
                     .withKey(new VtepsKey(unknownVtep.getDpnId())).build();
-            vtepsList.add(vteps);
+            vtepsList.put(new VtepsKey(unknownVtep.getDpnId()), vteps);
         }
 
         TransportZone recreatedTransportZone = new TransportZoneBuilder().setZoneName(ItmTestConstants.TZ_NAME)
@@ -1033,7 +1032,7 @@ public class ItmTepAutoConfigTest {
                 .read(LogicalDatastoreType.OPERATIONAL, notHostedPath).get().get().getZoneName());
 
         //create vtepList form unknownVtepList
-        List<Vteps> vtepsList = new ArrayList<>();
+        Map<VtepsKey, Vteps> vtepsList = new HashMap();
         @Nullable Map<UnknownVtepsKey, UnknownVteps> unknownVtepsList = dataBroker.newReadOnlyTransaction()
                 .read(LogicalDatastoreType.OPERATIONAL, notHostedPath).get().get().getUnknownVteps();
         //modifing the dpnid and keeping the ip same.
@@ -1041,7 +1040,7 @@ public class ItmTepAutoConfigTest {
             Vteps vteps = new VtepsBuilder().setDpnId(Uint64.valueOf(10))
                     .setIpAddress(unknownVtep.getIpAddress())
                     .withKey(new VtepsKey(Uint64.valueOf(10))).build();
-            vtepsList.add(vteps);
+            vtepsList.put(new VtepsKey(Uint64.valueOf(10)), vteps);
         }
 
         TransportZone recreatedTransportZone = new TransportZoneBuilder().setZoneName(ItmTestConstants.TZ_NAME)

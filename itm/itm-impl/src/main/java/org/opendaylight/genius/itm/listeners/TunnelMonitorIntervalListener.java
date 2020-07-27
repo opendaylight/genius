@@ -66,7 +66,7 @@ public class TunnelMonitorIntervalListener extends AbstractSyncDataTreeChangeLis
         LOG.debug("remove TunnelMonitorIntervalListener called with {}", dataObjectModification.getInterval());
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
         Optional<TransportZones> transportZonesOptional = ItmUtils
-                .read(LogicalDatastoreType.CONFIGURATION, path, broker);
+                .syncRead(LogicalDatastoreType.CONFIGURATION, path, broker);
         if (transportZonesOptional.isPresent()) {
             for (TransportZone tzone : transportZonesOptional.get().nonnullTransportZone()) {
                 //if you remove configuration, the last configured interval is only set i.e no change
@@ -92,7 +92,7 @@ public class TunnelMonitorIntervalListener extends AbstractSyncDataTreeChangeLis
         LOG.debug("update TunnelMonitorIntervalListener called with {}", dataObjectModificationAfter.getInterval());
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
         Optional<TransportZones> transportZonesOptional = ItmUtils
-                .read(LogicalDatastoreType.CONFIGURATION, path, broker);
+                .syncRead(LogicalDatastoreType.CONFIGURATION, path, broker);
         if (transportZonesOptional.isPresent()) {
             for (TransportZone tzone : transportZonesOptional.get().nonnullTransportZone()) {
                 LOG.debug("Update:Calling TunnelMonitorIntervalWorker with tzone = {} and {}", tzone.getZoneName(),
@@ -117,7 +117,7 @@ public class TunnelMonitorIntervalListener extends AbstractSyncDataTreeChangeLis
         LOG.debug("Add TunnelMonitorIntervalListener called with {}", dataObjectModification.getInterval());
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
         Optional<TransportZones> transportZonesOptional = ItmUtils
-                .read(LogicalDatastoreType.CONFIGURATION, path, broker);
+                .syncRead(LogicalDatastoreType.CONFIGURATION, path, broker);
         if (transportZonesOptional.isPresent()) {
             for (TransportZone tzone : transportZonesOptional.get().nonnullTransportZone()) {
                 LOG.debug("Add:Calling TunnelMonitorIntervalWorker with tzone = {} and {}", tzone.getZoneName(),

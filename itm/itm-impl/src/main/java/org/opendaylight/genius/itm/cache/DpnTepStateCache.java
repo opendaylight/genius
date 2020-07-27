@@ -47,6 +47,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpns;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpnsKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -270,7 +271,7 @@ public class DpnTepStateCache extends DataObjectCache<Uint64, DpnsTeps> {
         Uint64 srcDpnId = endPointInfo.getSrcEndPointInfo();
         Uint64 dstDpnId = endPointInfo.getDstEndPointInfo();
         Interface iface = null ;
-        int monitoringInt = 1000;
+        Uint16 monitoringInt = Uint16.valueOf(1000);
         DpnTepInterfaceInfo dpnTepInfo = getDpnTepInterface(srcDpnId, dstDpnId);
         if (dpnTepInfo != null) {
             List<DPNTEPsInfo> srcDpnTEPsInfo = dpnTepsInfoCache

@@ -173,6 +173,7 @@ import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.opendaylight.yangtools.yang.common.Uint16;
+import org.opendaylight.yangtools.yang.common.Uint32;
 import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -401,9 +402,10 @@ public class ItmManagerRpcService implements ItmRpcService {
         final Uint64 destDpnId = Uint64.valueOf(input.getDestinationNode());
         LOG.debug("setBfdParamOnTunnel srcDpnId: {}, destDpnId: {}", srcDpnId, destDpnId);
         final SettableFuture<RpcResult<SetBfdParamOnTunnelOutput>> result = SettableFuture.create();
+
         FluentFuture<?> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
-            enableBFD(tx, srcDpnId, destDpnId, input.isMonitoringEnabled(), input.getMonitoringInterval().toJava());
-            enableBFD(tx, destDpnId, srcDpnId, input.isMonitoringEnabled(), input.getMonitoringInterval().toJava());
+            enableBFD(tx, srcDpnId, destDpnId, input.isMonitoringEnabled(), input.getMonitoringInterval());
+            enableBFD(tx, destDpnId, srcDpnId, input.isMonitoringEnabled(), input.getMonitoringInterval());
         });
 
         future.addCallback(new FutureCallback<Object>() {
@@ -424,7 +426,7 @@ public class ItmManagerRpcService implements ItmRpcService {
     }
 
     private void enableBFD(TypedWriteTransaction<Datastore.Configuration> tx, Uint64 srcDpnId, Uint64 destDpnId,
-                           final Boolean enabled, final Integer interval) throws ReadFailedException {
+                           final Boolean enabled, final Uint16 interval) throws ReadFailedException {
         DpnTepInterfaceInfo dpnTepInterfaceInfo = dpnTepStateCache.getDpnTepInterface(srcDpnId, destDpnId);
         RemoteDpnsBuilder remoteDpnsBuilder = new RemoteDpnsBuilder();
         remoteDpnsBuilder.withKey(new RemoteDpnsKey(destDpnId)).setDestinationDpnId(destDpnId)
@@ -726,7 +728,8 @@ public class ItmManagerRpcService implements ItmRpcService {
                 .child(ExternalTunnel.class,
                         new ExternalTunnelKey(dstIp.stringValue(), srcDpn.toString(), input.getTunnelType()));
 
-        Optional<ExternalTunnel> optExtTunnel = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path1, dataBroker);
+        Optional<ExternalTunnel> optExtTunnel = ItmUtils.syncRead(LogicalDatastoreType.CONFIGURATION,
+                path1, dataBroker);
 
         if (optExtTunnel != null && optExtTunnel.isPresent()) {
             ExternalTunnel extTunnel = optExtTunnel.get();
@@ -796,7 +799,7 @@ public class ItmManagerRpcService implements ItmRpcService {
             final IpAddress hwIp = input.getIpAddress();
             final String nodeId = input.getNodeId();
             InstanceIdentifier<TransportZones> containerPath = InstanceIdentifier.create(TransportZones.class);
-            Optional<TransportZones> transportZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
+            Optional<TransportZones> transportZonesOptional = ItmUtils.syncRead(LogicalDatastoreType.CONFIGURATION,
                     containerPath, dataBroker);
             if (transportZonesOptional.isPresent()) {
                 TransportZones transportZones = transportZonesOptional.get();
@@ -866,7 +869,7 @@ public class ItmManagerRpcService implements ItmRpcService {
             //iterate through all transport zones and put TORs under vxlan
             //if no vxlan tzone is cnfigured, return an error.
             InstanceIdentifier<TransportZones> containerPath = InstanceIdentifier.create(TransportZones.class);
-            Optional<TransportZones> transportZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
+            Optional<TransportZones> transportZonesOptional = ItmUtils.syncRead(LogicalDatastoreType.CONFIGURATION,
                     containerPath, dataBroker);
             if (transportZonesOptional.isPresent()) {
                 TransportZones transportZones = transportZonesOptional.get();
@@ -970,7 +973,7 @@ public class ItmManagerRpcService implements ItmRpcService {
             final IpAddress hwIp = input.getIpAddress();
             final List<String> nodeId = input.getNodeId();
             InstanceIdentifier<TransportZones> containerPath = InstanceIdentifier.create(TransportZones.class);
-            Optional<TransportZones> transportZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
+            Optional<TransportZones> transportZonesOptional = ItmUtils.syncRead(LogicalDatastoreType.CONFIGURATION,
                     containerPath, dataBroker);
             if (transportZonesOptional.isPresent()) {
                 TransportZones transportZones = transportZonesOptional.get();
@@ -1050,7 +1053,7 @@ public class ItmManagerRpcService implements ItmRpcService {
             final IpAddress hwIp = input.getIpAddress();
             final List<String> nodeId = input.getNodeId();
             InstanceIdentifier<TransportZones> containerPath = InstanceIdentifier.create(TransportZones.class);
-            Optional<TransportZones> transportZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
+            Optional<TransportZones> transportZonesOptional = ItmUtils.syncRead(LogicalDatastoreType.CONFIGURATION,
                     containerPath, dataBroker);
             if (transportZonesOptional.isPresent()) {
                 TransportZones tzones = transportZonesOptional.get();
@@ -1112,14 +1115,14 @@ public class ItmManagerRpcService implements ItmRpcService {
             IsTunnelInternalOrExternalInput input) {
         RpcResultBuilder<IsTunnelInternalOrExternalOutput> resultBld;
         String tunIfName = input.getTunnelInterfaceName();
-        long tunVal = 0;
+        Uint32 tunVal = Uint32.ZERO;
         IsTunnelInternalOrExternalOutputBuilder output = new IsTunnelInternalOrExternalOutputBuilder()
                 .setTunnelType(tunVal);
 
         if (ItmUtils.ITM_CACHE.getInternalTunnel(tunIfName) != null) {
-            tunVal = 1;
+            tunVal = Uint32.ONE;
         } else if (ItmUtils.ITM_CACHE.getExternalTunnel(tunIfName) != null) {
-            tunVal = 2;
+            tunVal = Uint32.TWO;
         }
         output.setTunnelType(tunVal);
         resultBld = RpcResultBuilder.success();
@@ -1136,18 +1139,15 @@ public class ItmManagerRpcService implements ItmRpcService {
             tx -> dcGatewayIpList.putAll(getDcGatewayIpList(tx))).isDone();
         String dcgwIpStr = input.getDcgwIp();
         IpAddress dcgwIpAddr = IpAddressBuilder.getDefaultInstance(dcgwIpStr);
-        long retVal;
 
         if (!dcGatewayIpList.isEmpty()
                 && dcGatewayIpList.values().stream().anyMatch(gwIp -> Objects.equal(gwIp.getIpAddress(), dcgwIpAddr))) {
             //Match found
-            retVal = 1;
-            IsDcgwPresentOutputBuilder output = new IsDcgwPresentOutputBuilder().setRetVal(retVal);
+            IsDcgwPresentOutputBuilder output = new IsDcgwPresentOutputBuilder().setRetVal(Uint32.ONE);
             resultBld.withResult(output.build());
         } else {
             //Match not found
-            retVal = 2;
-            IsDcgwPresentOutputBuilder output = new IsDcgwPresentOutputBuilder().setRetVal(retVal);
+            IsDcgwPresentOutputBuilder output = new IsDcgwPresentOutputBuilder().setRetVal(Uint32.TWO);
             resultBld.withResult(output.build());
         }
         return Futures.immediateFuture(resultBld.build());
@@ -1160,7 +1160,8 @@ public class ItmManagerRpcService implements ItmRpcService {
         InstanceIdentifier<DPNTEPsInfo> tunnelInfoId =
                 InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class,
                         new DPNTEPsInfoKey(srcDpn)).build();
-        Optional<DPNTEPsInfo> tunnelInfo = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tunnelInfoId, dataBroker);
+        Optional<DPNTEPsInfo> tunnelInfo = ItmUtils.syncRead(LogicalDatastoreType.CONFIGURATION,
+                tunnelInfoId, dataBroker);
         if (!tunnelInfo.isPresent()) {
             LOG.error("tunnelInfo is not present");
             return Futures.immediateFuture(resultBld.build());

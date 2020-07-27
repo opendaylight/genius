@@ -66,6 +66,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.re
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.Node;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -152,7 +153,7 @@ public class TepCommandHelper {
     public TransportZone getTransportZone(String transportZoneName) {
         InstanceIdentifier<TransportZone> tzonePath = InstanceIdentifier.builder(TransportZones.class)
                 .child(TransportZone.class, new TransportZoneKey(transportZoneName)).build();
-        return ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tzonePath, dataBroker).orElse(null);
+        return ItmUtils.syncRead(LogicalDatastoreType.CONFIGURATION, tzonePath, dataBroker).orElse(null);
     }
 
     /**
@@ -162,7 +163,7 @@ public class TepCommandHelper {
      */
     public TransportZones getAllTransportZones() {
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
-        return ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker).orElse(null);
+        return ItmUtils.syncRead(LogicalDatastoreType.CONFIGURATION, path, dataBroker).orElse(null);
     }
 
 
@@ -182,7 +183,7 @@ public class TepCommandHelper {
                 InstanceIdentifier.builder(TransportZones.class)
                         .child(TransportZone.class, new TransportZoneKey(tzone)).build();
         Optional<TransportZone> transportZoneOptional =
-                ItmUtils.read(LogicalDatastoreType.CONFIGURATION, tzonePath, dataBroker);
+                ItmUtils.syncRead(LogicalDatastoreType.CONFIGURATION, tzonePath, dataBroker);
         if (transportZoneOptional.isPresent()) {
             TransportZone tz = transportZoneOptional.get();
             for (Vteps vtep : tz.getVteps().values()) {
@@ -209,7 +210,7 @@ public class TepCommandHelper {
                             InstanceIdentifier.builder(TransportZones.class)
                                     .child(TransportZone.class, new TransportZoneKey(tz)).build();
                     Optional<TransportZone> transportZoneOptional =
-                            ItmUtils.read(LogicalDatastoreType.CONFIGURATION, transportZonePath, dataBroker);
+                            ItmUtils.syncRead(LogicalDatastoreType.CONFIGURATION, transportZonePath, dataBroker);
                     LOG.debug("read container from DS");
                     if (transportZoneOptional.isPresent()) {
                         TransportZone tzoneFromDs = transportZoneOptional.get();
@@ -254,10 +255,10 @@ public class TepCommandHelper {
         }
     }
 
-    public List<String> showTeps(boolean monitorEnabled, int monitorInterval) throws TepException {
+    public List<String> showTeps(boolean monitorEnabled, Uint16 monitorInterval) throws TepException {
         boolean flag = false;
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
-        Optional<TransportZones> transportZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
+        Optional<TransportZones> transportZonesOptional = ItmUtils.syncRead(LogicalDatastoreType.CONFIGURATION,
                 path, dataBroker);
         if (transportZonesOptional.isPresent()) {
             List<String> result = new ArrayList<>();
@@ -267,7 +268,7 @@ public class TepCommandHelper {
                 return result;
             }
             result.add(String.format("Tunnel Monitoring (for VXLAN tunnels): %s", monitorEnabled ? "On" : "Off"));
-            result.add(String.format("Tunnel Monitoring Interval (for VXLAN tunnels): %d", monitorInterval));
+            result.add(String.format("Tunnel Monitoring Interval (for VXLAN tunnels): %d", monitorInterval.toJava()));
             result.add(System.lineSeparator());
             result.add(String.format("%-16s  %-16s  %-12s %-16s", "TransportZone", "TunnelType", "DpnID", "IPAddress"));
             result.add("---------------------------------------------------------------------------------------------"
@@ -344,7 +345,7 @@ public class TepCommandHelper {
         // check if present in tzones and delete from cache
         boolean existsInCache = isInCache(dpnId, ipAddress, transportZone);
         if (!existsInCache) {
-            Optional<Vteps> vtepOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, vpath, dataBroker);
+            Optional<Vteps> vtepOptional = ItmUtils.syncRead(LogicalDatastoreType.CONFIGURATION, vpath, dataBroker);
             if (vtepOptional.isPresent()) {
                 vtepCli = vtepOptional.get();
                 if (Objects.equals(vtepCli.getIpAddress(), ipAddressObj)) {
@@ -366,7 +367,7 @@ public class TepCommandHelper {
             if (vtepDelCommitList != null && !vtepDelCommitList.isEmpty()) {
                 InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
                 Optional<TransportZones> transportZonesOptional =
-                        ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
+                        ItmUtils.syncRead(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
                 if (transportZonesOptional.isPresent()) {
                     List<TransportZone> transportZones = transportZonesOptional.get().nonnullTransportZone();
                     for (TransportZone tz : transportZones) {
@@ -511,7 +512,7 @@ public class TepCommandHelper {
 
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.create(TransportZones.class);
 
-        Optional<TransportZones> tzones = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
+        Optional<TransportZones> tzones = ItmUtils.syncRead(LogicalDatastoreType.CONFIGURATION, path, dataBroker);
 
         TransportZone tzone = new TransportZoneBuilder().withKey(new TransportZoneKey(transportZoneName))
                 .setTunnelType(tunType).build();
@@ -538,7 +539,7 @@ public class TepCommandHelper {
 
     public void configureTunnelMonitorParams(boolean monitorEnabled, String monitorProtocol) {
         InstanceIdentifier<TunnelMonitorParams> path = InstanceIdentifier.create(TunnelMonitorParams.class);
-        Optional<TunnelMonitorParams> storedTunnelMonitor = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
+        Optional<TunnelMonitorParams> storedTunnelMonitor = ItmUtils.syncRead(LogicalDatastoreType.CONFIGURATION,
                 path, dataBroker);
         Class<? extends TunnelMonitoringTypeBase> monitorType ;
         if (storedTunnelMonitor.isPresent() && storedTunnelMonitor.get().getMonitorProtocol() != null) {
@@ -559,12 +560,12 @@ public class TepCommandHelper {
         }
     }
 
-    public void configureTunnelMonitorInterval(int interval) {
+    public void configureTunnelMonitorInterval(Uint16 interval) {
         InstanceIdentifier<TunnelMonitorInterval> path =
                 InstanceIdentifier.builder(TunnelMonitorInterval.class).build();
-        Optional<TunnelMonitorInterval> storedTunnelMonitor = ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path,
-                dataBroker);
-        if (!storedTunnelMonitor.isPresent() || storedTunnelMonitor.get().getInterval().toJava() != interval) {
+        Optional<TunnelMonitorInterval> storedTunnelMonitor = ItmUtils.syncRead(LogicalDatastoreType.CONFIGURATION,
+                path, dataBroker);
+        if (!storedTunnelMonitor.isPresent() || storedTunnelMonitor.get().getInterval() != interval) {
             TunnelMonitorInterval tunnelMonitor = new TunnelMonitorIntervalBuilder().setInterval(interval).build();
             Futures.addCallback(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
                 tx -> tx.mergeParentStructureMerge(path, tunnelMonitor)), ItmUtils.DEFAULT_WRITE_CALLBACK,

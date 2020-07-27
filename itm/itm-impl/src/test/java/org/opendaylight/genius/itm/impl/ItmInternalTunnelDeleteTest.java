@@ -12,7 +12,9 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.junit.After;
 import org.junit.Before;
@@ -68,6 +70,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tun
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnelKey;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint64;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -76,7 +79,7 @@ public class ItmInternalTunnelDeleteTest {
     Uint64 dpId1 = Uint64.ONE;
     Uint64 dpId2 = Uint64.valueOf(2);
     int vlanId = 100 ;
-    int interval = 1000;
+    Uint16 interval = Uint16.valueOf(1000);
     String portName1 = "phy0";
     String portName2 = "phy1" ;
     String parentInterfaceName = "1:phy0:100" ;
@@ -97,7 +100,7 @@ public class ItmInternalTunnelDeleteTest {
     TunnelEndPoints tunnelEndPointsVxlanNew = null;
     DpnEndpoints dpnEndpoints = null;
     List<DPNTEPsInfo> meshDpnListVxlan = new ArrayList<>() ;
-    List<DPNTEPsInfo> cfgdDpnListVxlan = new ArrayList<>() ;
+    Map<DPNTEPsInfoKey, DPNTEPsInfo> cfgdDpnListVxlan = new HashMap<>() ;
     List<TunnelEndPoints> tunnelEndPointsListVxlan = new ArrayList<>();
     List<TunnelEndPoints> tunnelEndPointsListVxlanNew = new ArrayList<>();
     java.lang.Class<? extends TunnelTypeBase> tunnelType1 = TunnelTypeVxlan.class;
@@ -187,12 +190,12 @@ public class ItmInternalTunnelDeleteTest {
         gtwyIp2 = IpAddressBuilder.getDefaultInstance(gwyIp2);
         tunnelEndPointsVxlan = new TunnelEndPointsBuilder()
                 .setIpAddress(ipAddress1).setInterfaceName(parentInterfaceName)
-                .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1))
+                .setTzMembership(ItmUtils.createTransportZoneMembershipMap(transportZone1))
                 .setTunnelType(tunnelType1)
                 .withKey(new TunnelEndPointsKey(ipAddress1,tunnelType1)).build();
         tunnelEndPointsVxlanNew = new TunnelEndPointsBuilder()
                 .setIpAddress(ipAddress2).setInterfaceName(parentInterfaceName)
-                .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1)).setTunnelType(tunnelType1)
+                .setTzMembership(ItmUtils.createTransportZoneMembershipMap(transportZone1)).setTunnelType(tunnelType1)
                 .build();
         tunnelEndPointsListVxlan.add(tunnelEndPointsVxlan);
         tunnelEndPointsListVxlanNew.add(tunnelEndPointsVxlanNew);
@@ -204,7 +207,7 @@ public class ItmInternalTunnelDeleteTest {
         tunnelMonitorParams = new TunnelMonitorParamsBuilder().setEnabled(true).setMonitorProtocol(monitorProtocol)
                 .build();
         tunnelMonitorInterval = new TunnelMonitorIntervalBuilder().setInterval(interval).build();
-        cfgdDpnListVxlan.add(dpntePsInfoVxlan);
+        cfgdDpnListVxlan.put(new DPNTEPsInfoKey(dpId1), dpntePsInfoVxlan);
         meshDpnListVxlan.add(dpntePsInfoVxlan);
         meshDpnListVxlan.add(dpntePsInfoVxlanNew);
         dpnEndpoints = new DpnEndpointsBuilder().setDPNTEPsInfo(cfgdDpnListVxlan).build();
@@ -233,7 +236,8 @@ public class ItmInternalTunnelDeleteTest {
         lenient().doReturn(FluentFutures.immediateFluentFuture(dpnEndpointsOptional)).when(mockReadTx).read(
                 LogicalDatastoreType.CONFIGURATION,dpnEndpointsIdentifier);
 
-        itmInternalTunnelDeleteWorker.deleteTunnels(mdsalApiManager, cfgdDpnListVxlan,meshDpnListVxlan);
+        itmInternalTunnelDeleteWorker.deleteTunnels(mdsalApiManager, new ArrayList<>(cfgdDpnListVxlan.values()),
+                meshDpnListVxlan);
         //FIXME: This verification is broken revisit this.
         //verify(mockWriteTx).delete(LogicalDatastoreType.CONFIGURATION,tunnelEndPointsIdentifier);
         verify(mockReadWriteTx).delete(LogicalDatastoreType.CONFIGURATION,dpntePsInfoIdentifier);

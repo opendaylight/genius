@@ -64,6 +64,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.A
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelEndpointInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveExternalTunnelEndpointInputBuilder;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint32;
 import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
@@ -347,7 +348,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
     }
 
     @Override
-    public void configureTunnelMonitorInterval(int interval) {
+    public void configureTunnelMonitorInterval(Uint16 interval) {
         tepCommandHelper.configureTunnelMonitorInterval(interval);
     }
 
