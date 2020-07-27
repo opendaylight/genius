@@ -427,7 +427,7 @@ public class TransportZoneListener extends AbstractSyncDataTreeChangeListener<Tr
                 .builder(NotHostedTransportZones.class).child(TepsInNotHostedTransportZone.class,
                         new TepsInNotHostedTransportZoneKey(transportZoneName)).build();
         Optional<TepsInNotHostedTransportZone> tepsInNotHostedTransportZoneOptional =
-                ItmUtils.read(LogicalDatastoreType.OPERATIONAL, notHostedTzPath, dataBroker);
+                ItmUtils.syncRead(LogicalDatastoreType.OPERATIONAL, notHostedTzPath, dataBroker);
         return tepsInNotHostedTransportZoneOptional;
     }
 
