@@ -205,7 +205,7 @@ public class ItmManagerRpcServiceTest {
         interfaceIdentifier = ItmUtils.buildId(trunkInterfaceName);
         tunnelEndPointsVxlan = new TunnelEndPointsBuilder().setIpAddress(ItmTestConstants.IP_ADDRESS_3)
                 .setInterfaceName(ItmTestConstants.PARENT_INTERFACE_NAME)
-                .setTzMembership(ItmUtils.createTransportZoneMembership(ItmTestConstants.TZ_NAME))
+                .setTzMembership(ItmUtils.createTransportZoneMembershipMap(ItmTestConstants.TZ_NAME))
                 .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN)
                 .withKey(new TunnelEndPointsKey(ItmTestConstants.IP_ADDRESS_3,
                         ItmTestConstants.TUNNEL_TYPE_VXLAN)).build();
