@@ -9,6 +9,7 @@ package org.opendaylight.genius.itm.globals;
 
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBfd;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint64;
 
 public interface ITMConstants {
@@ -31,8 +32,8 @@ public interface ITMConstants {
     int LLDP_SERVICE_ID = 0;
     // Tunnel Monitoring
     boolean DEFAULT_MONITOR_ENABLED = false;
-    int DEFAULT_MONITOR_INTERVAL = 10000;
-    int BFD_DEFAULT_MONITOR_INTERVAL = 1000;
+    Uint16 DEFAULT_MONITOR_INTERVAL = Uint16.valueOf(10000);
+    Uint16 BFD_DEFAULT_MONITOR_INTERVAL = Uint16.valueOf(1000);
     int MIN_MONITOR_INTERVAL = 1000;
     int MAX_MONITOR_INTERVAL = 30000;
     String DUMMY_IP_ADDRESS = "0.0.0.0";

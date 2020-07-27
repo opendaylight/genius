@@ -12,12 +12,7 @@ import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
@@ -61,6 +56,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.Dpn
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfoBuilder;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfoKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.DpnsTeps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.DpnsTepsBuilder;
@@ -73,6 +69,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tun
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.OperationFailedException;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,7 +79,7 @@ public final class ItmInternalTunnelAddWorker {
     private static final Logger LOG = LoggerFactory.getLogger(ItmInternalTunnelAddWorker.class) ;
 
     private final ItmConfig itmCfg;
-    private final Integer monitorInterval;
+    private final Uint16 monitorInterval;
     private final boolean isTunnelMonitoringEnabled;
     private final Class<? extends TunnelMonitoringTypeBase> monitorProtocol;
 
@@ -142,8 +139,8 @@ public final class ItmInternalTunnelAddWorker {
         DirectTunnelUtils directTunnelUtils) throws ExecutionException, InterruptedException, OperationFailedException {
         LOG.debug("Updating CONFIGURATION datastore with DPN {} ", dpn);
         InstanceIdentifier<DpnEndpoints> dep = InstanceIdentifier.create(DpnEndpoints.class) ;
-        List<DPNTEPsInfo> dpnList = new ArrayList<>() ;
-        dpnList.add(new DPNTEPsInfoBuilder(dpn)
+        Map<DPNTEPsInfoKey, DPNTEPsInfo> dpnList = new HashMap<>() ;
+        dpnList.put(new DPNTEPsInfoKey(dpn.getDPNID()), new DPNTEPsInfoBuilder(dpn)
             .setDstId(directTunnelUtils.allocateId(ITMConstants.ITM_IDPOOL_NAME, dpn.getDPNID().toString())).build());
         DpnEndpoints tnlBuilder = new DpnEndpointsBuilder().setDPNTEPsInfo(dpnList).build() ;
         tx.merge(dep, tnlBuilder);
@@ -353,8 +350,8 @@ public final class ItmInternalTunnelAddWorker {
 
         final DpnTepsStateBuilder dpnTepsStateBuilder = new DpnTepsStateBuilder();
         final DpnsTepsBuilder dpnsTepsBuilder = new DpnsTepsBuilder();
-        final List<DpnsTeps> dpnTeps = new ArrayList<>();
-        final List<RemoteDpns> remoteDpns = new ArrayList<>();
+        final Map<DpnsTepsKey, DpnsTeps> dpnTeps = new HashMap();
+        final Map<RemoteDpnsKey, RemoteDpns> remoteDpns = new HashMap<>();
         String ofTunnelPortName = null;
         dpnsTepsBuilder.withKey(new DpnsTepsKey(srcDpnId));
         dpnsTepsBuilder.setTunnelType(srcte.getTunnelType());
@@ -371,9 +368,9 @@ public final class ItmInternalTunnelAddWorker {
         remoteDpn.setMonitoringEnabled(isTunnelMonitoringEnabled);
         remoteDpn.setMonitoringInterval(monitorInterval);
         remoteDpn.setInternal(true);
-        remoteDpns.add(remoteDpn.build());
+        remoteDpns.put(new RemoteDpnsKey(dstDpnId), remoteDpn.build());
         dpnsTepsBuilder.setRemoteDpns(remoteDpns);
-        dpnTeps.add(dpnsTepsBuilder.build());
+        dpnTeps.put(new DpnsTepsKey(srcDpnId), dpnsTepsBuilder.build());
         dpnTepsStateBuilder.setDpnsTeps(dpnTeps);
         updateDpnTepInterfaceInfoToConfig(dpnTepsStateBuilder.build());
         addTunnelConfiguration(iface, ofTunnelPortName);

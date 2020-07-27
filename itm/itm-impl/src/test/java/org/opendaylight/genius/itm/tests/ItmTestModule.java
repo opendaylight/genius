@@ -55,6 +55,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfigBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.ItmRpcService;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockManagerService;
+import org.opendaylight.yangtools.yang.common.Uint16;
 
 /**
  * Dependency Injection Wiring for {@link ItmTest}.
@@ -74,7 +75,7 @@ public class ItmTestModule extends AbstractGuiceJsr250Module {
                 .setDefTzTunnelType(ITMConstants.TUNNEL_TYPE_VXLAN)
                 .setGpeExtensionEnabled(false)
                 .setPortname("")
-                .setVlanId(0)
+                .setVlanId(Uint16.ZERO)
                 .setUseOfTunnels(true)
                 .build();
         bind(ItmConfig.class).toInstance(itmConfigObj);

@@ -16,6 +16,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeMplsOverGre;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint64;
 
 public interface ItmTestConstants {
@@ -45,7 +46,7 @@ public interface ItmTestConstants {
     String EXTERNAL_ID_BR_NAME_KEY = "br-name";
 
     String LOCALHOST_IP = "127.0.0.1";
-    int OVSDB_CONN_PORT = 6640;
+    Uint16 OVSDB_CONN_PORT = Uint16.valueOf(6640);
 
     String DEF_TZ_TEP_IP = "192.168.56.30";
     String NB_TZ_TEP_IP = "192.168.56.40";

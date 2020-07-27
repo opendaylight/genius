@@ -41,6 +41,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.DeviceVteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Vteps;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -109,7 +110,7 @@ public class ItmExternalTunnelAddWorker {
     public void buildHwVtepsTunnels(List<DPNTEPsInfo> cfgdDpnList, List<HwVtep> cfgdHwVteps,
                                     TypedReadWriteTransaction<Configuration> tx) {
 
-        Integer monitorInterval = ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL;
+        Uint16 monitorInterval = ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL;
         Class<? extends TunnelMonitoringTypeBase> monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
 
         if (null != cfgdDpnList && !cfgdDpnList.isEmpty()) {
@@ -129,7 +130,7 @@ public class ItmExternalTunnelAddWorker {
     }
 
     private void tunnelsFromOVS(List<DPNTEPsInfo> cfgdDpnList, TypedReadWriteTransaction<Configuration> tx,
-                                Integer monitorInterval, Class<? extends TunnelMonitoringTypeBase> monitorProtocol) {
+                                Uint16 monitorInterval, Class<? extends TunnelMonitoringTypeBase> monitorProtocol) {
         for (DPNTEPsInfo dpn : cfgdDpnList) {
             LOG.trace("processing dpn {}", dpn);
             if (dpn.getTunnelEndPoints() != null && !dpn.getTunnelEndPoints().isEmpty()) {
@@ -148,7 +149,7 @@ public class ItmExternalTunnelAddWorker {
     }
 
     private void createTunnelsFromOVSinTransportZone(String zoneName, DPNTEPsInfo dpn, TunnelEndPoints tep,
-                                                   TypedReadWriteTransaction<Configuration> tx, Integer monitorInterval,
+                                                   TypedReadWriteTransaction<Configuration> tx, Uint16 monitorInterval,
                                                    Class<? extends TunnelMonitoringTypeBase> monitorProtocol)
             throws ExecutionException, InterruptedException {
         Optional<TransportZone> transportZoneOptional = tx.read(InstanceIdentifier.builder(TransportZones.class)
@@ -191,7 +192,7 @@ public class ItmExternalTunnelAddWorker {
     }
 
     private void tunnelsFromhWVtep(HwVtep hwTep, TypedReadWriteTransaction<Configuration> tx,
-                                   Integer monitorInterval, Class<? extends TunnelMonitoringTypeBase> monitorProtocol)
+                                   Uint16 monitorInterval, Class<? extends TunnelMonitoringTypeBase> monitorProtocol)
             throws ExecutionException, InterruptedException {
         Optional<TransportZone> transportZoneOptional = tx.read(InstanceIdentifier.builder(TransportZones.class)
                 .child(TransportZone.class, new TransportZoneKey(hwTep.getTransportZone())).build()).get();
@@ -255,7 +256,7 @@ public class ItmExternalTunnelAddWorker {
     //for tunnels from TOR device
     private boolean wireUp(String topoId, String srcNodeid, IpAddress srcIp, String dstNodeId, IpAddress dstIp,
                            Class<? extends TunnelTypeBase> tunType,
-                           Boolean monitorEnabled, Integer monitorInterval,
+                           Boolean monitorEnabled, Uint16 monitorInterval,
                            Class<? extends TunnelMonitoringTypeBase> monitorProtocol,
                            TypedWriteTransaction<Configuration> tx) {
         IpAddress gatewayIpObj = IpAddressBuilder.getDefaultInstance("0.0.0.0");
@@ -289,7 +290,7 @@ public class ItmExternalTunnelAddWorker {
     //for tunnels from OVS
     private boolean wireUp(Uint64 dpnId, String portname, Integer vlanId, IpAddress srcIp, Boolean remoteIpFlow,
                            String dstNodeId, IpAddress dstIp,
-                           Class<? extends TunnelTypeBase> tunType, Boolean monitorEnabled, Integer monitorInterval,
+                           Class<? extends TunnelTypeBase> tunType, Boolean monitorEnabled, Uint16 monitorInterval,
                            Class<? extends TunnelMonitoringTypeBase> monitorProtocol,
                            TypedWriteTransaction<Configuration> tx) {
 
