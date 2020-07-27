@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a9689d1c_c22274e8",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/FrmNodeAndTablesBuilder.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 5882
+      },
+      "writtenOn": "2020-07-27T07:43:39Z",
+      "side": 1,
+      "message": "This while loop is for trying out retries. Retry code should be added with in this while loop.",
+      "range": {
+        "startLine": 116,
+        "startChar": 1,
+        "endLine": 116,
+        "endChar": 22
+      },
+      "revId": "f6cc4c39773670925af49f5e006eab555e34d62d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9e4941dc_db094ece",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/FrmNodeAndTablesBuilder.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 5882
+      },
+      "writtenOn": "2020-07-27T07:43:39Z",
+      "side": 1,
+      "message": "\u0027break\u0027 is needed here. If tables are already created, need to come out of the while loop",
+      "range": {
+        "startLine": 136,
+        "startChar": 19,
+        "endLine": 136,
+        "endChar": 35
+      },
+      "revId": "f6cc4c39773670925af49f5e006eab555e34d62d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "70452de8_39dc93d3",
+        "filename": "interfacemanager/interfacemanager-impl/src/main/java/org/opendaylight/genius/interfacemanager/FrmNodeAndTablesBuilder.java",
+        "patchSetId": 8
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 5882
+      },
+      "writtenOn": "2020-07-27T07:43:39Z",
+      "side": 1,
+      "message": "I feel, this code should be in while loop above while tables are created",
+      "range": {
+        "startLine": 146,
+        "startChar": 0,
+        "endLine": 155,
+        "endChar": 17
+      },
+      "revId": "f6cc4c39773670925af49f5e006eab555e34d62d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
