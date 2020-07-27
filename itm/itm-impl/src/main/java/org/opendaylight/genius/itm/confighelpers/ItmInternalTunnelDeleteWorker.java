@@ -321,7 +321,7 @@ public class ItmInternalTunnelDeleteWorker {
                                               Class<? extends TunnelTypeBase> tunType, DataBroker dataBroker) {
         InstanceIdentifier<InternalTunnel> path = InstanceIdentifier.create(TunnelList.class)
                 .child(InternalTunnel.class, new InternalTunnelKey(dstDpnId, srcDpnId, tunType));
-        return ItmUtils.read(LogicalDatastoreType.CONFIGURATION,path, dataBroker).isPresent();
+        return ItmUtils.syncRead(LogicalDatastoreType.CONFIGURATION,path, dataBroker).isPresent();
     }
 
     private void removeLogicalGroupTunnel(Uint64 srcDpnId, Uint64 dstDpnId) {

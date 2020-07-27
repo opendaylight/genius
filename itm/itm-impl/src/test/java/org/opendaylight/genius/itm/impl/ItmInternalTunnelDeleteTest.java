@@ -187,12 +187,12 @@ public class ItmInternalTunnelDeleteTest {
         gtwyIp2 = IpAddressBuilder.getDefaultInstance(gwyIp2);
         tunnelEndPointsVxlan = new TunnelEndPointsBuilder()
                 .setIpAddress(ipAddress1).setInterfaceName(parentInterfaceName)
-                .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1))
+                .setTzMembership(ItmUtils.createTransportZoneMembershipMap(transportZone1))
                 .setTunnelType(tunnelType1)
                 .withKey(new TunnelEndPointsKey(ipAddress1,tunnelType1)).build();
         tunnelEndPointsVxlanNew = new TunnelEndPointsBuilder()
                 .setIpAddress(ipAddress2).setInterfaceName(parentInterfaceName)
-                .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1)).setTunnelType(tunnelType1)
+                .setTzMembership(ItmUtils.createTransportZoneMembershipMap(transportZone1)).setTunnelType(tunnelType1)
                 .build();
         tunnelEndPointsListVxlan.add(tunnelEndPointsVxlan);
         tunnelEndPointsListVxlanNew.add(tunnelEndPointsVxlanNew);

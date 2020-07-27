@@ -210,19 +210,19 @@ public class ItmInternalTunnelAddTest {
         gtwyIp2 = IpAddressBuilder.getDefaultInstance(gwyIp2);
         tunnelEndPointsVxlan = new TunnelEndPointsBuilder()
                 .setIpAddress(ipAddress1).setInterfaceName(parentInterfaceName)
-                .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1)).setTunnelType(tunnelType1)
+                .setTzMembership(ItmUtils.createTransportZoneMembershipMap(transportZone1)).setTunnelType(tunnelType1)
                 .build();
         tunnelEndPointsVxlanNew = new TunnelEndPointsBuilder()
                 .setIpAddress(ipAddress2).setInterfaceName(parentInterfaceName)
-                .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1)).setTunnelType(tunnelType1)
+                .setTzMembership(ItmUtils.createTransportZoneMembershipMap(transportZone1)).setTunnelType(tunnelType1)
                 .build();
         tunnelEndPointsGre = new TunnelEndPointsBuilder()
                 .setIpAddress(ipAddress1).setInterfaceName(parentInterfaceName)
-                .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1)).setTunnelType(tunnelType2)
+                .setTzMembership(ItmUtils.createTransportZoneMembershipMap(transportZone1)).setTunnelType(tunnelType2)
                 .build();
         tunnelEndPointsGreNew = new TunnelEndPointsBuilder()
                 .setIpAddress(ipAddress2).setInterfaceName(parentInterfaceName)
-                .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1)).setTunnelType(tunnelType2)
+                .setTzMembership(ItmUtils.createTransportZoneMembershipMap(transportZone1)).setTunnelType(tunnelType2)
                 .build();
         tunnelEndPointsListVxlan.add(tunnelEndPointsVxlan);
         tunnelEndPointsListVxlanNew.add(tunnelEndPointsVxlanNew);

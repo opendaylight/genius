@@ -202,7 +202,7 @@ public class ItmExternalTunnelAddTest {
         ipPrefixTest = IpPrefixBuilder.getDefaultInstance(subnetIp + "/24");
         tunnelEndPointsVxlan = new TunnelEndPointsBuilder()
                 .setIpAddress(ipAddress3).setInterfaceName(parentInterfaceName)
-                .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1))
+                .setTzMembership(ItmUtils.createTransportZoneMembershipMap(transportZone1))
                 .setTunnelType(tunnelType1).build();
         tunnelEndPointsListVxlan.add(tunnelEndPointsVxlan);
         dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(dpId1).setUp(true).withKey(new DPNTEPsInfoKey(dpId1))
