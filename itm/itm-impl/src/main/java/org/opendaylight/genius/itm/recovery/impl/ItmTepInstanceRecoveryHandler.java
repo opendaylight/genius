@@ -49,6 +49,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembership;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.tunnel.end.points.TzMembershipKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.DpnsTeps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpns;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.teps.state.dpns.teps.RemoteDpnsKey;
@@ -235,7 +236,7 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
         for (Vteps vtep : transportZone.getVteps().values()) {
             if (ipAddress.equals(vtep.getIpAddress().stringValue())) {
 
-                List<TzMembership> zones = ItmUtils.createTransportZoneMembership(tzName);
+                Map<TzMembershipKey, TzMembership> zones = ItmUtils.createTransportZoneMembershipMap(tzName);
                 LOG.trace("Transportzone {} found match for tep {} to be recovered", transportZone.getZoneName(),
                         ipAddress);
 
