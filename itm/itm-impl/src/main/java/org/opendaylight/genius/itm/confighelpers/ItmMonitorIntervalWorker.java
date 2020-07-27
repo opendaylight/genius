@@ -21,6 +21,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorInterval;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorIntervalBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint16;
+import org.opendaylight.yangtools.yang.common.Uint32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,13 +31,13 @@ public class ItmMonitorIntervalWorker implements Callable<List<? extends Listena
 
     private final DataBroker dataBroker;
     private final String tzone;
-    private final Integer interval;
+    private final Uint16 interval;
     private final ManagedNewTransactionRunner txRunner;
 
-    public ItmMonitorIntervalWorker(String tzone, Integer interval, DataBroker dataBroker) {
+    public ItmMonitorIntervalWorker(String tzone, int interval, DataBroker dataBroker) {
         this.dataBroker = dataBroker;
         this.tzone = tzone;
-        this.interval = interval;
+        this.interval = Uint16.valueOf(interval);
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
         LOG.debug("ItmMonitorIntervalWorker: monitorInterval = {}",interval);
         LOG.trace("ItmMonitorToggleWorker initialized with  tzone {} and Interval {}",tzone,interval);
@@ -64,7 +66,7 @@ public class ItmMonitorIntervalWorker implements Callable<List<? extends Listena
         if (tunnelInterfaceName != null) {
             LOG.debug("tunnel {} will have monitor interval {}", tunnelInterfaceName, interval);
             tx.merge(ItmUtils.buildTunnelId(tunnelInterfaceName),
-                new IfTunnelBuilder().setMonitorInterval(interval.longValue()).build());
+                new IfTunnelBuilder().setMonitorInterval(Uint32.valueOf(interval)).build());
         }
     }
 }

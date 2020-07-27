@@ -11,7 +11,9 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -70,6 +72,8 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.OperationFailedException;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
+import org.opendaylight.yangtools.yang.common.Uint16;
+import org.opendaylight.yangtools.yang.common.Uint32;
 import org.opendaylight.yangtools.yang.common.Uint64;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -85,7 +89,7 @@ public class ItmInternalTunnelAddTest {
     String portName1 = "phy0";
     String portName2 = "phy1" ;
     int vlanId = 100 ;
-    int interval = 1000;
+    Uint16 interval = Uint16.valueOf(1000);
     String tepIp1 = "192.168.56.101";
     String tepIp2 = "192.168.56.102";
     String gwyIp1 = "0.0.0.0";
@@ -119,9 +123,9 @@ public class ItmInternalTunnelAddTest {
     List<TunnelEndPoints> tunnelEndPointsListGre = new ArrayList<>();
     List<TunnelEndPoints> tunnelEndPointsListGreNew = new ArrayList<>();
     List<DPNTEPsInfo> meshDpnListVxlan = new ArrayList<>() ;
-    List<DPNTEPsInfo> cfgdDpnListVxlan = new ArrayList<>() ;
+    Map<DPNTEPsInfoKey, DPNTEPsInfo> cfgdDpnListVxlan = new HashMap<>() ;
     List<DPNTEPsInfo> meshDpnListGre = new ArrayList<>() ;
-    List<DPNTEPsInfo> cfgdDpnListGre = new ArrayList<>() ;
+    Map<DPNTEPsInfoKey, DPNTEPsInfo> cfgdDpnListGre = new HashMap<>() ;
     java.lang.Class<? extends TunnelTypeBase> tunnelType1 = TunnelTypeVxlan.class;
     java.lang.Class<? extends TunnelTypeBase> tunnelType2 = TunnelTypeGre.class;
     Class<? extends TunnelMonitoringTypeBase> monitorProtocol = TunnelMonitoringTypeBfd.class;
@@ -140,10 +144,10 @@ public class ItmInternalTunnelAddTest {
     InstanceIdentifier<InternalTunnel> internalTunnelIdentifierGre2 = InstanceIdentifier.create(
             TunnelList.class).child(InternalTunnel.class, new InternalTunnelKey(dpId1, dpId2, tunnelType2));
 
-    AllocateIdOutput expectedId1 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("100")).build();
-    AllocateIdOutput expectedId2 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("200")).build();
-    AllocateIdOutput expectedDstID1 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("1")).build();
-    AllocateIdOutput expectedDstID2 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("2")).build();
+    AllocateIdOutput expectedId1 = new AllocateIdOutputBuilder().setIdValue(Uint32.valueOf("100")).build();
+    AllocateIdOutput expectedId2 = new AllocateIdOutputBuilder().setIdValue(Uint32.valueOf("200")).build();
+    AllocateIdOutput expectedDstID1 = new AllocateIdOutputBuilder().setIdValue(Uint32.valueOf("1")).build();
+    AllocateIdOutput expectedDstID2 = new AllocateIdOutputBuilder().setIdValue(Uint32.valueOf("2")).build();
 
     Future<RpcResult<AllocateIdOutput>> idOutputOptional1;
     Future<RpcResult<AllocateIdOutput>> idOutputOptional2;
@@ -210,19 +214,19 @@ public class ItmInternalTunnelAddTest {
         gtwyIp2 = IpAddressBuilder.getDefaultInstance(gwyIp2);
         tunnelEndPointsVxlan = new TunnelEndPointsBuilder()
                 .setIpAddress(ipAddress1).setInterfaceName(parentInterfaceName)
-                .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1)).setTunnelType(tunnelType1)
+                .setTzMembership(ItmUtils.createTransportZoneMembershipMap(transportZone1)).setTunnelType(tunnelType1)
                 .build();
         tunnelEndPointsVxlanNew = new TunnelEndPointsBuilder()
                 .setIpAddress(ipAddress2).setInterfaceName(parentInterfaceName)
-                .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1)).setTunnelType(tunnelType1)
+                .setTzMembership(ItmUtils.createTransportZoneMembershipMap(transportZone1)).setTunnelType(tunnelType1)
                 .build();
         tunnelEndPointsGre = new TunnelEndPointsBuilder()
                 .setIpAddress(ipAddress1).setInterfaceName(parentInterfaceName)
-                .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1)).setTunnelType(tunnelType2)
+                .setTzMembership(ItmUtils.createTransportZoneMembershipMap(transportZone1)).setTunnelType(tunnelType2)
                 .build();
         tunnelEndPointsGreNew = new TunnelEndPointsBuilder()
                 .setIpAddress(ipAddress2).setInterfaceName(parentInterfaceName)
-                .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1)).setTunnelType(tunnelType2)
+                .setTzMembership(ItmUtils.createTransportZoneMembershipMap(transportZone1)).setTunnelType(tunnelType2)
                 .build();
         tunnelEndPointsListVxlan.add(tunnelEndPointsVxlan);
         tunnelEndPointsListVxlanNew.add(tunnelEndPointsVxlanNew);
@@ -239,9 +243,9 @@ public class ItmInternalTunnelAddTest {
         tunnelMonitorParams = new TunnelMonitorParamsBuilder().setEnabled(true)
                 .setMonitorProtocol(monitorProtocol).build();
         tunnelMonitorInterval = new TunnelMonitorIntervalBuilder().setInterval(interval).build();
-        cfgdDpnListVxlan.add(dpntePsInfoVxlan);
+        cfgdDpnListVxlan.put(new DPNTEPsInfoKey(dpId1), dpntePsInfoVxlan);
         meshDpnListVxlan.add(dpntePsInfoVxlanNew);
-        cfgdDpnListGre.add(dpntePsInfoGre);
+        cfgdDpnListGre.put(new DPNTEPsInfoKey(dpId1), dpntePsInfoGre);
         meshDpnListGre.add(dpntePsInfoGreNew);
         dpnEndpointsVxlan = new DpnEndpointsBuilder().setDPNTEPsInfo(cfgdDpnListVxlan).build();
         dpnEndpointsGre = new DpnEndpointsBuilder().setDPNTEPsInfo(cfgdDpnListGre).build();
@@ -280,7 +284,8 @@ public class ItmInternalTunnelAddTest {
         internalTunnel1 = ItmUtils.buildInternalTunnel(dpId1,dpId2,tunnelType1,trunkInterfaceName1);
         internalTunnel2 = ItmUtils.buildInternalTunnel(dpId2,dpId1,tunnelType1,trunkInterfaceName2);
 
-        itmInternalTunnelAddWorker.buildAllTunnels(mdsalApiManager, cfgdDpnListVxlan, meshDpnListVxlan);
+        itmInternalTunnelAddWorker.buildAllTunnels(mdsalApiManager, new ArrayList<>(cfgdDpnListVxlan.values()),
+                meshDpnListVxlan);
 
         //Add some verifications
         verify(mockReadWriteTx).mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION,
@@ -318,7 +323,8 @@ public class ItmInternalTunnelAddTest {
         internalTunnel1 = ItmUtils.buildInternalTunnel(dpId1,dpId2,tunnelType2,trunkInterfaceName1);
         internalTunnel2 = ItmUtils.buildInternalTunnel(dpId2,dpId1,tunnelType2,trunkInterfaceName2);
 
-        itmInternalTunnelAddWorker.buildAllTunnels(mdsalApiManager, cfgdDpnListGre, meshDpnListGre);
+        itmInternalTunnelAddWorker.buildAllTunnels(mdsalApiManager, new ArrayList<>(cfgdDpnListGre.values()),
+                meshDpnListGre);
 
         verify(mockReadWriteTx).mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION,
                 internalTunnelIdentifierGre1, internalTunnel1);
@@ -356,7 +362,8 @@ public class ItmInternalTunnelAddTest {
         internalTunnel1 = ItmUtils.buildInternalTunnel(dpId1,dpId2,tunnelType1,trunkInterfaceName1);
         internalTunnel2 = ItmUtils.buildInternalTunnel(dpId2,dpId1,tunnelType2,trunkInterfaceName2);
 
-        itmInternalTunnelAddWorker.buildAllTunnels(mdsalApiManager, cfgdDpnListVxlan, meshDpnListGre);
+        itmInternalTunnelAddWorker.buildAllTunnels(mdsalApiManager, new ArrayList<>(cfgdDpnListVxlan.values()),
+                meshDpnListGre);
 
         verify(mockReadWriteTx).mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION,
                 internalTunnelIdentifierVxlan1, internalTunnel1);

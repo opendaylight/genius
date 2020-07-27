@@ -16,7 +16,9 @@ import static org.mockito.Mockito.verify;
 
 import com.google.common.util.concurrent.Futures;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -75,6 +77,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.opendaylight.yangtools.yang.common.Uint16;
+import org.opendaylight.yangtools.yang.common.Uint32;
 import org.opendaylight.yangtools.yang.common.Uint64;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -117,25 +120,25 @@ public class ItmExternalTunnelDeleteTest {
     List<TunnelEndPoints> tunnelEndPointsListVxlan = new ArrayList<>();
     List<DPNTEPsInfo> dpnTepsList = new ArrayList<>() ;
     List<HwVtep> cfgdHwVtepsList = new ArrayList<>();
-    List<DeviceVteps> deviceVtepsList = new ArrayList<>();
-    List<Vteps> vtepsList = new ArrayList<>();
+    Map<DeviceVtepsKey, DeviceVteps> deviceVtepsList = new HashMap<>();
+    Map<VtepsKey, Vteps> vtepsList = new HashMap<>();
     java.lang.Class<? extends TunnelTypeBase> tunnelType1 = TunnelTypeVxlan.class;
 
-    AllocateIdOutput expectedId1 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("100")).build();
+    AllocateIdOutput expectedId1 = new AllocateIdOutputBuilder().setIdValue(Uint32.valueOf("100")).build();
     Future<RpcResult<AllocateIdOutput>> idOutputOptional1 ;
-    AllocateIdOutput expectedId2 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("101")).build();
+    AllocateIdOutput expectedId2 = new AllocateIdOutputBuilder().setIdValue(Uint32.valueOf("101")).build();
     Future<RpcResult<AllocateIdOutput>> idOutputOptional2 ;
-    AllocateIdOutput expectedId3 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("102")).build();
+    AllocateIdOutput expectedId3 = new AllocateIdOutputBuilder().setIdValue(Uint32.valueOf("102")).build();
     Future<RpcResult<AllocateIdOutput>> idOutputOptional3 ;
-    AllocateIdOutput expectedId4 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("103")).build();
+    AllocateIdOutput expectedId4 = new AllocateIdOutputBuilder().setIdValue(Uint32.valueOf("103")).build();
     Future<RpcResult<AllocateIdOutput>> idOutputOptional4 ;
-    AllocateIdOutput expectedId5 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("104")).build();
+    AllocateIdOutput expectedId5 = new AllocateIdOutputBuilder().setIdValue(Uint32.valueOf("104")).build();
     Future<RpcResult<AllocateIdOutput>> idOutputOptional5 ;
-    AllocateIdOutput expectedId6 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("105")).build();
+    AllocateIdOutput expectedId6 = new AllocateIdOutputBuilder().setIdValue(Uint32.valueOf("105")).build();
     Future<RpcResult<AllocateIdOutput>> idOutputOptional6 ;
-    AllocateIdOutput expectedId7 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("105")).build();
+    AllocateIdOutput expectedId7 = new AllocateIdOutputBuilder().setIdValue(Uint32.valueOf("105")).build();
     Future<RpcResult<AllocateIdOutput>> idOutputOptional7 ;
-    AllocateIdOutput expectedId8 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("106")).build();
+    AllocateIdOutput expectedId8 = new AllocateIdOutputBuilder().setIdValue(Uint32.valueOf("106")).build();
     Future<RpcResult<AllocateIdOutput>> idOutputOptional8 ;
     InstanceIdentifier<Interface> trunkIdentifier ;
     InstanceIdentifier<ExternalTunnel> path ;
@@ -176,8 +179,8 @@ public class ItmExternalTunnelDeleteTest {
                 .withKey(new DeviceVtepsKey(ipAddress2, "hwvtep:1"))
                 .setNodeId("hwvtep://192.168.101.30:6640/physicalswitch/s3")
                 .setTopologyId("hwvtep:1").build();
-        deviceVtepsList.add(deviceVteps1);
-        deviceVtepsList.add(deviceVteps2);
+        deviceVtepsList.put(new DeviceVtepsKey(ipAddress1, "hwvtep:1"), deviceVteps1);
+        deviceVtepsList.put(new DeviceVtepsKey(ipAddress2, "hwvtep:1"), deviceVteps2);
         hwVtep1 = new HwVtep();
         hwVtep1.setTransportZone(transportZone1);
         hwVtep1.setGatewayIP(gtwyIp1);
@@ -189,7 +192,7 @@ public class ItmExternalTunnelDeleteTest {
         hwVtep1.setIpPrefix(ipPrefixTest);
         vteps = new VtepsBuilder().setDpnId(dpId2).setIpAddress(ipAddress1).withKey(new
                 VtepsKey(dpId2)).build();
-        vtepsList.add(vteps);
+        vtepsList.put(new VtepsKey(dpId2), vteps);
         idOutputOptional1 = RpcResultBuilder.success(expectedId1).buildFuture();
         getIdInput1 = new AllocateIdInputBuilder()
                 .setPoolName(ITMConstants.ITM_IDPOOL_NAME)
@@ -235,7 +238,7 @@ public class ItmExternalTunnelDeleteTest {
         lenient().doReturn(idOutputOptional8).when(idManagerService).allocateId(getIdInput8);
         tunnelEndPointsVxlan = new TunnelEndPointsBuilder()
                 .setIpAddress(ipAddress3).setInterfaceName(parentInterfaceName)
-                .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1)).setTunnelType(tunnelType1)
+                .setTzMembership(ItmUtils.createTransportZoneMembershipMap(transportZone1)).setTunnelType(tunnelType1)
                 .build();
         tunnelEndPointsListVxlan.add(tunnelEndPointsVxlan);
         dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(dpId2).setUp(true).withKey(new DPNTEPsInfoKey(dpId2))

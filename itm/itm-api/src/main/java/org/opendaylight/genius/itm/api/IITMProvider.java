@@ -18,6 +18,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.of.teps.state.OfTep;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint64;
 
 public interface IITMProvider {
@@ -44,7 +45,7 @@ public interface IITMProvider {
 
     void configureTunnelMonitorParams(boolean monitorEnabled, String monitorProtocol);
 
-    void configureTunnelMonitorInterval(int interval);
+    void configureTunnelMonitorInterval(Uint16 interval);
 
     void addExternalEndpoint(java.lang.Class<? extends TunnelTypeBase> tunType, IpAddress dcgwIP);
 

@@ -39,6 +39,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeCon
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.node.NodeConnector;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.OperationFailedException;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -148,7 +149,7 @@ public final class TunnelStateAddWorker {
         .setPortNumber(String.valueOf(portNo));
         int ifIndex = directTunnelUtils.allocateId(IfmConstants.IFM_IDPOOL_NAME, interfaceName);
         createLportTagInterfaceMap(interfaceName, ifIndex);
-        stlBuilder.setIfIndex(ifIndex);
+        stlBuilder.setIfIndex(Uint16.valueOf(ifIndex));
         InstanceIdentifier<StateTunnelList> stListId = ItmUtils.buildStateTunnelListId(tlKey);
         LOG.info("Batching the Creation of tunnel_state: {} for Id: {}", stlBuilder.build(), stListId);
         ITMBatchingUtils.write(stListId, stlBuilder.build(), ITMBatchingUtils.EntityType.DEFAULT_OPERATIONAL);
