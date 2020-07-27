@@ -21,6 +21,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorInterval;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorParams;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,11 +73,11 @@ public class TunnelMonitoringConfig implements AutoCloseable {
         }
     }
 
-    public int getMonitorInterval() {
+    public Uint16 getMonitorInterval() {
         try {
             Optional<TunnelMonitorInterval> maybeTunnelInterval =
                     tunnelMonitorIntervalCache.get(TUNNEL_MONITOR_INTERVAL_PATH);
-            return maybeTunnelInterval.isPresent() ? maybeTunnelInterval.get().getInterval().toJava()
+            return maybeTunnelInterval.isPresent() ? maybeTunnelInterval.get().getInterval()
                     : ITMConstants.BFD_DEFAULT_MONITOR_INTERVAL;
         } catch (ReadFailedException e) {
             LOG.warn("Read of {} failed", TUNNEL_MONITOR_INTERVAL_PATH, e);
