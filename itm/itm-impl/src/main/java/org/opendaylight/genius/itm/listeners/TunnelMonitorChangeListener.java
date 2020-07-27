@@ -64,7 +64,7 @@ public class TunnelMonitorChangeListener
     public void remove(@NonNull InstanceIdentifier<TunnelMonitorParams> instanceIdentifier,
                        @NonNull TunnelMonitorParams dataObjectModification) {
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
-        Optional<TransportZones> transportZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
+        Optional<TransportZones> transportZonesOptional = ItmUtils.syncRead(LogicalDatastoreType.CONFIGURATION,
                 path, broker);
         Class<? extends TunnelMonitoringTypeBase> monitorProtocol = dataObjectModification.getMonitorProtocol();
         if (monitorProtocol == null) {
@@ -101,7 +101,7 @@ public class TunnelMonitorChangeListener
                 dataObjectModificationAfter.getMonitorProtocol();
         Class<? extends TunnelMonitoringTypeBase> monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
-        Optional<TransportZones> transportZonesOptional = ItmUtils.read(LogicalDatastoreType.CONFIGURATION,
+        Optional<TransportZones> transportZonesOptional = ItmUtils.syncRead(LogicalDatastoreType.CONFIGURATION,
                 path, broker);
         if (monitorProtocolAfter != null) {
             monitorProtocol = dataObjectModificationAfter.getMonitorProtocol();
@@ -141,7 +141,7 @@ public class TunnelMonitorChangeListener
         Class<? extends TunnelMonitoringTypeBase> monitorProtocol = dataObjectModification.getMonitorProtocol();
         InstanceIdentifier<TransportZones> path = InstanceIdentifier.builder(TransportZones.class).build();
         Optional<TransportZones> transportZonesOptional =
-                ItmUtils.read(LogicalDatastoreType.CONFIGURATION, path, broker);
+                ItmUtils.syncRead(LogicalDatastoreType.CONFIGURATION, path, broker);
         if (monitorProtocol == null) {
             monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
         }

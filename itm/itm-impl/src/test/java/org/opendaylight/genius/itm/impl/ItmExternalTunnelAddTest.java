@@ -13,7 +13,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Future;
 import org.junit.After;
@@ -84,6 +86,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.opendaylight.yangtools.yang.common.Uint16;
+import org.opendaylight.yangtools.yang.common.Uint32;
 import org.opendaylight.yangtools.yang.common.Uint64;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -91,7 +94,7 @@ public class ItmExternalTunnelAddTest {
 
     Uint64 dpId1 = Uint64.ONE;
     int vlanId = 100 ;
-    int interval = 1000;
+    Uint16 interval = Uint16.valueOf(1000);
     String portName1 = "phy0";
     String tepIp1 = "192.168.56.30";
     String tepIp2 = "192.168.56.40";
@@ -129,12 +132,12 @@ public class ItmExternalTunnelAddTest {
     TunnelMonitorInterval tunnelMonitorInterval = null;
     Class<? extends TunnelMonitoringTypeBase> monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
     Interface iface = null;
-    List<DPNTEPsInfo> cfgdDpnListVxlan = new ArrayList<>() ;
+    Map<DPNTEPsInfoKey, DPNTEPsInfo> cfgdDpnListVxlan = new HashMap() ;
     List<TunnelEndPoints> tunnelEndPointsListVxlan = new ArrayList<>();
     List<Uint64> bigIntegerList = new ArrayList<>();
     List<HwVtep> cfgdHwVtepsList = new ArrayList<>();
-    List<DeviceVteps> deviceVtepsList = new ArrayList<>();
-    List<Vteps> vtepsList = new ArrayList<>();
+    Map<DeviceVtepsKey, DeviceVteps> deviceVtepsList = new HashMap<>();
+    Map<VtepsKey, Vteps> vtepsList = new HashMap<>();
     java.lang.Class<? extends TunnelTypeBase> tunnelType1 = TunnelTypeVxlan.class;
 
     InstanceIdentifier<Interface> interfaceIdentifier = null;
@@ -144,17 +147,17 @@ public class ItmExternalTunnelAddTest {
             InstanceIdentifier.create(TunnelMonitorInterval.class);
     InstanceIdentifier<ExternalTunnel> externalTunnelIdentifier = null;
     InstanceIdentifier<DpnEndpoints> dpnEndpointsIdentifier = InstanceIdentifier.builder(DpnEndpoints.class).build();
-    AllocateIdOutput expectedId1 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("100")).build();
+    AllocateIdOutput expectedId1 = new AllocateIdOutputBuilder().setIdValue(Uint32.valueOf("100")).build();
     Future<RpcResult<AllocateIdOutput>> idOutputOptional1 ;
-    AllocateIdOutput expectedId2 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("101")).build();
+    AllocateIdOutput expectedId2 = new AllocateIdOutputBuilder().setIdValue(Uint32.valueOf("101")).build();
     Future<RpcResult<AllocateIdOutput>> idOutputOptional2 ;
-    AllocateIdOutput expectedId3 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("102")).build();
+    AllocateIdOutput expectedId3 = new AllocateIdOutputBuilder().setIdValue(Uint32.valueOf("102")).build();
     Future<RpcResult<AllocateIdOutput>> idOutputOptional3 ;
-    AllocateIdOutput expectedId4 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("103")).build();
+    AllocateIdOutput expectedId4 = new AllocateIdOutputBuilder().setIdValue(Uint32.valueOf("103")).build();
     Future<RpcResult<AllocateIdOutput>> idOutputOptional4 ;
-    AllocateIdOutput expectedId5 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("104")).build();
+    AllocateIdOutput expectedId5 = new AllocateIdOutputBuilder().setIdValue(Uint32.valueOf("104")).build();
     Future<RpcResult<AllocateIdOutput>> idOutputOptional5 ;
-    AllocateIdOutput expectedId6 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("105")).build();
+    AllocateIdOutput expectedId6 = new AllocateIdOutputBuilder().setIdValue(Uint32.valueOf("105")).build();
     Future<RpcResult<AllocateIdOutput>> idOutputOptional6 ;
     Optional<DpnEndpoints> optionalDpnEndPoints ;
     Optional<TunnelMonitorParams> tunnelMonitorParamsOptional;
@@ -202,7 +205,7 @@ public class ItmExternalTunnelAddTest {
         ipPrefixTest = IpPrefixBuilder.getDefaultInstance(subnetIp + "/24");
         tunnelEndPointsVxlan = new TunnelEndPointsBuilder()
                 .setIpAddress(ipAddress3).setInterfaceName(parentInterfaceName)
-                .setTzMembership(ItmUtils.createTransportZoneMembership(transportZone1))
+                .setTzMembership(ItmUtils.createTransportZoneMembershipMap(transportZone1))
                 .setTunnelType(tunnelType1).build();
         tunnelEndPointsListVxlan.add(tunnelEndPointsVxlan);
         dpntePsInfoVxlan = new DPNTEPsInfoBuilder().setDPNID(dpId1).setUp(true).withKey(new DPNTEPsInfoKey(dpId1))
@@ -220,14 +223,14 @@ public class ItmExternalTunnelAddTest {
         hwVtep1.setTopoId("hwvtep:1");
         hwVtep1.setNodeId(source);
         hwVtep1.setIpPrefix(ipPrefixTest);
-        cfgdDpnListVxlan.add(dpntePsInfoVxlan);
+        cfgdDpnListVxlan.put(new DPNTEPsInfoKey(dpId1), dpntePsInfoVxlan);
         cfgdHwVtepsList.add(hwVtep1);
         bigIntegerList.add(dpId1);
-        deviceVtepsList.add(deviceVteps1);
-        deviceVtepsList.add(deviceVteps2);
+        deviceVtepsList.put(new DeviceVtepsKey(ipAddress1, source), deviceVteps1);
+        deviceVtepsList.put(new DeviceVtepsKey(ipAddress2, destination), deviceVteps2);
         vtepsTest = new VtepsBuilder().setDpnId(dpId1).setIpAddress(ipAddress3).withKey(new
                 VtepsKey(dpId1)).build();
-        vtepsList.add(vtepsTest);
+        vtepsList.put(new VtepsKey(dpId1), vtepsTest);
         dpnEndpointsVxlan = new DpnEndpointsBuilder().setDPNTEPsInfo(cfgdDpnListVxlan).build();
         transportZone = new TransportZoneBuilder().setTunnelType(tunnelType1).setZoneName(transportZone1).withKey(new
                 TransportZoneKey(transportZone1)).setVteps(vtepsList).setDeviceVteps(deviceVtepsList).build();
@@ -291,7 +294,7 @@ public class ItmExternalTunnelAddTest {
     @Test
     public void testBuildTunnelsToExternalEndPoint() {
         externalTunnelAddWorker
-            .buildTunnelsToExternalEndPoint(cfgdDpnListVxlan, ipAddress2, tunnelType1, typedWriteTransaction);
+            .buildTunnelsToExternalEndPoint(cfgdDpnListVxlan.values(), ipAddress2, tunnelType1, typedWriteTransaction);
         verify(typedWriteTransaction).mergeParentStructureMerge(interfaceIdentifier, iface);
         verify(typedWriteTransaction).mergeParentStructureMerge(externalTunnelIdentifier, externalTunnel);
 
@@ -390,7 +393,8 @@ public class ItmExternalTunnelAddTest {
         doReturn(FluentFutures.immediateFluentFuture(Optional.of(transportZone))).when(typedReadWriteTransaction)
             .read(transportZoneIdentifier);
 
-        externalTunnelAddWorker.buildHwVtepsTunnels(cfgdDpnListVxlan, null, typedReadWriteTransaction);
+        externalTunnelAddWorker.buildHwVtepsTunnels(new ArrayList<>(cfgdDpnListVxlan.values()),
+                null, typedReadWriteTransaction);
         externalTunnelAddWorker.buildHwVtepsTunnels(null, cfgdHwVtepsList, typedReadWriteTransaction);
 
         verify(typedReadWriteTransaction, times(2)).mergeParentStructureMerge(ifIID1, extTunnelIf1);

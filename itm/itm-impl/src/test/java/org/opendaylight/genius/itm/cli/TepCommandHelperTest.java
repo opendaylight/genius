@@ -19,7 +19,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import org.junit.After;
@@ -69,6 +71,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.VtepsKey;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,7 +81,7 @@ public class TepCommandHelperTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(TepCommandHelper.class);
 
-    private final int interval = 1000;
+    private final Uint16 interval = Uint16.valueOf(1000);
     private final Boolean enabled = false ;
     private final Class<? extends TunnelMonitoringTypeBase> monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
     private final String tepIp1 = "192.168.56.30";
@@ -109,15 +112,15 @@ public class TepCommandHelperTest {
     private TransportZones mergeParentTransportZones = null;
     private TransportZones mergeParentTransportZonesGre = null;
     private Vteps mergeVteps = null;
-    private final List<Vteps> mergeVtepsList = new ArrayList<>();
+    private final Map<VtepsKey, Vteps> mergeVtepsList = new HashMap<>();
     private final List<TransportZone> mergeParentTransportZoneList = new ArrayList<>();
     private final List<TransportZone> mergeParentTransportZoneListGre = new ArrayList<>();
     private org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state
             .Interface interfaceTest = null;
     private org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface
             interfaceTestNew = null;
-    private final List<DeviceVteps> deviceVtepsList = new ArrayList<>();
-    private final List<Vteps> vtepsList = new ArrayList<>();
+    private final Map<DeviceVtepsKey, DeviceVteps> deviceVtepsList = new HashMap<>();
+    private final Map<VtepsKey, Vteps> vtepsList = new HashMap<>();
     private final List<TransportZone> transportZoneList = new ArrayList<>();
     private final List<TransportZone> transportZoneListNew = new ArrayList<>();
     private final List<InternalTunnel> internalTunnelList = new ArrayList<>();
@@ -209,8 +212,8 @@ public class TepCommandHelperTest {
         vteps = new VtepsBuilder().setDpnId(dpId2)
                 .setIpAddress(ipAddress1).withKey(new VtepsKey(dpId2)).build();
         vtepsTest = new VtepsBuilder().build();
-        deviceVtepsList.add(deviceVteps);
-        vtepsList.add(vteps);
+        deviceVtepsList.put(new DeviceVtepsKey(ipAddress1, sourceDevice), deviceVteps);
+        vtepsList.put(new VtepsKey(dpId2), vteps);
         transportZone = new TransportZoneBuilder().setZoneName(transportZone1).setTunnelType(tunnelType1).withKey(new
                 TransportZoneKey(transportZone1)).setDeviceVteps(deviceVtepsList).setVteps(vtepsList).build();
         transportZoneNew = new TransportZoneBuilder().setZoneName(transportZone1).setTunnelType(tunnelType2).withKey(new
@@ -220,7 +223,7 @@ public class TepCommandHelperTest {
         transportZonesNew = new TransportZonesBuilder().setTransportZone(transportZoneListNew).build();
         mergeVteps = new VtepsBuilder().setDpnId(dpId2)
                 .setIpAddress(ipAddress1).withKey(new VtepsKey(dpId1)).build();
-        mergeVtepsList.add(mergeVteps);
+        mergeVtepsList.put(new VtepsKey(dpId1), mergeVteps);
         mergeTransportZone =
                 new TransportZoneBuilder().withKey(new TransportZoneKey(transportZone1))
                         .setTunnelType(tunnelType1).setZoneName(transportZone1).setVteps(mergeVtepsList)
@@ -234,7 +237,7 @@ public class TepCommandHelperTest {
         mergeParentTransportZoneListGre.add(mergeTransportZoneGre);
         mergeParentTransportZonesGre = new TransportZonesBuilder().setTransportZone(mergeParentTransportZoneListGre)
                 .build();
-        tunnelMonitorInterval = new TunnelMonitorIntervalBuilder().setInterval(10000).build();
+        tunnelMonitorInterval = new TunnelMonitorIntervalBuilder().setInterval(Uint16.valueOf(10000)).build();
         tunnelMonitorParams = new TunnelMonitorParamsBuilder().setEnabled(true).build();
         InternalTunnel internalTunnelTest = new InternalTunnelBuilder().setSourceDPN(dpId1).setDestinationDPN(dpId2)
                 .setTunnelInterfaceNames(Collections.singletonList(tunnelInterfaceName))
