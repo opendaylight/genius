@@ -89,8 +89,8 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <dependency>
       <groupId>org.opendaylight.infrautils</groupId>
       <artifactId>metrics-impl-test</artifactId>
-      <version>${genius.infrautils.version}</version>
       <scope>compile</scope>
+      <version>1.8.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.aries.blueprint</groupId>
