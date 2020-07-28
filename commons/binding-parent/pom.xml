@@ -26,7 +26,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   <properties>
     <openflowplugin.version>0.11.0-SNAPSHOT</openflowplugin.version>
     <genius.ovsdb.version>1.11.0-SNAPSHOT</genius.ovsdb.version>
-    <genius.infrautils.version>1.8.0-SNAPSHOT</genius.infrautils.version>
   </properties>
 
   <dependencyManagement>
@@ -41,7 +40,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <dependency>
         <groupId>org.opendaylight.infrautils</groupId>
         <artifactId>infrautils-artifacts</artifactId>
-        <version>${genius.infrautils.version}</version>
+        <version>1.8.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
