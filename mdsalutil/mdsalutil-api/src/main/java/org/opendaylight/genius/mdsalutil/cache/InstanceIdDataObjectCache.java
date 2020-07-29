@@ -25,4 +25,9 @@ public class InstanceIdDataObjectCache<V extends DataObject> extends DataObjectC
         super(dataObjectClass, dataBroker, datastoreType, listenerRegistrationPath, cacheProvider,
             (iid, value) -> iid, iid -> iid);
     }
+
+    public InstanceIdDataObjectCache(Class<V> dataObjectClass, DataBroker dataBroker,
+                                     LogicalDatastoreType datastoreType, CacheProvider cacheProvider) {
+        super(dataObjectClass, dataBroker, datastoreType, cacheProvider, (iid, value) -> iid, iid -> iid);
+    }
 }

@@ -50,8 +50,9 @@ public class DataObjectCache<K, V extends DataObject> implements AutoCloseable {
 
     private final SingleTransactionDataBroker broker;
     private final LoadingCache<K, Optional<V>> cache;
-    private final ListenerRegistration<?> listenerRegistration;
     private final AtomicBoolean isClosed = new AtomicBoolean();
+    protected ListenerRegistration<?> listenerRegistration;
+    protected ClusteredDataTreeChangeListener<V> dataObjectListener;
 
     /**
      * Constructor.
@@ -59,15 +60,23 @@ public class DataObjectCache<K, V extends DataObject> implements AutoCloseable {
      * @param dataObjectClass the DataObject class to cache
      * @param dataBroker the DataBroker
      * @param datastoreType the LogicalDatastoreType
-     * @param listenerRegistrationPath the yang path for which register the listener
      * @param cacheProvider the CacheProvider used to instantiate the Cache
      * @param keyFunction the function used to convert or extract the key instance on change notification
      * @param instanceIdFunction the function used to convert a key instance to an InstanceIdentifier on read
      */
     public DataObjectCache(Class<V> dataObjectClass, DataBroker dataBroker, LogicalDatastoreType datastoreType,
-            InstanceIdentifier<V> listenerRegistrationPath, CacheProvider cacheProvider,
-            BiFunction<InstanceIdentifier<V>, V, K> keyFunction,
-            Function<K, InstanceIdentifier<V>> instanceIdFunction) {
+                           InstanceIdentifier<V> listetenerRegistrationPath, CacheProvider cacheProvider,
+                           BiFunction<InstanceIdentifier<V>, V, K> keyFunction,
+                           Function<K, InstanceIdentifier<V>> instanceIdFunction) {
+        this(dataObjectClass, dataBroker, datastoreType, cacheProvider, keyFunction, instanceIdFunction);
+        listenerRegistration = dataBroker.registerDataTreeChangeListener(DataTreeIdentifier.create(
+                datastoreType, listetenerRegistrationPath), dataObjectListener);
+
+    }
+
+    public DataObjectCache(Class<V> dataObjectClass, DataBroker dataBroker, LogicalDatastoreType datastoreType,
+                           CacheProvider cacheProvider, BiFunction<InstanceIdentifier<V>, V, K> keyFunction,
+                           Function<K, InstanceIdentifier<V>> instanceIdFunction) {
         Objects.requireNonNull(keyFunction);
         Objects.requireNonNull(instanceIdFunction);
         this.broker = new SingleTransactionDataBroker(Objects.requireNonNull(dataBroker));
@@ -80,7 +89,7 @@ public class DataObjectCache<K, V extends DataObject> implements AutoCloseable {
             }
         });
 
-        ClusteredDataTreeChangeListener<V> dataObjectListener = changes -> {
+        dataObjectListener = changes -> {
             for (DataTreeModification<V> dataTreeModification : changes) {
                 DataObjectModification<V> rootNode = dataTreeModification.getRootNode();
                 InstanceIdentifier<V> path = dataTreeModification.getRootPath().getRootIdentifier();
@@ -101,16 +110,15 @@ public class DataObjectCache<K, V extends DataObject> implements AutoCloseable {
                 }
             }
         };
-
-        listenerRegistration = dataBroker.registerDataTreeChangeListener(DataTreeIdentifier.create(
-                datastoreType, listenerRegistrationPath), dataObjectListener);
     }
 
     @Override
     @PreDestroy
     public void close() {
         if (isClosed.compareAndSet(false, true)) {
-            listenerRegistration.close();
+            if (listenerRegistration != null) {
+                listenerRegistration.close();
+            }
             cache.cleanUp();
         } else {
             LOG.warn("Lifecycled object already closed; ignoring extra close()");

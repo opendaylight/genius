@@ -27,6 +27,7 @@ import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.infrautils.utils.concurrent.NamedSimpleReentrantLock.Acquired;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.DpnEndpoints;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
@@ -56,12 +57,14 @@ public class DPNTEPsInfoCache extends InstanceIdDataObjectCache<DPNTEPsInfo> {
     public DPNTEPsInfoCache(final DataBroker dataBroker, final CacheProvider cacheProvider,
                             final DirectTunnelUtils directTunnelUtils, final JobCoordinator coordinator,
                             final UnprocessedNodeConnectorEndPointCache unprocessedNodeConnectorEndPointCache) {
-        super(DPNTEPsInfo.class, dataBroker, LogicalDatastoreType.CONFIGURATION,
-                InstanceIdentifier.builder(DpnEndpoints.class).child(DPNTEPsInfo.class).build(), cacheProvider);
+        super(DPNTEPsInfo.class, dataBroker, LogicalDatastoreType.CONFIGURATION, cacheProvider);
         this.directTunnelUtils = directTunnelUtils;
         this.coordinator = coordinator;
         this.unprocessedNodeConnectorEndPointCache = unprocessedNodeConnectorEndPointCache;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
+        listenerRegistration = dataBroker.registerDataTreeChangeListener(DataTreeIdentifier.create(
+                LogicalDatastoreType.CONFIGURATION, InstanceIdentifier.builder(DpnEndpoints.class)
+                .child(DPNTEPsInfo.class).build()), dataObjectListener);
     }
 
     @Override
