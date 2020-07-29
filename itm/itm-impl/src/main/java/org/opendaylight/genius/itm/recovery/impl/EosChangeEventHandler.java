@@ -28,6 +28,7 @@ import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.Direc
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TepTypeInternal;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.TunnelOperStatus;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelList;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnels_state.StateTunnelListBuilder;
@@ -68,13 +69,15 @@ public class EosChangeEventHandler {
         LOG.debug("EosChangeListener: recovering unknown tunnels");
 
         if (!directTunnelUtils.isEntityOwner()) {
-            LOG.debug("Not an entity owner, returning...");
+            LOG.debug("EosChangeListener: Not an entity owner, returning...");
             return;
         }
         List<StateTunnelList> unknownTunnels = getUnknownTunnelsFromDefaultOper();
         if (unknownTunnels.isEmpty()) {
-            LOG.debug("Empty oper DS or No unknown tunnels in ITM oper DS");
+            LOG.debug("EosChangeListener: No unknown tunnels in ITM oper DS");
+            EVENT_LOGGER.debug("EosChangeListener: No unknown tunnels in oper DS.");
         } else {
+            EVENT_LOGGER.debug("EosChangeListener: Number of unknown tunnels in oper DS:{}",unknownTunnels.size());
             ConcurrentMap<String, String> tunnelNameToNodeConnectorIdValue = prepareKeyForInventoryOper(unknownTunnels);
             Set<ConcurrentMap.Entry<String,String>> entrySet = tunnelNameToNodeConnectorIdValue.entrySet();
             ReadTransaction readOnlyTx = dataBroker.newReadOnlyTransaction();
@@ -87,9 +90,11 @@ public class EosChangeEventHandler {
                 InstanceIdentifier<NodeConnector> ncIdentifier = InstanceIdentifier.builder(Nodes.class)
                         .child(Node.class, new NodeKey(nodeId))
                         .child(NodeConnector.class, new NodeConnectorKey(nodeConnectorId)).build();
-
+                LOG.debug("EosChangeListener: NodeConnectorII with nodeId:{} and nodeConnectorId:{}",
+                        nodeIdValue, nodeConnectorIdValue);
                 try {
                     if (readOnlyTx.exists(LogicalDatastoreType.OPERATIONAL, ncIdentifier).get()) {
+                        LOG.debug("EosChangeListener: Update tunnel state for {}",tunnelName);
                         txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, tx -> {
                             updateTunnelState(tunnelName, tx);
                         });
@@ -112,13 +117,12 @@ public class EosChangeEventHandler {
         Collection<StateTunnelList> tunnelList = tunnelStateCache.getAllPresent();
         if (!tunnelList.isEmpty()) {
             for (StateTunnelList stateTunnelEntry : tunnelList) {
-                if (stateTunnelEntry.getOperState().equals(TunnelOperStatus.Unknown)) {
+                if (stateTunnelEntry.getDstInfo() != null
+                        && TepTypeInternal.class.equals(stateTunnelEntry.getDstInfo().getTepDeviceType())
+                        && stateTunnelEntry.getOperState().equals(TunnelOperStatus.Unknown)) {
                     unknownTunnels.add(stateTunnelEntry);
                 }
             }
-        } else {
-            LOG.debug("ITM oper DS is empty.");
-            EVENT_LOGGER.debug("ITM-EosChange, oper DS is empty.");
         }
         return unknownTunnels;
     }
