@@ -73,6 +73,7 @@ import org.slf4j.LoggerFactory;
 public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateService */ {
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmProvider.class);
+    private static final Logger EVENT_LOGGER = LoggerFactory.getLogger("GeniusEventLogger");
 
     private final DataBroker dataBroker;
     private final ItmManagerRpcService itmRpcService ;
@@ -375,15 +376,14 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
                                       EntityOwnershipListenerRegistration listenerRegistration) {
         if (ownershipChange.getState().isOwner()) {
             LOG.info("*This* instance of provider is set as a MASTER instance");
+            EVENT_LOGGER.debug("****MASTER**** instance");
             createDefaultTransportZone(itmConfig);
             eosChangeEventHandler.recoverUnknownTunnelsOnEosSwitch();
         } else {
             LOG.info("*This* instance of provider is set as a SLAVE instance");
+            EVENT_LOGGER.debug("****SLAVE**** instance");
         }
         itmStatusProvider.reportStatus(ServiceState.OPERATIONAL);
-        if (listenerRegistration != null) {
-            listenerRegistration.close();
-        }
     }
 
     private static class ItmProviderEOSListener implements EntityOwnershipListener {
@@ -393,6 +393,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
         ItmProviderEOSListener(ItmProvider itmProviderObj, EntityOwnershipService entityOwnershipService) {
             this.itmProviderObj = itmProviderObj;
             this.listenerRegistration = entityOwnershipService.registerListener(ITMConstants.ITM_CONFIG_ENTITY, this);
+            EVENT_LOGGER.debug("ItmProviderEOSListener: registered");
         }
 
         public void close() {
@@ -401,6 +402,7 @@ public class ItmProvider implements AutoCloseable, IITMProvider /*,ItmStateServi
 
         @Override
         public void ownershipChanged(EntityOwnershipChange ownershipChange) {
+            EVENT_LOGGER.debug("****ownershipChanged****");
             itmProviderObj.handleOwnershipChange(ownershipChange, listenerRegistration);
         }
     }
