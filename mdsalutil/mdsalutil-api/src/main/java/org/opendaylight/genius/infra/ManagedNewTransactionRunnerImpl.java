@@ -31,8 +31,11 @@ import org.slf4j.LoggerFactory;
  * Implementation of {@link ManagedNewTransactionRunner}. This is based on {@link ManagedTransactionFactoryImpl} but
  * re-implements operations based on (read-)write transactions to cancel transactions which don't end up making any
  * changes to the datastore.
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunnerImpl} instead.
  */
 @Beta
+@Deprecated(forRemoval = true)
 // Do *NOT* mark this as @Singleton, because users choose Impl; and as long as this in API, because of https://wiki.opendaylight.org/view/BestPractices/DI_Guidelines#Nota_Bene
 public class ManagedNewTransactionRunnerImpl extends ManagedTransactionFactoryImpl
         implements ManagedNewTransactionRunner {

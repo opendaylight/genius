@@ -41,8 +41,10 @@ import org.opendaylight.mdsal.common.api.ReadFailedException;
  * another {@link Executor} to be used for the retries by using the alternative constructor.
  *
  * @author Michael Vorburger.ch &amp; Stephen Kitt
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.util.RetryingManagedNewTransactionRunner} instead.
  */
 @Beta
+@Deprecated
 // Do *NOT* mark this as @Singleton, because users choose Impl; and as long as this in API, because of https://wiki.opendaylight.org/view/BestPractices/DI_Guidelines#Nota_Bene
 public class RetryingManagedNewTransactionRunner extends RetryingManagedNewTransactionRunnerImpl {
 

@@ -11,7 +11,10 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 
 /**
  * Strongly-typed representation of a datastore (configuration or operational).
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.util.Datastore} instead.
  */
+@Deprecated(forRemoval = true)
 public abstract class Datastore {
 
     /** Class representing the configuration datastore. */
