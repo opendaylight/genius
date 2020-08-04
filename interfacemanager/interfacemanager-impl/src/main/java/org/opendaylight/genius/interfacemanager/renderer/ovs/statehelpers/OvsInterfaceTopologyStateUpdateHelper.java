@@ -7,7 +7,7 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers;
 
-import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+import static org.opendaylight.mdsal.binding.util.Datastore.OPERATIONAL;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collections;
@@ -16,8 +16,6 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -26,6 +24,8 @@ import org.opendaylight.genius.interfacemanager.renderer.ovs.utilities.Southboun
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge._interface.info.BridgeEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
@@ -68,9 +68,10 @@ public class OvsInterfaceTopologyStateUpdateHelper {
      * This code is used to handle only a dpnId change scenario for a particular
      * change, which is not expected to happen in usual cases.
      */
-    public List<ListenableFuture<Void>> updateBridgeRefEntry(InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid,
-                                                             OvsdbBridgeAugmentation bridgeNew,
-                                                             OvsdbBridgeAugmentation bridgeOld) {
+    public List<? extends ListenableFuture<?>> updateBridgeRefEntry(
+            InstanceIdentifier<OvsdbBridgeAugmentation> bridgeIid,
+            OvsdbBridgeAugmentation bridgeNew,
+            OvsdbBridgeAugmentation bridgeOld) {
         return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, tx -> {
             Uint64 dpnIdNew = IfmUtil.getDpnId(bridgeNew.getDatapathId());
             Uint64 dpnIdOld = IfmUtil.getDpnId(bridgeOld.getDatapathId());

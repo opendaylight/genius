@@ -7,7 +7,7 @@
  */
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities;
 
-import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+import static org.opendaylight.mdsal.binding.util.Datastore.CONFIGURATION;
 
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.ImmutableSet;
@@ -23,11 +23,6 @@ import java.util.concurrent.ExecutionException;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.genius.infra.Datastore.Configuration;
-import org.opendaylight.genius.infra.Datastore.Operational;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.TypedReadTransaction;
-import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -46,6 +41,11 @@ import org.opendaylight.genius.mdsalutil.matches.MatchVlanVid;
 import org.opendaylight.genius.mdsalutil.nxmatches.NxMatchRegister;
 import org.opendaylight.genius.utils.ServiceIndex;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.binding.util.Datastore.Configuration;
+import org.opendaylight.mdsal.binding.util.Datastore.Operational;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.TypedReadTransaction;
+import org.opendaylight.mdsal.binding.util.TypedWriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
@@ -461,7 +461,7 @@ public final class FlowBasedServicesUtils {
                 NwConstants.DEFAULT_EGRESS_SERVICE_INDEX), ServiceModeEgress.class);
     }
 
-    public static ListenableFuture<Void> bindDefaultEgressDispatcherService(ManagedNewTransactionRunner txRunner,
+    public static ListenableFuture<?> bindDefaultEgressDispatcherService(ManagedNewTransactionRunner txRunner,
             Interface interfaceInfo, String portNo, String interfaceName, int ifIndex) {
         List<Instruction> instructions =
                 IfmUtil.getEgressInstructionsForInterface(interfaceInfo, portNo, null, true, ifIndex, 0);
@@ -475,14 +475,14 @@ public final class FlowBasedServicesUtils {
         bindDefaultEgressDispatcherService(tx, interfaceName, instructions);
     }
 
-    public static ListenableFuture<Void> bindDefaultEgressDispatcherService(ManagedNewTransactionRunner txRunner,
+    public static ListenableFuture<?> bindDefaultEgressDispatcherService(ManagedNewTransactionRunner txRunner,
             Interface interfaceInfo, String interfaceName, int ifIndex, long groupId) {
         List<Instruction> instructions =
              IfmUtil.getEgressInstructionsForInterface(interfaceInfo, StringUtils.EMPTY, null, true, ifIndex, groupId);
         return bindDefaultEgressDispatcherService(txRunner, interfaceName, instructions);
     }
 
-    public static ListenableFuture<Void> bindDefaultEgressDispatcherService(ManagedNewTransactionRunner txRunner,
+    public static ListenableFuture<?> bindDefaultEgressDispatcherService(ManagedNewTransactionRunner txRunner,
             String interfaceName, List<Instruction> instructions) {
         return txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
             int priority = ServiceIndex.getIndex(NwConstants.DEFAULT_EGRESS_SERVICE_NAME,
@@ -515,7 +515,7 @@ public final class FlowBasedServicesUtils {
     }
 
     public static void removeIngressFlow(String interfaceName, Uint64 dpId, ManagedNewTransactionRunner txRunner,
-            List<ListenableFuture<Void>> futures) {
+            List<ListenableFuture<?>> futures) {
         if (dpId == null) {
             return;
         }
@@ -674,7 +674,7 @@ public final class FlowBasedServicesUtils {
     }
 
     public static void installLportIngressFlow(Uint64 dpId, long portNo, Interface iface,
-            List<ListenableFuture<Void>> futures, ManagedNewTransactionRunner txRunner, int lportTag) {
+            List<ListenableFuture<?>> futures, ManagedNewTransactionRunner txRunner, int lportTag) {
         int vlanId = 0;
         boolean isVlanTransparent = false;
 
