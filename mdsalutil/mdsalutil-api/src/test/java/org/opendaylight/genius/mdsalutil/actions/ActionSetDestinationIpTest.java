@@ -26,7 +26,7 @@ public class ActionSetDestinationIpTest {
     private static final String IP_ADDRESS = "1.2.3.4";
     private static final String IP_MASK = "32";
 
-    private XtendBeanGenerator generator = new XtendBeanGenerator();
+    private final XtendBeanGenerator generator = new XtendBeanGenerator();
 
     @Test
     public void actionInfoTest() {
@@ -35,7 +35,7 @@ public class ActionSetDestinationIpTest {
         verifyAction(new ActionSetDestinationIp(new Ipv4Prefix(IP_ADDRESS + "/" + IP_MASK)).buildAction());
     }
 
-    private void verifyAction(Action action) {
+    private static void verifyAction(Action action) {
         assertTrue(action.getAction() instanceof SetFieldCase);
         SetFieldCase actionCase = (SetFieldCase) action.getAction();
         assertNotNull(actionCase.getSetField().getLayer3Match());
@@ -47,7 +47,7 @@ public class ActionSetDestinationIpTest {
     @Test
     public void generateAction() {
         ActionInfo actionInfo = new ActionSetDestinationIp(IP_ADDRESS);
-        assertEquals(("Ipv4Prefix{_value=" + IP_ADDRESS + "/" + IP_MASK + "}"),
+        assertEquals("Ipv4Prefix{_value=" + IP_ADDRESS + "/" + IP_MASK + "}",
                 ((ActionSetDestinationIp) actionInfo).getDestination().toString());
     }
 }

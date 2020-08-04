@@ -26,7 +26,7 @@ public class ActionSetSourceIpv6Test {
     private static final String IP_ADDRESS = "2001:db8::1";
     private static final String IP_MASK = "128";
 
-    private XtendBeanGenerator generator = new XtendBeanGenerator();
+    private final XtendBeanGenerator generator = new XtendBeanGenerator();
 
     @Test
     public void actionInfoTest() {
@@ -35,7 +35,7 @@ public class ActionSetSourceIpv6Test {
         verifyAction(new ActionSetSourceIpv6(new Ipv6Prefix(IP_ADDRESS + "/" + IP_MASK)).buildAction());
     }
 
-    private void verifyAction(Action action) {
+    private static void verifyAction(Action action) {
         assertTrue(action.getAction() instanceof SetFieldCase);
         SetFieldCase actionCase = (SetFieldCase) action.getAction();
         assertNotNull(actionCase.getSetField().getLayer3Match());
@@ -47,7 +47,7 @@ public class ActionSetSourceIpv6Test {
     @Test
     public void generateAction() {
         ActionInfo actionInfo = new ActionSetSourceIpv6(IP_ADDRESS);
-        assertEquals(("Ipv6Prefix{_value=" + IP_ADDRESS + "/" + IP_MASK + "}"),
+        assertEquals("Ipv6Prefix{_value=" + IP_ADDRESS + "/" + IP_MASK + "}",
                 ((ActionSetSourceIpv6) actionInfo).getSource().toString());
     }
 }

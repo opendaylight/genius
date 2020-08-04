@@ -147,7 +147,7 @@ public class EntityOwnershipUtils {
     }
 
     // see GENIUS-237 why we do this optimization instead of using Entity.toString()
-    private String getEntityIdentifierString(String entityType, String entityName) {
+    private static String getEntityIdentifierString(String entityType, String entityName) {
         return new StringBuilder(entityType.length() + entityName.length()).append(entityType).append(entityName)
                 .toString();
     }

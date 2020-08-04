@@ -63,7 +63,7 @@ public abstract class EricMatchInfoHelper<T extends DataObject, B extends Builde
         }
     }
 
-    private GeneralAugMatchNodesNodeTableFlow generalAugMatchBuilder(
+    private static GeneralAugMatchNodesNodeTableFlow generalAugMatchBuilder(
             GeneralAugMatchNodesNodeTableFlow existingAugmentations, EricAugMatchNodesNodeTableFlow ericAugMatch,
             Class<? extends ExtensionKey> extentionKey) {
         Map<ExtensionListKey, ExtensionList> extensions = null;

@@ -35,7 +35,7 @@ public class InstructionWriteActionsTest {
         verifyInstructionInfo(INSTRUCTION_INFO);
     }
 
-    private void verifyInstructionInfo(InstructionInfo instructionInfo) {
+    private static void verifyInstructionInfo(InstructionInfo instructionInfo) {
         Instruction instruction = instructionInfo.buildInstruction(2);
         assertEquals(2, instruction.key().getOrder().intValue());
         assertTrue(instruction.getInstruction() instanceof WriteActionsCase);

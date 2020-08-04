@@ -24,14 +24,14 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
 public class ActionSetIcmpv6TypeTest {
     private static final short TYPE = (short) 129;
 
-    private XtendBeanGenerator generator = new XtendBeanGenerator();
+    private final XtendBeanGenerator generator = new XtendBeanGenerator();
 
     @Test
     public void actionInfoTest() {
         verifyAction(new ActionSetIcmpv6Type(TYPE).buildAction());
     }
 
-    private void verifyAction(Action action) {
+    private static void verifyAction(Action action) {
         assertTrue(action.getAction() instanceof SetFieldCase);
         SetFieldCase actionCase = (SetFieldCase) action.getAction();
         assertNotNull(actionCase.getSetField().getIcmpv6Match());

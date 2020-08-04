@@ -38,7 +38,7 @@ public class ActionNxLoadMetadataTest {
         verifyAction(new ActionNxLoadMetadata(VALUE, START, END).buildAction());
     }
 
-    private void verifyAction(Action action) {
+    private static void verifyAction(Action action) {
         assertTrue(action.getAction() instanceof NxActionRegLoadNodesNodeTableFlowApplyActionsCase);
         NxActionRegLoadNodesNodeTableFlowApplyActionsCase actionCase =
             (NxActionRegLoadNodesNodeTableFlowApplyActionsCase) action.getAction();

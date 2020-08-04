@@ -29,14 +29,14 @@ import org.opendaylight.yangtools.yang.common.Uint64;
 public class ActionLoadMacToShaTest {
     private static final String MAC_ADDRESS = "11:22:33:44:55:66";
 
-    private XtendBeanGenerator generator = new XtendBeanGenerator();
+    private final XtendBeanGenerator generator = new XtendBeanGenerator();
 
     @Test
     public void actionInfoTest() {
         verifyAction(new ActionLoadMacToSha(new MacAddress(MAC_ADDRESS)).buildAction());
     }
 
-    private void verifyAction(Action action) {
+    private static void verifyAction(Action action) {
         assertTrue(action.getAction() instanceof NxActionRegLoadNodesNodeTableFlowApplyActionsCase);
         NxActionRegLoadNodesNodeTableFlowApplyActionsCase actionCase =
             (NxActionRegLoadNodesNodeTableFlowApplyActionsCase) action.getAction();
@@ -54,7 +54,7 @@ public class ActionLoadMacToShaTest {
     @Test
     public void generateAction() {
         ActionInfo actionInfo = new ActionLoadMacToSha(new MacAddress(MAC_ADDRESS));
-        assertEquals(("MacAddress{_value=" + MAC_ADDRESS + "}"),
+        assertEquals("MacAddress{_value=" + MAC_ADDRESS + "}",
                 ((ActionLoadMacToSha) actionInfo).getAddress().toString());
 
     }

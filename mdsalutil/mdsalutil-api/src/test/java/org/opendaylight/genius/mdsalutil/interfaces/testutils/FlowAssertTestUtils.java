@@ -36,7 +36,7 @@ public class FlowAssertTestUtils {
         assertEqualBeans(rebuildFlow(expected), rebuildFlow(actual));
     }
 
-    private Flow rebuildFlow(Flow flow) {
+    private static Flow rebuildFlow(Flow flow) {
         FlowBuilder flowBuilder = new FlowBuilder(flow);
         InstructionsBuilder instructionsBuilder = new InstructionsBuilder();
         if (flow.getInstructions() != null) {

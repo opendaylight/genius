@@ -21,12 +21,11 @@ public class MatchInPortTest {
             .testEquals();
     }
 
-    private MatchInPort newMatchInPort1() {
+    private static MatchInPort newMatchInPort1() {
         return new MatchInPort(Uint64.ONE, 123);
     }
 
-    private MatchInPort newMatchInPort2() {
+    private static MatchInPort newMatchInPort2() {
         return new MatchInPort(Uint64.valueOf(10), 456);
     }
-
 }
