@@ -16,8 +16,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   <service ref="mDSALManager"
            interface="org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager" />
 
-  <service ref="hwvtepNodeHACacheImpl"
-           interface="org.opendaylight.genius.utils.hwvtep.HwvtepNodeHACache"/>
   <service ref="shardStatusMonitorImpl"
            interface="org.opendaylight.genius.mdsalutil.interfaces.ShardStatusMonitor" />
 

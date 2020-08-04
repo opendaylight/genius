@@ -15,7 +15,6 @@ import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.recovery.impl.InterfaceServiceRecoveryHandler;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.statehelpers.HwVTEPInterfaceStateRemoveHelper;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.statehelpers.HwVTEPInterfaceStateUpdateHelper;
-import org.opendaylight.genius.utils.hwvtep.HwvtepNodeHACache;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
@@ -46,8 +45,7 @@ public class HwVTEPTunnelsStateListener extends AbstractSyncDataTreeChangeListen
     public HwVTEPTunnelsStateListener(@Reference DataBroker dataBroker,
                                       @Reference JobCoordinator coordinator,
                                       InterfaceServiceRecoveryHandler interfaceServiceRecoveryHandler,
-                                      @Reference ServiceRecoveryRegistry serviceRecoveryRegistry,
-                                      @Reference HwvtepNodeHACache hwvtepNodeHACache) {
+                                      @Reference ServiceRecoveryRegistry serviceRecoveryRegistry) {
         super(dataBroker, LogicalDatastoreType.OPERATIONAL,
               InstanceIdentifier.builder(NetworkTopology.class).child(Topology.class).child(Node.class)
                       .augmentation(PhysicalSwitchAugmentation.class).child(Tunnels.class).build());
