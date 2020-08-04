@@ -39,7 +39,7 @@ public class InterfaceChildInfoListener extends AbstractSyncDataTreeChangeListen
     @Override
     public void add(@NonNull InstanceIdentifier<InterfaceParentEntry> instanceIdentifier,
                     @NonNull InterfaceParentEntry interfaceParentEntry) {
-        if (ItmTunnelAggregationHelper.isTunnelAggregationEnabled()) {
+        if (tunnelAggregationHelper.isTunnelAggregationEnabled()) {
             LOG.debug("MULTIPLE_VxLAN_TUNNELS: InterfaceChildInfoListener add for {}",
                       interfaceParentEntry.getParentInterface());
             tunnelAggregationHelper.updateLogicalTunnelSelectGroup(interfaceParentEntry, dataBroker);
@@ -49,7 +49,7 @@ public class InterfaceChildInfoListener extends AbstractSyncDataTreeChangeListen
     @Override
     public void remove(@NonNull InstanceIdentifier<InterfaceParentEntry> instanceIdentifier,
                        @NonNull InterfaceParentEntry interfaceParentEntry) {
-        if (ItmTunnelAggregationHelper.isTunnelAggregationEnabled()) {
+        if (tunnelAggregationHelper.isTunnelAggregationEnabled()) {
             LOG.debug("MULTIPLE_VxLAN_TUNNELS: InterfaceChildInfoListener remove for {}",
                       interfaceParentEntry.getParentInterface());
             tunnelAggregationHelper.updateLogicalTunnelSelectGroup(interfaceParentEntry, dataBroker);
@@ -60,7 +60,7 @@ public class InterfaceChildInfoListener extends AbstractSyncDataTreeChangeListen
     public void update(@NonNull InstanceIdentifier<InterfaceParentEntry> instanceIdentifier,
                        @NonNull InterfaceParentEntry originalParentEntry,
                        @NonNull InterfaceParentEntry updatedParentEntry) {
-        if (ItmTunnelAggregationHelper.isTunnelAggregationEnabled()) {
+        if (tunnelAggregationHelper.isTunnelAggregationEnabled()) {
             LOG.debug("MULTIPLE_VxLAN_TUNNELS: InterfaceChildInfoListener update for {}",
                       updatedParentEntry.getParentInterface());
             tunnelAggregationHelper.updateLogicalTunnelSelectGroup(updatedParentEntry, dataBroker);

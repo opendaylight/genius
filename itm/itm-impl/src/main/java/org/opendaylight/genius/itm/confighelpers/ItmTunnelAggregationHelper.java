@@ -80,8 +80,8 @@ public class ItmTunnelAggregationHelper {
     public static final long INVALID_ID = 0;
 
     private static final Logger LOG = LoggerFactory.getLogger(ItmTunnelAggregationHelper.class);
-    private static boolean tunnelAggregationEnabled;
 
+    private final boolean tunnelAggregationEnabled;
     private final IInterfaceManager interfaceManager;
     private final IMdsalApiManager mdsalManager;
     private final JobCoordinator jobCoordinator;
@@ -94,10 +94,10 @@ public class ItmTunnelAggregationHelper {
         this.interfaceManager = interfaceMngr;
         this.mdsalManager = mdsalMngr;
         this.jobCoordinator = jobCoordinator;
-        initTunnelAggregationConfig(itmConfig);
+        this.tunnelAggregationEnabled = initTunnelAggregationConfig(itmConfig);
     }
 
-    public static boolean isTunnelAggregationEnabled() {
+    public boolean isTunnelAggregationEnabled() {
         return tunnelAggregationEnabled;
     }
 
@@ -132,9 +132,9 @@ public class ItmTunnelAggregationHelper {
 
     public void updateLogicalTunnelState(Interface ifStateOrigin, Interface ifStateUpdated,
                                                 int tunnelAction, DataBroker broker) {
-        if (!tunnelAggregationEnabled || ifStateUpdated == null) {
+        if (!isTunnelAggregationEnabled() || ifStateUpdated == null) {
             LOG.debug("MULTIPLE_VxLAN_TUNNELS: updateLogicalTunnelState - wrong configuration -"
-                    + " tunnelAggregationEnabled {} ifStateUpdated {}", tunnelAggregationEnabled, ifStateUpdated);
+                    + " tunnelAggregationEnabled {} ifStateUpdated {}", isTunnelAggregationEnabled(), ifStateUpdated);
             return;
         }
         String ifName = ifStateUpdated.getName();
@@ -161,7 +161,7 @@ public class ItmTunnelAggregationHelper {
         }
     }
 
-    private void initTunnelAggregationConfig(ItmConfig itmConfig) {
+    private static boolean initTunnelAggregationConfig(ItmConfig itmConfig) {
         // Load balancing of VxLAN feature is guarded by a global configuration option in the ITM,
         // only when the feature is enabled, the logical tunnel interfaces should be created.
         boolean tunnelAggregationConfigEnabled = false;
@@ -177,7 +177,7 @@ public class ItmTunnelAggregationHelper {
                 }
             }
         }
-        tunnelAggregationEnabled = tunnelAggregationConfigEnabled;
+        return tunnelAggregationConfigEnabled;
     }
 
     private Group prepareLogicalTunnelSelectGroup(String interfaceName, int lportTag) {
