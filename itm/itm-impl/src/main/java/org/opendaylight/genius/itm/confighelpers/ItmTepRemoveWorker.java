@@ -7,7 +7,7 @@
  */
 package org.opendaylight.genius.itm.confighelpers;
 
-import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+import static org.opendaylight.mdsal.binding.util.Datastore.CONFIGURATION;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
@@ -17,11 +17,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.genius.infra.Datastore;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
+import org.opendaylight.mdsal.binding.util.Datastore;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.TypedReadWriteTransaction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.ItmConfig;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.DPNTEPsInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.dpn.endpoints.dpn.teps.info.TunnelEndPoints;
@@ -66,8 +66,8 @@ public class ItmTepRemoveWorker implements Callable<List<? extends ListenableFut
     }
 
     @Override
-    public List<ListenableFuture<Void>> call() {
-        List<ListenableFuture<Void>> futures = new ArrayList<>() ;
+    public List<? extends ListenableFuture<?>> call() {
+        List<ListenableFuture<?>> futures = new ArrayList<>() ;
         this.meshedDpnList = dpnTEPsInfoCache.getAllPresent();
         futures.addAll(itmInternalTunnelDeleteWorker.deleteTunnels(mdsalManager, delDpnList, meshedDpnList));
         LOG.debug("Invoking Internal Tunnel delete method with DpnList to be deleted {} ; Meshed DpnList {} ",

@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.itm.itmdirecttunnels.listeners;
 
+import static org.opendaylight.mdsal.binding.util.Datastore.OPERATIONAL;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.Collections;
@@ -16,8 +18,6 @@ import java.util.Optional;
 import java.util.concurrent.Callable;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.itm.cache.BfdStateCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.TunnelStateCache;
@@ -27,7 +27,10 @@ import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.Direc
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.binding.util.Datastore.Operational;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.mdsal.binding.util.TypedWriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.serviceutils.tools.listener.AbstractClusteredSyncDataTreeChangeListener;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
@@ -141,7 +144,7 @@ public class TerminationPointStateListener
                     && stateTnl.get().getOperState() != tunnelState) {
                 LOG.debug("updating tunnel state for interface {} as {}", interfaceName,
                         stateTnl.get().getOperState());
-                return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+                return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL,
                     tx -> updateOpState(tx, interfaceName, tunnelState)));
             }
             return Collections.emptyList();
@@ -171,13 +174,14 @@ public class TerminationPointStateListener
      * update operational state of interface based on events like tunnel
      * monitoring
      */
-    private static void updateOpState(WriteTransaction transaction, String interfaceName, TunnelOperStatus operStatus) {
+    private static void updateOpState(TypedWriteTransaction<@NonNull Operational> tx, String interfaceName,
+            TunnelOperStatus operStatus) {
         StateTunnelListKey stateTnlKey = new StateTunnelListKey(interfaceName);
         InstanceIdentifier<StateTunnelList> stateTnlII = ItmUtils.buildStateTunnelListId(stateTnlKey);
         LOG.debug("updating tep interface state as {} for {}", operStatus.name(), interfaceName);
         StateTunnelListBuilder stateTnlBuilder = new StateTunnelListBuilder().withKey(stateTnlKey);
         stateTnlBuilder.setOperState(operStatus);
-        transaction.mergeParentStructureMerge(LogicalDatastoreType.OPERATIONAL, stateTnlII, stateTnlBuilder.build());
+        tx.mergeParentStructureMerge(stateTnlII, stateTnlBuilder.build());
     }
 
     private class RendererTunnelStateUpdateWorker implements Callable<List<? extends ListenableFuture<?>>> {

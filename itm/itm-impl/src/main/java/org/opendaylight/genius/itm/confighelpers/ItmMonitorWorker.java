@@ -13,14 +13,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
-import org.opendaylight.genius.infra.Datastore;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
-import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.util.Datastore;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.mdsal.binding.util.TypedWriteTransaction;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorInterval;
@@ -84,21 +84,20 @@ public class ItmMonitorWorker implements Callable<List<? extends ListenableFutur
     }
 
     @Override
-    public List<ListenableFuture<Void>> call() {
+    public List<? extends ListenableFuture<?>> call() {
         LOG.debug("ItmMonitorWorker invoked with tzone = {} enabled {}", tzone, enabled);
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
-        return toggleTunnelMonitoring(futures);
+        return toggleTunnelMonitoring();
     }
 
-    private List<ListenableFuture<Void>> toggleTunnelMonitoring(List<ListenableFuture<Void>> futures) {
+    private List<? extends ListenableFuture<?>> toggleTunnelMonitoring() {
+        List<ListenableFuture<?>> futures = new ArrayList<>();
         futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.OPERATIONAL,
             tx -> updateOperationalDS(tx)));
         Collection<DpnsTeps> dpnsTepsCollection = dpnTepStateCache.getAllPresent();
         LOG.debug("toggleTunnelMonitoring: DpnsTepsList size {}", dpnsTepsCollection.size());
         if (dpnsTepsCollection.isEmpty()) {
             LOG.info("There are no teps configured");
-        }
-        else {
+        } else {
             futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
                 tx -> {
                     for (DpnsTeps dpnTeps : dpnsTepsCollection) {
