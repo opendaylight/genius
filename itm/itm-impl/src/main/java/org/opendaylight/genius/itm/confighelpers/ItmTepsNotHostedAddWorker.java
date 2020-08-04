@@ -12,9 +12,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import org.opendaylight.genius.infra.Datastore;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.util.Datastore;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.tepsinnothostedtransportzone.UnknownVteps;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.not.hosted.transport.zones.tepsinnothostedtransportzone.UnknownVtepsKey;
 import org.slf4j.Logger;
@@ -35,7 +35,7 @@ public class ItmTepsNotHostedAddWorker implements Callable<List<? extends Listen
     }
 
     @Override
-    public List<ListenableFuture<Void>> call() throws Exception {
+    public List<? extends ListenableFuture<?>> call() throws Exception {
         LOG.trace("Add TEP into TepsNotHosted list task is picked from DataStoreJobCoordinator for execution.");
 
         // Add TEP to TepsNotHosted list.

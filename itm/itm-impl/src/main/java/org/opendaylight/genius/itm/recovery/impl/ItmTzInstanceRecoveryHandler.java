@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.itm.recovery.impl;
 
+import static org.opendaylight.mdsal.binding.util.Datastore.CONFIGURATION;
+
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,8 +20,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.globals.ITMConstants;
@@ -27,6 +27,8 @@ import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.serviceutils.srm.ServiceRecoveryInterface;
@@ -125,8 +127,8 @@ public class ItmTzInstanceRecoveryHandler extends
         if (tz != null) {
             LOG.trace("deleting transportzone instance {}", entityId);
             jobCoordinator.enqueueJob(entityId, () -> Collections.singletonList(
-                txRunner.callWithNewWriteOnlyTransactionAndSubmit(
-                    tx -> tx.delete(LogicalDatastoreType.CONFIGURATION, tzII))), ITMConstants.JOB_MAX_RETRIES);
+                txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> tx.delete(tzII))),
+                ITMConstants.JOB_MAX_RETRIES);
             AtomicInteger eventCallbackCount = new AtomicInteger(0);
             if (!tunnelList.isEmpty()) {
                 tunnelList.forEach(tunnelInterface -> {
@@ -156,8 +158,7 @@ public class ItmTzInstanceRecoveryHandler extends
         if (registeredEvents.intValue() == sizeOfTunnelList || sizeOfTunnelList == 0) {
             LOG.trace("recreating transportzone instance {}", entityId);
             jobCoordinator.enqueueJob(entityId, () -> Collections.singletonList(
-                txRunner.callWithNewWriteOnlyTransactionAndSubmit(
-                    tx -> tx.merge(LogicalDatastoreType.CONFIGURATION, tzII, tz))),
+                txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> tx.merge(tzII, tz))),
                 ITMConstants.JOB_MAX_RETRIES);
         }
     }

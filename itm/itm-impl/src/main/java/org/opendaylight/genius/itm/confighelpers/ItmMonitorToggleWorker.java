@@ -11,12 +11,12 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
-import org.opendaylight.genius.infra.Datastore;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
-import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.util.Datastore;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.mdsal.binding.util.TypedWriteTransaction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnelBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelMonitoringTypeBase;
@@ -47,19 +47,20 @@ public class ItmMonitorToggleWorker implements Callable<List<? extends Listenabl
         LOG.debug("TunnelMonitorToggleWorker with monitor protocol = {} ",monitorProtocol);
     }
 
-    @Override public List<ListenableFuture<Void>> call() {
+    @Override
+    public List<? extends ListenableFuture<?>> call() {
         LOG.debug("ItmMonitorToggleWorker invoked with tzone = {} enabled {}",tzone,enabled);
         return toggleTunnelMonitoring();
     }
 
-    private List<ListenableFuture<Void>> toggleTunnelMonitoring() {
+    private List<? extends ListenableFuture<?>> toggleTunnelMonitoring() {
         List<String> tunnelList = ItmUtils.getInternalTunnelInterfaces(dataBroker);
         LOG.debug("toggleTunnelMonitoring: TunnelList size {}", tunnelList.size());
         InstanceIdentifier<TunnelMonitorParams> iid = InstanceIdentifier.create(TunnelMonitorParams.class);
         TunnelMonitorParams monitorParams = new TunnelMonitorParamsBuilder()
                 .setEnabled(enabled).setMonitorProtocol(monitorProtocol).build();
         LOG.debug("toggleTunnelMonitoring: Updating Operational DS");
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
+        List<ListenableFuture<?>> futures = new ArrayList<>();
         futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.OPERATIONAL,
             tx -> tx.merge(iid, monitorParams)));
         futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
