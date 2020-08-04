@@ -7,8 +7,8 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers;
 
-import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
-import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+import static org.opendaylight.mdsal.binding.util.Datastore.CONFIGURATION;
+import static org.opendaylight.mdsal.binding.util.Datastore.OPERATIONAL;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
@@ -20,12 +20,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.genius.infra.Datastore.Configuration;
-import org.opendaylight.genius.infra.Datastore.Operational;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
-import org.opendaylight.genius.infra.TypedReadWriteTransaction;
-import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
@@ -36,6 +30,12 @@ import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilit
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.util.Datastore.Configuration;
+import org.opendaylight.mdsal.binding.util.Datastore.Operational;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.mdsal.binding.util.TypedReadWriteTransaction;
+import org.opendaylight.mdsal.binding.util.TypedWriteTransaction;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
@@ -87,8 +87,8 @@ public final class OvsInterfaceConfigRemoveHelper {
         this.southboundUtils = southboundUtils;
     }
 
-    public List<ListenableFuture<Void>> removeConfiguration(Interface interfaceOld, ParentRefs parentRefs) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
+    public List<? extends ListenableFuture<?>> removeConfiguration(Interface interfaceOld, ParentRefs parentRefs) {
+        List<ListenableFuture<?>> futures = new ArrayList<>();
         futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, operTx -> {
             IfTunnel ifTunnel = interfaceOld.augmentation(IfTunnel.class);
             if (ifTunnel != null) {
@@ -104,7 +104,7 @@ public final class OvsInterfaceConfigRemoveHelper {
 
     private void removeVlanConfiguration(ParentRefs parentRefs, String interfaceName,
             IfL2vlan ifL2vlan, TypedWriteTransaction<Operational> tx,
-            List<ListenableFuture<Void>> futures) {
+            List<ListenableFuture<?>> futures) {
         if (parentRefs == null || ifL2vlan == null || IfL2vlan.L2vlanMode.Trunk != ifL2vlan.getL2vlanMode()
                 && IfL2vlan.L2vlanMode.Transparent != ifL2vlan.getL2vlanMode()) {
             return;
@@ -259,8 +259,8 @@ public final class OvsInterfaceConfigRemoveHelper {
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() {
-            List<ListenableFuture<Void>> futures = new ArrayList<>();
+        public List<? extends ListenableFuture<?>> call() {
+            List<ListenableFuture<?>> futures = new ArrayList<>();
             futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, tx -> {
                 // FIXME: If the no. of child entries exceeds 100, perform txn
                 // updates in batches of 100.

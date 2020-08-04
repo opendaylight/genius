@@ -7,8 +7,8 @@
  */
 package org.opendaylight.genius.interfacemanager.listeners;
 
-import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
-import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+import static org.opendaylight.mdsal.binding.util.Datastore.CONFIGURATION;
+import static org.opendaylight.mdsal.binding.util.Datastore.OPERATIONAL;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
@@ -18,8 +18,6 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
@@ -32,6 +30,8 @@ import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.infrautils.utils.concurrent.Executors;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.serviceutils.srm.RecoverableListener;
 import org.opendaylight.serviceutils.srm.ServiceRecoveryRegistry;
@@ -177,7 +177,7 @@ public class InterfaceTopologyStateListener
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() {
+        public List<? extends ListenableFuture<?>> call() {
             if (bridgeNew.getDatapathId() == null) {
                 LOG.info("DataPathId found as null for Bridge Augmentation: {}... returning...", bridgeNew);
                 return Collections.emptyList();
@@ -211,7 +211,7 @@ public class InterfaceTopologyStateListener
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() {
+        public List<? extends ListenableFuture<?>> call() {
             Uint64 dpnId = IfmUtil.getDpnId(bridgeNew.getDatapathId());
 
             if (dpnId == null) {
@@ -219,7 +219,7 @@ public class InterfaceTopologyStateListener
                 return Collections.emptyList();
             }
 
-            List<ListenableFuture<Void>> futures = new ArrayList<>();
+            List<ListenableFuture<?>> futures = new ArrayList<>();
             LOG.debug("removing bridge references for bridge: {}, dpn: {}", bridgeNew, dpnId);
             // TODO skitt Use a transaction chain
             futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, tx -> {
@@ -251,7 +251,7 @@ public class InterfaceTopologyStateListener
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() {
+        public List<? extends ListenableFuture<?>> call() {
             return ovsInterfaceTopologyStateUpdateHelper.updateBridgeRefEntry(instanceIdentifier, bridgeNew, bridgeOld);
         }
     }

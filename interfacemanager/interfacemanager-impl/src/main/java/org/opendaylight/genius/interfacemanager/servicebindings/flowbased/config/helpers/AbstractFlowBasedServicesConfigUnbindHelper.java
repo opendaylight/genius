@@ -22,7 +22,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.ser
 public abstract class AbstractFlowBasedServicesConfigUnbindHelper implements FlowBasedServicesConfigRemovable {
 
     @Override
-    public final void unbindService(List<ListenableFuture<Void>> futures, String interfaceName,
+    public final void unbindService(List<ListenableFuture<?>> futures, String interfaceName,
                                     BoundServices boundServiceOld, List<BoundServices> boundServices,
                                     BoundServicesState boundServicesState) {
 
@@ -35,11 +35,11 @@ public abstract class AbstractFlowBasedServicesConfigUnbindHelper implements Flo
     }
 
 
-    protected abstract void unbindServiceOnInterface(List<ListenableFuture<Void>> futures,
+    protected abstract void unbindServiceOnInterface(List<ListenableFuture<?>> futures,
                                                      BoundServices boundServiceOld, List<BoundServices> allServices,
                                                      BoundServicesState boundServicesState);
 
-    protected abstract void unbindServiceOnInterfaceType(List<ListenableFuture<Void>> futures,
+    protected abstract void unbindServiceOnInterfaceType(List<ListenableFuture<?>> futures,
                                                          BoundServices boundServiceOld,
                                                          List<BoundServices> allServices);
 }
