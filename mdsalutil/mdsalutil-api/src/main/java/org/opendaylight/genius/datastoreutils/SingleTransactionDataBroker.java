@@ -13,12 +13,12 @@ import static org.opendaylight.genius.datastoreutils.TransactionCommitFailedExce
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.genius.infra.Datastore;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
 import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.binding.util.Datastore;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.RetryingManagedNewTransactionRunner;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
@@ -212,8 +212,8 @@ public class SingleTransactionDataBroker {
             throws TransactionCommitFailedException {
 
         RetryingManagedNewTransactionRunner runner = new RetryingManagedNewTransactionRunner(broker, maxRetries);
-        ListenableFutures.checkedGet(runner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
-                tx.mergeParentStructurePut(datastoreType,path,data)), SUBMIT_MAPPER);
+        ListenableFutures.checkedGet(runner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.toClass(datastoreType),
+            tx -> tx.mergeParentStructurePut(path, data)), SUBMIT_MAPPER);
     }
 
     public <T extends DataObject> void syncUpdate(
@@ -238,8 +238,8 @@ public class SingleTransactionDataBroker {
             DataBroker broker, LogicalDatastoreType datastoreType, InstanceIdentifier<T> path, T data, int maxRetries)
             throws TransactionCommitFailedException {
         RetryingManagedNewTransactionRunner runner = new RetryingManagedNewTransactionRunner(broker, maxRetries);
-        ListenableFutures.checkedGet(runner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
-                tx.mergeParentStructureMerge(datastoreType, path, data)), SUBMIT_MAPPER);
+        ListenableFutures.checkedGet(runner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.toClass(datastoreType),
+            tx -> tx.mergeParentStructureMerge(path, data)), SUBMIT_MAPPER);
     }
 
     public <T extends DataObject> void syncDelete(
@@ -265,8 +265,7 @@ public class SingleTransactionDataBroker {
             throws TransactionCommitFailedException {
 
         RetryingManagedNewTransactionRunner runner = new RetryingManagedNewTransactionRunner(broker, maxRetries);
-        ListenableFutures.checkedGet(
-                runner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.delete(datastoreType, path)), SUBMIT_MAPPER);
+        ListenableFutures.checkedGet(runner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.toClass(datastoreType),
+            tx -> tx.delete(path)), SUBMIT_MAPPER);
     }
-
 }
