@@ -10,11 +10,11 @@ package org.opendaylight.genius.itm.tests;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.ListenableFuture;
 import org.eclipse.jdt.annotation.NonNull;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.itm.confighelpers.OvsdbTepAddConfigHelper;
 import org.opendaylight.genius.itm.confighelpers.OvsdbTepRemoveConfigHelper;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
@@ -36,14 +36,14 @@ public final class ItmTepAutoConfigTestUtil {
     }
 
     /* transaction methods */
-    public static ListenableFuture<Void> addTep(String tepIp, String strDpnId, String tzName, boolean ofTunnel,
+    public static ListenableFuture<?> addTep(String tepIp, String strDpnId, String tzName, boolean ofTunnel,
                                                 DataBroker dataBroker, ManagedNewTransactionRunner tx)
                                                 throws Exception {
         return
             OvsdbTepAddConfigHelper.addTepReceivedFromOvsdb(tepIp, strDpnId, tzName, ofTunnel, dataBroker, tx).get(0);
     }
 
-    public static ListenableFuture<Void> deleteTep(String tepIp, String strDpnId, String tzName,
+    public static ListenableFuture<?> deleteTep(String tepIp, String strDpnId, String tzName,
                                                    DataBroker dataBroker, ManagedNewTransactionRunner tx) {
         return OvsdbTepRemoveConfigHelper.removeTepReceivedFromOvsdb(tepIp, strDpnId, tzName, dataBroker, tx).get(0);
     }

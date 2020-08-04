@@ -14,13 +14,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import org.opendaylight.genius.infra.Datastore;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.util.Datastore;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.TypedWriteTransaction;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.NotHostedTransportZones;
@@ -64,10 +64,11 @@ public final class OvsdbTepAddConfigHelper {
      * @param txRunner ManagedTransactionRunner object
      */
 
-    public static List<ListenableFuture<Void>> addTepReceivedFromOvsdb(String tepIp, String strDpnId, String tzName,
-                                                                       boolean ofTunnel, DataBroker dataBroker,
-                                                                       ManagedNewTransactionRunner txRunner)
-                                                                       throws Exception {
+    public static List<? extends ListenableFuture<?>> addTepReceivedFromOvsdb(String tepIp, String strDpnId,
+                                                                              String tzName, boolean ofTunnel,
+                                                                              DataBroker dataBroker,
+                                                                              ManagedNewTransactionRunner txRunner)
+                                                                                      throws Exception {
         Uint64 dpnId = Uint64.ZERO;
 
         if (strDpnId != null && !strDpnId.isEmpty()) {
@@ -116,7 +117,7 @@ public final class OvsdbTepAddConfigHelper {
             }
         }
 
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
+        List<ListenableFuture<?>> futures = new ArrayList<>();
         final Uint64 id = dpnId;
         final String name = tzName;
         futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
@@ -266,7 +267,7 @@ public final class OvsdbTepAddConfigHelper {
         addVtepInITMConfigDS(vtepList, ipAdd, tzName, dpnId, ofTunnel, tx);
     }
 
-    private static List<ListenableFuture<Void>> addUnknownTzTepIntoTepsNotHostedAndReturnFutures(String tzName,
+    private static List<? extends ListenableFuture<?>> addUnknownTzTepIntoTepsNotHostedAndReturnFutures(String tzName,
                                                          IpAddress tepIpAddress, Uint64 id, boolean ofTunnel,
                                                          DataBroker dataBroker, ManagedNewTransactionRunner txRunner) {
         return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.OPERATIONAL,
