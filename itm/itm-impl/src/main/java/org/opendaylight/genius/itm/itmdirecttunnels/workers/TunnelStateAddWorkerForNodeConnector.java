@@ -23,7 +23,7 @@ public class TunnelStateAddWorkerForNodeConnector implements Callable<List<? ext
     }
 
     @Override
-    public List<ListenableFuture<Void>> call() throws Exception {
+    public List<? extends ListenableFuture<?>> call() throws Exception {
         // If another renderer(for eg : OVS) needs to be supported, check can be performed here
         // to call the respective helpers.
         return tunnelStateAddWorker.addState(tunnelStateInfo);
