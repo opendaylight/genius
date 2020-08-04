@@ -146,7 +146,7 @@ public class ComputeNodeManager {
                 .build();
     }
 
-    private Uint64 getDpnIdFromBridge(OvsdbBridgeAugmentation bridgeAugmentation) {
+    private static Uint64 getDpnIdFromBridge(OvsdbBridgeAugmentation bridgeAugmentation) {
         if (bridgeAugmentation.getDatapathId() == null) {
             return Uint64.ZERO;
         }
@@ -166,7 +166,8 @@ public class ComputeNodeManager {
     }
 
 
-    private void logErrorIfComputeNodeIsAlreadyTaken(Uint64 datapathid, String nodeId, Optional<ComputeNode> optional) {
+    private static void logErrorIfComputeNodeIsAlreadyTaken(Uint64 datapathid, String nodeId,
+            Optional<ComputeNode> optional) {
         ComputeNode existingNode = optional.get();
         if (!Objects.equals(existingNode.getNodeid(), nodeId)) {
             LOG.error("ComputeNodeManager Compute is already connected by compute {}", existingNode);
@@ -177,7 +178,7 @@ public class ComputeNodeManager {
         }
     }
 
-    private InstanceIdentifier<Node> getWildcardPath() {
+    private static InstanceIdentifier<Node> getWildcardPath() {
         return InstanceIdentifier
                 .create(NetworkTopology.class)
                 .child(Topology.class, new TopologyKey(new TopologyId("ovsdb:1")))

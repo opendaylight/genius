@@ -117,20 +117,20 @@ public class CloudScalerServiceTest {
     public CloudScalerServiceTest() {
     }
 
-    private InstanceIdentifier<ComputeNode> buildComputeNodeIid(String computeName) {
+    private static InstanceIdentifier<ComputeNode> buildComputeNodeIid(String computeName) {
         return InstanceIdentifier.builder(ComputeNodes.class)
                 .child(ComputeNode.class, new ComputeNodeKey(computeName))
                 .build();
     }
 
-    private InstanceIdentifier<Node> buildNodeId(String nodeId) {
+    private static InstanceIdentifier<Node> buildNodeId(String nodeId) {
         return InstanceIdentifier
                 .create(NetworkTopology.class)
                 .child(Topology.class, new TopologyKey(new TopologyId("ovsdb:1")))
                 .child(Node.class, new NodeKey(new NodeId(nodeId)));
     }
 
-    private Node buildNode(String nodeId, String computeName, String datapathid) {
+    private static Node buildNode(String nodeId, String computeName, String datapathid) {
         NodeBuilder nodeBuilder = new NodeBuilder();
         nodeBuilder.setNodeId(new NodeId(nodeId));
         OvsdbBridgeAugmentationBuilder bridge = new OvsdbBridgeAugmentationBuilder();
@@ -139,11 +139,11 @@ public class CloudScalerServiceTest {
         otherConfigsBuilder.setBridgeOtherConfigValue(computeName);
         bridge.setDatapathId(new DatapathId(datapathid));
         bridge.setBridgeOtherConfigs(Lists.newArrayList(otherConfigsBuilder.build()));
-        nodeBuilder.addAugmentation(OvsdbBridgeAugmentation.class, bridge.build());
+        nodeBuilder.addAugmentation(OvsdbBridgeAugmentation.class,bridge.build());
         return nodeBuilder.build();
     }
 
-    private InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node>
+    private static InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node>
         buildOpenflowNodeIid(Uint64 dpnid) {
         return InstanceIdentifier.builder(Nodes.class)
                 .child(org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node.class,
@@ -152,7 +152,7 @@ public class CloudScalerServiceTest {
                                 "openflow:" + dpnid.toString()))).build();
     }
 
-    private org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node buildOpenflowNode(
+    private static org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.Node buildOpenflowNode(
             Uint64 dpnId) {
         org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeBuilder nodeBuilder
                 = new org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.nodes.NodeBuilder();
@@ -199,7 +199,7 @@ public class CloudScalerServiceTest {
                 CONFIGURATION, buildComputeNodeIid(COMPUTE2)).get().isTombstoned());
     }
 
-    private ComputeNode buildComputeNode(String nodeid1, BigInteger dpn1, String compute1) {
+    private static ComputeNode buildComputeNode(String nodeid1, BigInteger dpn1, String compute1) {
         return new ComputeNodeBuilder()
                 .setComputeName(compute1)
                 .setDpnid(dpn1)
@@ -251,7 +251,7 @@ public class CloudScalerServiceTest {
         AWAITER.until(() -> nodesRecoverd.contains(DPN1));
     }
 
-    private BridgeRefEntry buildBridgeRefEntry(Uint64 dpnId, String nodeId) {
+    private static BridgeRefEntry buildBridgeRefEntry(Uint64 dpnId, String nodeId) {
         return new BridgeRefEntryBuilder()
             .setDpid(dpnId)
             .setBridgeReference(new OvsdbBridgeRef(buildNodeIid(nodeId)))
