@@ -23,13 +23,12 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
-import org.opendaylight.genius.infra.Datastore;
-import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
 import org.opendaylight.genius.utils.JvmGlobalLocks;
 import org.opendaylight.infrautils.utils.concurrent.Executors;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.util.Datastore;
+import org.opendaylight.mdsal.binding.util.RetryingManagedNewTransactionRunner;
 import org.opendaylight.mdsal.common.api.DataStoreUnavailableException;
-import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
 import org.opendaylight.serviceutils.tools.rpc.FutureRpcResults;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.LockInput;
@@ -129,14 +128,14 @@ public class LockManagerServiceImpl implements LockManagerService {
                 unused -> UNLOCK_OUTPUT, MoreExecutors.directExecutor())).build();
     }
 
-    private ListenableFuture<Void> unlock(final String lockName,
+    private ListenableFuture<?> unlock(final String lockName,
         final InstanceIdentifier<Lock> lockInstanceIdentifier, final int retry) {
-        ListenableFuture<Void> future = txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
-            Boolean result = tx.exists(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier).get();
+        ListenableFuture<?> future = txRunner.callWithNewReadWriteTransactionAndSubmit(Datastore.OPERATIONAL, tx -> {
+            Boolean result = tx.exists(lockInstanceIdentifier).get();
             if (!result) {
                 LOG.debug("unlock ignored, as unnecessary; lock is already unlocked: {}", lockName);
             } else {
-                tx.delete(LogicalDatastoreType.OPERATIONAL, lockInstanceIdentifier);
+                tx.delete(lockInstanceIdentifier);
             }
         });
         return Futures.catchingAsync(future, Exception.class, exception -> {
@@ -144,7 +143,7 @@ public class LockManagerServiceImpl implements LockManagerService {
                 exception.getMessage(), DEFAULT_RETRY_COUNT - retry + 1, DEFAULT_RETRY_COUNT);
             if (retry - 1 > 0) {
                 Thread.sleep(DEFAULT_WAIT_TIME_IN_MILLIS);
-                return unlock(lockName, lockInstanceIdentifier, retry - 1);
+                return (ListenableFuture) unlock(lockName, lockInstanceIdentifier, retry - 1);
             } else {
                 throw exception;
             }
