@@ -233,7 +233,7 @@ public class CloudscalerRpcServiceImpl implements CloudscalerRpcService {
         return Futures.immediateFuture(DONE_RPC_RESPONSE);
     }
 
-    private InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network
+    private static InstanceIdentifier<org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network
             .topology.rev131021.network.topology.topology.Node> buildOvsdbNodeId(ComputeNode computeNode) {
         return InstanceIdentifier
                 .create(NetworkTopology.class)
@@ -244,7 +244,7 @@ public class CloudscalerRpcServiceImpl implements CloudscalerRpcService {
                                 .network.topology.topology.NodeKey(new NodeId(computeNode.getNodeid())));
     }
 
-    private InstanceIdentifier<Node> buildOpenflowNodeIid(ComputeNode computeNode) {
+    private static InstanceIdentifier<Node> buildOpenflowNodeIid(ComputeNode computeNode) {
         return InstanceIdentifier.builder(Nodes.class)
                 .child(Node.class, new NodeKey(
                         new org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.NodeId(
