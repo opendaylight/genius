@@ -44,13 +44,14 @@ import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
 import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar.NextAction;
 import org.opendaylight.genius.datastoreutils.listeners.internal.DataTreeEventCallbackRegistrarImpl;
-import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
 import org.opendaylight.infrautils.testutils.LogCaptureRule;
 import org.opendaylight.infrautils.testutils.LogRule;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.DataTreeChangeListener;
 import org.opendaylight.mdsal.binding.api.DataTreeIdentifier;
 import org.opendaylight.mdsal.binding.dom.adapter.test.AbstractConcurrentDataBrokerTest;
+import org.opendaylight.mdsal.binding.util.Datastore;
+import org.opendaylight.mdsal.binding.util.RetryingManagedNewTransactionRunner;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.controller.md.sal.test.list.rev140701.two.level.list.TopLevelList;
 import org.opendaylight.yangtools.concepts.ListenerRegistration;
@@ -301,8 +302,8 @@ public class DataTreeEventCallbackRegistrarTest {
         ArgumentCaptor<Runnable> timerTask = ArgumentCaptor.forClass(Runnable.class);
         verify(mockScheduler).schedule(timerTask.capture(), eq(timeout.toMillis()), eq(TimeUnit.MILLISECONDS));
 
-        new RetryingManagedNewTransactionRunner(db, 1).callWithNewWriteOnlyTransactionAndSubmit(
-            tx -> tx.mergeParentStructurePut(OPERATIONAL, FOO_PATH, FOO_DATA));
+        new RetryingManagedNewTransactionRunner(db, 1).callWithNewWriteOnlyTransactionAndSubmit(Datastore.OPERATIONAL,
+            tx -> tx.mergeParentStructurePut(FOO_PATH, FOO_DATA));
 
         // Wait for the change notification callback to be invoked.
 
@@ -382,8 +383,8 @@ public class DataTreeEventCallbackRegistrarTest {
             return null;
         }).when(mockListener).onDataTreeChanged(anyCollection());
 
-        new RetryingManagedNewTransactionRunner(db, 1).callWithNewWriteOnlyTransactionAndSubmit(
-            tx -> tx.mergeParentStructurePut(OPERATIONAL, FOO_PATH, FOO_DATA));
+        new RetryingManagedNewTransactionRunner(db, 1).callWithNewWriteOnlyTransactionAndSubmit(Datastore.OPERATIONAL,
+            tx -> tx.mergeParentStructurePut(FOO_PATH, FOO_DATA));
 
         await().untilTrue(onDataTreeChangeDone);
         assertThat(updated.get()).isFalse();

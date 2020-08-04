@@ -7,7 +7,7 @@
  */
 package org.opendaylight.genius.itm.rpc;
 
-import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+import static org.opendaylight.mdsal.binding.util.Datastore.CONFIGURATION;
 import static org.opendaylight.serviceutils.tools.rpc.FutureRpcResults.fromListenableFuture;
 import static org.opendaylight.yangtools.yang.common.RpcResultBuilder.failed;
 
@@ -33,12 +33,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
-import org.opendaylight.genius.infra.Datastore;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
-import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.TypedReadWriteTransaction;
-import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.interfacemanager.interfaces.InterfaceManagerService;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
@@ -62,6 +56,12 @@ import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldTunnelId;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.matches.MatchTunnelId;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.util.Datastore;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.mdsal.binding.util.RetryingManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.TypedReadWriteTransaction;
+import org.opendaylight.mdsal.binding.util.TypedWriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.serviceutils.tools.rpc.FutureRpcResults;
@@ -366,14 +366,14 @@ public class ItmManagerRpcService implements ItmRpcService {
         final Uint64 destDpnId = Uint64.valueOf(input.getDestinationNode());
         LOG.debug("setBfdParamOnTunnel srcDpnId: {}, destDpnId: {}", srcDpnId, destDpnId);
         final SettableFuture<RpcResult<SetBfdParamOnTunnelOutput>> result = SettableFuture.create();
-        FluentFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
+        FluentFuture<?> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
             enableBFD(tx, srcDpnId, destDpnId, input.isMonitoringEnabled(), input.getMonitoringInterval().toJava());
             enableBFD(tx, destDpnId, srcDpnId, input.isMonitoringEnabled(), input.getMonitoringInterval().toJava());
         });
 
-        future.addCallback(new FutureCallback<Void>() {
+        future.addCallback(new FutureCallback<Object>() {
             @Override
-            public void onSuccess(Void voidInstance) {
+            public void onSuccess(Object voidInstance) {
                 result.set(RpcResultBuilder.<SetBfdParamOnTunnelOutput>success().build());
             }
 
@@ -416,7 +416,7 @@ public class ItmManagerRpcService implements ItmRpcService {
         //Ignore the Futures for now
         final SettableFuture<RpcResult<RemoveExternalTunnelEndpointOutput>> result = SettableFuture.create();
         Collection<DPNTEPsInfo> meshedDpnList = dpnTEPsInfoCache.getAllPresent();
-        FluentFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
+        FluentFuture<?> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
             tx -> {
                 ItmExternalTunnelDeleteWorker.deleteTunnels(meshedDpnList, input.getDestinationIp(),
                         input.getTunnelType(), tx);
@@ -425,8 +425,8 @@ public class ItmManagerRpcService implements ItmRpcService {
                 tx.delete(extPath);
             }
         );
-        future.addCallback(new FutureCallback<Void>() {
-            @Override public void onSuccess(Void voidInstance) {
+        future.addCallback(new FutureCallback<Object>() {
+            @Override public void onSuccess(Object voidInstance) {
                 result.set(RpcResultBuilder.<RemoveExternalTunnelEndpointOutput>success().build());
             }
 
@@ -448,13 +448,13 @@ public class ItmManagerRpcService implements ItmRpcService {
         //Ignore the Futures for now
         final SettableFuture<RpcResult<RemoveExternalTunnelFromDpnsOutput>> result = SettableFuture.create();
         List<DPNTEPsInfo> cfgDpnList = ItmUtils.getDpnTepListFromDpnId(dpnTEPsInfoCache, input.getDpnId());
-        FluentFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
+        FluentFuture<?> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
             tx -> ItmExternalTunnelDeleteWorker.deleteTunnels(cfgDpnList, input.getDestinationIp(),
                     input.getTunnelType(), tx));
 
-        future.addCallback(new FutureCallback<Void>() {
+        future.addCallback(new FutureCallback<Object>() {
             @Override
-            public void onSuccess(Void voidInstance) {
+            public void onSuccess(Object voidInstance) {
                 result.set(RpcResultBuilder.<RemoveExternalTunnelFromDpnsOutput>success().build());
             }
 
@@ -474,15 +474,14 @@ public class ItmManagerRpcService implements ItmRpcService {
             BuildExternalTunnelFromDpnsInput input) {
         //Ignore the Futures for now
         final SettableFuture<RpcResult<BuildExternalTunnelFromDpnsOutput>> result = SettableFuture.create();
-        FluentFuture<Void> extTunnelResultList =
+        FluentFuture<?> extTunnelResultList =
             txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
                 tx -> externalTunnelAddWorker.buildTunnelsFromDpnToExternalEndPoint(input.getDpnId(),
                     input.getDestinationIp(),input.getTunnelType(), tx));
 
-        extTunnelResultList.addCallback(new FutureCallback<Void>() {
-
+        extTunnelResultList.addCallback(new FutureCallback<Object>() {
             @Override
-            public void onSuccess(Void voidInstance) {
+            public void onSuccess(Object voidInstance) {
                 result.set(RpcResultBuilder.<BuildExternalTunnelFromDpnsOutput>success().build());
             }
 
@@ -511,15 +510,15 @@ public class ItmManagerRpcService implements ItmRpcService {
                 new DcGatewayIpBuilder().setIpAddress(input.getDestinationIp())
                         .setTunnnelType(input.getTunnelType()).build();
 
-        FluentFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
+        FluentFuture<?> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
             tx -> {
                 externalTunnelAddWorker.buildTunnelsToExternalEndPoint(meshedDpnList, input.getDestinationIp(),
                     input.getTunnelType(), tx);
                 tx.mergeParentStructurePut(extPath, dcGatewayIp);
             }
         );
-        future.addCallback(new FutureCallback<Void>() {
-            @Override public void onSuccess(Void voidInstance) {
+        future.addCallback(new FutureCallback<Object>() {
+            @Override public void onSuccess(Object voidInstance) {
                 result.set(RpcResultBuilder.<AddExternalTunnelEndpointOutput>success().build());
             }
 
@@ -577,12 +576,12 @@ public class ItmManagerRpcService implements ItmRpcService {
                 Uint64.fromLongBits(ITMConstants.COOKIE_ITM.longValue() + serviceId.toJava()), mkMatches,
                 input.getInstruction());
 
-        ListenableFuture<Void> installFlowResult = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
+        ListenableFuture<?> installFlowResult = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
             tx -> mdsalManager.addFlow(tx, input.getDpnId(), terminatingServiceTableFlow));
-        Futures.addCallback(installFlowResult, new FutureCallback<Void>() {
+        Futures.addCallback(installFlowResult, new FutureCallback<Object>() {
 
             @Override
-            public void onSuccess(Void voidInstance) {
+            public void onSuccess(Object voidInstance) {
                 result.set(RpcResultBuilder.<CreateTerminatingServiceActionsOutput>success().build());
             }
 
@@ -606,14 +605,14 @@ public class ItmManagerRpcService implements ItmRpcService {
                 input.getDpnId(), input.getServiceId());
         final SettableFuture<RpcResult<RemoveTerminatingServiceActionsOutput>> result = SettableFuture.create();
 
-        ListenableFuture<Void> removeFlowResult = txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION,
+        ListenableFuture<?> removeFlowResult = txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION,
             tx -> mdsalManager.removeFlow(tx, input.getDpnId(),
                         getFlowRef(NwConstants.INTERNAL_TUNNEL_TABLE, input.getServiceId()),
                         NwConstants.INTERNAL_TUNNEL_TABLE));
-        Futures.addCallback(removeFlowResult, new FutureCallback<Void>() {
+        Futures.addCallback(removeFlowResult, new FutureCallback<Object>() {
 
             @Override
-            public void onSuccess(Void voidInstance) {
+            public void onSuccess(Object voidInstance) {
                 result.set(RpcResultBuilder.<RemoveTerminatingServiceActionsOutput>success().build());
             }
 
@@ -747,10 +746,10 @@ public class ItmManagerRpcService implements ItmRpcService {
                                     new TransportZoneKey(transportZone))
                             .child(DeviceVteps.class, deviceVtepKey)
                             .build();
-                    FluentFuture<Void> future =
+                    FluentFuture<?> future =
                         retryingTxRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> tx.delete(path));
-                    future.addCallback(new FutureCallback<Void>() {
-                        @Override public void onSuccess(Void voidInstance) {
+                    future.addCallback(new FutureCallback<Object>() {
+                        @Override public void onSuccess(Object voidInstance) {
                             result.set(RpcResultBuilder.<DeleteL2GwDeviceOutput>success().build());
                         }
 
@@ -820,13 +819,13 @@ public class ItmManagerRpcService implements ItmRpcService {
                     DeviceVteps deviceVtep = new DeviceVtepsBuilder().withKey(deviceVtepKey).setIpAddress(hwIp)
                             .setNodeId(nodeId).setTopologyId(input.getTopologyId()).build();
                     //TO DO: add retry if it fails
-                    FluentFuture<Void> future = retryingTxRunner
+                    FluentFuture<?> future = retryingTxRunner
                             .callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
                                 tx -> tx.mergeParentStructurePut(path, deviceVtep));
 
-                    future.addCallback(new FutureCallback<Void>() {
+                    future.addCallback(new FutureCallback<Object>() {
 
-                        @Override public void onSuccess(Void voidInstance) {
+                        @Override public void onSuccess(Object voidInstance) {
                             result.set(RpcResultBuilder.<AddL2GwDeviceOutput>success().build());
                         }
 
@@ -899,7 +898,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                         .setIpAddress(hwIp)
                         .setNodeId(nodeId.get(0)).setTopologyId(input.getTopologyId()).build();
                     LOG.trace("writing hWvtep{}", deviceVtep);
-                    FluentFuture<Void> future =
+                    FluentFuture<?> future =
                         retryingTxRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
                             tx -> {
                                 tx.mergeParentStructurePut(path, deviceVtep);
@@ -919,9 +918,9 @@ public class ItmManagerRpcService implements ItmRpcService {
                                     tx.mergeParentStructurePut(path2, deviceVtep2);
                                 }
                             });
-                    future.addCallback(new FutureCallback<Void>() {
+                    future.addCallback(new FutureCallback<Object>() {
                         @Override
-                        public void onSuccess(Void voidInstance) {
+                        public void onSuccess(Object voidInstance) {
                             result.set(RpcResultBuilder.<AddL2GwMlagDeviceOutput>success().build());
                         }
 
@@ -965,7 +964,7 @@ public class ItmManagerRpcService implements ItmRpcService {
                     return result;
                 }
                 String transportZone = tzones.getTransportZone().get(0).getZoneName();
-                FluentFuture<Void> future =
+                FluentFuture<?> future =
                     retryingTxRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
                         tx -> {
                             DeviceVtepsKey deviceVtepKey = new DeviceVtepsKey(hwIp, nodeId.get(0));
@@ -985,10 +984,10 @@ public class ItmManagerRpcService implements ItmRpcService {
                         }
                     );
 
-                future.addCallback(new FutureCallback<Void>() {
+                future.addCallback(new FutureCallback<Object>() {
 
                     @Override
-                    public void onSuccess(Void voidInstance) {
+                    public void onSuccess(Object voidInstance) {
                         result.set(RpcResultBuilder.<DeleteL2GwMlagDeviceOutput>success().build());
                     }
 
