@@ -19,13 +19,14 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.infrautils.utils.concurrent.Executors;
 import org.opendaylight.infrautils.utils.concurrent.LoggingFutures;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
+import org.opendaylight.mdsal.binding.util.Datastore;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.serviceutils.tools.listener.AbstractClusteredAsyncDataTreeChangeListener;
@@ -209,15 +210,19 @@ public class CloudscalerRpcServiceImpl implements CloudscalerRpcService {
                 LOG.info("Cloudscaler Deleting compute node details {}",
                         buildOpenflowNodeIid(computeNode));
                 LOG.info("Cloudscaler Deleting compute node details {}", buildOvsdbNodeId(computeNode));
-                LoggingFutures.addErrorLogging(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
-                    computeNodeManager.deleteComputeNode(tx, computeNode);
-                }), LOG, "Cloudscaler Failed to delete the compute node");
-                LoggingFutures.addErrorLogging(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
-                    tx.delete(LogicalDatastoreType.CONFIGURATION, buildOpenflowNodeIid(computeNode));
-                }), LOG, "Cloudscaler Failed to delete the config inventory");
-                LoggingFutures.addErrorLogging(txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
-                    tx.delete(LogicalDatastoreType.CONFIGURATION, buildOvsdbNodeId(computeNode));
-                }), LOG, "Cloudscaler Failed to delete the config topology");
+                // FIXME: why don't we run this as one transaction?!
+                LoggingFutures.addErrorLogging(txRunner.callWithNewReadWriteTransactionAndSubmit(
+                    Datastore.CONFIGURATION, tx -> {
+                        computeNodeManager.deleteComputeNode(tx, computeNode);
+                    }), LOG, "Cloudscaler Failed to delete the compute node");
+                LoggingFutures.addErrorLogging(txRunner.callWithNewReadWriteTransactionAndSubmit(
+                    Datastore.CONFIGURATION, tx -> {
+                        tx.delete(buildOpenflowNodeIid(computeNode));
+                    }), LOG, "Cloudscaler Failed to delete the config inventory");
+                LoggingFutures.addErrorLogging(txRunner.callWithNewReadWriteTransactionAndSubmit(
+                    Datastore.CONFIGURATION, tx -> {
+                        tx.delete(buildOvsdbNodeId(computeNode));
+                    }), LOG, "Cloudscaler Failed to delete the config topology");
             }
         } catch (Throwable e) {
             LOG.error("Cloudscaler Failed to do scale in end {} ", input, e);
@@ -313,10 +318,10 @@ public class CloudscalerRpcServiceImpl implements CloudscalerRpcService {
                                         .child(TransportZone.class, zone.key())
                                         .child(Vteps.class, vteps.key());
                                 LOG.error("Cloudscaler deleting dpn {}", vteps);
-                                LoggingFutures.addErrorLogging(
-                                        txRunner.callWithNewReadWriteTransactionAndSubmit(tx -> {
-                                            tx.delete(LogicalDatastoreType.CONFIGURATION, dpnVtepIid);
-                                        }), LOG, "Cloudscaler Failed to delete the itm tep");
+                                LoggingFutures.addErrorLogging(txRunner.callWithNewReadWriteTransactionAndSubmit(
+                                    Datastore.CONFIGURATION, tx -> {
+                                        tx.delete(dpnVtepIid);
+                                    }), LOG, "Cloudscaler Failed to delete the itm tep");
                             }
                         }
                     }
