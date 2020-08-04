@@ -365,13 +365,13 @@ public class IdManagerTest {
         }
     }
 
-    private InstanceIdentifier<IdPool> getIdPoolIdentifier(String poolName) {
+    private static InstanceIdentifier<IdPool> getIdPoolIdentifier(String poolName) {
         InstanceIdentifier.InstanceIdentifierBuilder<IdPool> idBuilder =
                 InstanceIdentifier.builder(IdPools.class).child(IdPool.class, new IdPoolKey(poolName));
         return idBuilder.build();
     }
 
-    private ReleasedIdsHolder createReleaseIdHolder(List<Long> delayedIds) {
+    private static ReleasedIdsHolder createReleaseIdHolder(List<Long> delayedIds) {
         List<DelayedIdEntries> delayedIdEntries = new ArrayList<>();
         for (Long id : delayedIds) {
             delayedIdEntries.add(new DelayedIdEntriesBuilder().setId(id).setReadyTimeSec(0L).build());
@@ -380,7 +380,7 @@ public class IdManagerTest {
                 .setAvailableIdCount((long) delayedIds.size()).build();
     }
 
-    private AvailableIdsHolder createAvailableIdHolder(long start, long end, long cursor) {
+    private static AvailableIdsHolder createAvailableIdHolder(long start, long end, long cursor) {
         return new AvailableIdsHolderBuilder().setStart(start).setEnd(end).setCursor(cursor).build();
     }
 
