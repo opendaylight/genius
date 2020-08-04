@@ -26,7 +26,7 @@ public abstract class AbstractFlowBasedServicesConfigBindHelper implements FlowB
     private static final Logger LOG = LoggerFactory.getLogger(AbstractFlowBasedServicesConfigBindHelper.class);
 
     @Override
-    public final void bindService(List<ListenableFuture<Void>> futures, String interfaceName,
+    public final void bindService(List<ListenableFuture<?>> futures, String interfaceName,
                                   BoundServices boundServiceNew, List<BoundServices> allServices,
                                   BoundServicesState interfaceBoundServicesState) {
 
@@ -36,7 +36,7 @@ public abstract class AbstractFlowBasedServicesConfigBindHelper implements FlowB
         }
 
         if (FlowBasedServicesUtils.isInterfaceTypeBasedServiceBinding(interfaceName)) {
-            bindServiceOnInterfaceType(futures,boundServiceNew, allServices);
+            bindServiceOnInterfaceType(futures, boundServiceNew, allServices);
         } else {
             if (L2vlan.class.equals(interfaceBoundServicesState.getInterfaceType())
                 || Tunnel.class.equals(interfaceBoundServicesState.getInterfaceType())) {
@@ -45,11 +45,11 @@ public abstract class AbstractFlowBasedServicesConfigBindHelper implements FlowB
         }
     }
 
-    protected abstract void bindServiceOnInterface(List<ListenableFuture<Void>> futures, BoundServices boundServiceNew,
+    protected abstract void bindServiceOnInterface(List<ListenableFuture<?>> futures, BoundServices boundServiceNew,
                                                    List<BoundServices> allServices,
                                                    BoundServicesState interfaceBoundServicesState);
 
-    protected abstract void bindServiceOnInterfaceType(List<ListenableFuture<Void>> futures,
+    protected abstract void bindServiceOnInterfaceType(List<ListenableFuture<?>> futures,
                                                        BoundServices boundServiceNew, List<BoundServices> allServices);
 }
 
