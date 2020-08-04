@@ -5,24 +5,22 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.genius.idmanager.jobs;
 
-import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+import static org.opendaylight.mdsal.binding.util.Datastore.CONFIGURATION;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.opendaylight.genius.idmanager.IdUtils;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPool;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class LocalPoolDeleteJob implements Callable<List<? extends ListenableFuture<?>>> {
-
     private static final Logger LOG = LoggerFactory.getLogger(LocalPoolDeleteJob.class);
 
     private final String poolName;
@@ -36,7 +34,7 @@ public class LocalPoolDeleteJob implements Callable<List<? extends ListenableFut
     }
 
     @Override
-    public List<ListenableFuture<Void>> call() {
+    public List<? extends ListenableFuture<?>> call() {
         InstanceIdentifier<IdPool> idPoolToBeDeleted = idUtils.getIdPoolInstance(poolName);
         return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
             tx.delete(idPoolToBeDeleted);

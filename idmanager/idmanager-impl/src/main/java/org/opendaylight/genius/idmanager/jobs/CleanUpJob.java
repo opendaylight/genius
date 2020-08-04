@@ -20,9 +20,9 @@ import org.opendaylight.genius.idmanager.IdLocalPool;
 import org.opendaylight.genius.idmanager.IdManagerException;
 import org.opendaylight.genius.idmanager.IdUtils;
 import org.opendaylight.genius.idmanager.ReleasedIdHolder;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.id.pool.ReleasedIdsHolder;
@@ -33,7 +33,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class CleanUpJob implements Callable<List<? extends ListenableFuture<?>>> {
-
     private static final Logger LOG = LoggerFactory.getLogger(CleanUpJob.class);
 
     private final IdLocalPool idLocalPool;

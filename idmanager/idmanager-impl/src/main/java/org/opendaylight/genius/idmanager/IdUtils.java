@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.genius.idmanager;
 
 import com.google.common.net.InetAddresses;
@@ -23,8 +22,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.inject.Singleton;
 import org.opendaylight.genius.idmanager.ReleasedIdHolder.DelayedIdEntry;
-import org.opendaylight.genius.infra.Datastore.Configuration;
-import org.opendaylight.genius.infra.TypedWriteTransaction;
+import org.opendaylight.mdsal.binding.util.Datastore.Configuration;
+import org.opendaylight.mdsal.binding.util.TypedWriteTransaction;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.IdPools;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPool;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.idmanager.rev160406.id.pools.IdPoolBuilder;
@@ -56,7 +55,6 @@ import org.slf4j.LoggerFactory;
 
 @Singleton
 public class IdUtils {
-
     private static final Logger LOG = LoggerFactory.getLogger(IdUtils.class);
 
     public static final long DEFAULT_DELAY_TIME = 30;
