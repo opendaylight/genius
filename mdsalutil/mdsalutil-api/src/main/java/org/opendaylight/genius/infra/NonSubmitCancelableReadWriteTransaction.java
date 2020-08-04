@@ -15,7 +15,6 @@ import org.opendaylight.mdsal.common.api.CommitInfo;
  * ReadWriteTransaction which cannot be {@link ReadWriteTransaction#cancel()},
  * {@link ReadWriteTransaction#commit()} or {@link ReadWriteTransaction#submit()}.
  */
-@SuppressWarnings("deprecation")
 // intentionally package local, for now
 class NonSubmitCancelableReadWriteTransaction extends WriteTrackingReadWriteTransaction {
 
