@@ -42,7 +42,7 @@ import org.opendaylight.genius.mdsalutil.interfaces.ShardStatusMonitor;
 import org.opendaylight.genius.mdsalutil.interfaces.testutils.TestIMdsalApiManager;
 import org.opendaylight.genius.mdsalutil.testutils.TestShardStatusMonitor;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
-import org.opendaylight.genius.utils.hwvtep.HwvtepNodeHACache;
+import org.opendaylight.genius.utils.hwvtep.HwvtepHACache;
 import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Module;
 import org.opendaylight.mdsal.binding.api.DataBroker;
@@ -116,7 +116,7 @@ public class InterfaceManagerTestModule extends AbstractGuiceJsr250Module {
         bind(TerminationPointStateListener.class);
         bind(VlanMemberConfigListener.class);
         bind(InterfaceStateListener.class);
-        bind(HwvtepNodeHACache.class).toInstance(mock(HwvtepNodeHACache.class));
+        bind(HwvtepHACache.class).toInstance(mock(HwvtepHACache.class));
         bind(IfmConfig.class).toInstance(mock(IfmConfig.class));
         bind(CacheProvider.class).toInstance(mock(CacheProvider.class));
         bind(IfmDiagStatusProvider.class).toInstance(mock(IfmDiagStatusProvider.class));
