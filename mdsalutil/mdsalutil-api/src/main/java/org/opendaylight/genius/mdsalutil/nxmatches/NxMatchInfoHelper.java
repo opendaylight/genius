@@ -42,8 +42,8 @@ public abstract class NxMatchInfoHelper<T extends DataObject, B extends Builder<
     public void createInnerMatchBuilder(Map<Class<?>, Object> mapMatchBuilder) {
         populateBuilder((B) mapMatchBuilder.computeIfAbsent(builderClass, key -> {
             try {
-                return builderClass.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
+                return builderClass.getDeclaredConstructor().newInstance();
+            } catch (ReflectiveOperationException e) {
                 throw new IllegalStateException("Unable to create an instance of " + builderClass, e);
             }
         }));
