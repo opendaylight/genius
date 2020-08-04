@@ -7,7 +7,7 @@
  */
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.config.helpers;
 
-import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+import static org.opendaylight.mdsal.binding.util.Datastore.CONFIGURATION;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.List;
@@ -16,13 +16,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.genius.mdsalutil.MatchInfo;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -48,7 +48,7 @@ public class FlowBasedIngressServicesConfigUnbindHelper extends AbstractFlowBase
     }
 
     @Override
-    protected void unbindServiceOnInterface(List<ListenableFuture<Void>> futures, BoundServices boundServiceOld,
+    protected void unbindServiceOnInterface(List<ListenableFuture<?>> futures, BoundServices boundServiceOld,
                                             List<BoundServices> boundServices, BoundServicesState boundServicesState) {
         // Split based on type of interface....
         if (L2vlan.class.equals(boundServicesState.getInterfaceType())) {
@@ -58,7 +58,7 @@ public class FlowBasedIngressServicesConfigUnbindHelper extends AbstractFlowBase
         }
     }
 
-    private void unbindServiceOnVlan(List<ListenableFuture<Void>> futures, BoundServices boundServiceOld,
+    private void unbindServiceOnVlan(List<ListenableFuture<?>> futures, BoundServices boundServiceOld,
                                             List<BoundServices> boundServices, BoundServicesState boundServicesState) {
         LOG.info("unbinding ingress service {} for vlan port: {}", boundServiceOld.getServiceName(),
                 boundServicesState.getInterfaceName());
@@ -118,7 +118,7 @@ public class FlowBasedIngressServicesConfigUnbindHelper extends AbstractFlowBase
         }));
     }
 
-    private void unbindServiceOnTunnel(List<ListenableFuture<Void>> futures, BoundServices boundServiceOld,
+    private void unbindServiceOnTunnel(List<ListenableFuture<?>> futures, BoundServices boundServiceOld,
                                        List<BoundServices> boundServices, BoundServicesState boundServicesState) {
         futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
             Uint64 dpId = boundServicesState.getDpid();
@@ -164,7 +164,7 @@ public class FlowBasedIngressServicesConfigUnbindHelper extends AbstractFlowBase
     }
 
     @Override
-    protected void unbindServiceOnInterfaceType(List<ListenableFuture<Void>> futures, BoundServices boundServiceNew,
+    protected void unbindServiceOnInterfaceType(List<ListenableFuture<?>> futures, BoundServices boundServiceNew,
                                                 List<BoundServices> allServices) {
         LOG.info("unbindServiceOnInterfaceType Ingress - WIP");
     }

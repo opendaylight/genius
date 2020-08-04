@@ -7,18 +7,18 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.hwvtep.statehelpers;
 
-import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
-import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+import static org.opendaylight.mdsal.binding.util.Datastore.CONFIGURATION;
+import static org.opendaylight.mdsal.binding.util.Datastore.OPERATIONAL;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.utilities.SouthboundUtils;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.hwvtep.physical._switch.attributes.Tunnels;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.hwvtep.rev150901.hwvtep.physical._switch.attributes.TunnelsBuilder;
@@ -36,7 +36,7 @@ public final class HwVTEPInterfaceStateUpdateHelper {
     private HwVTEPInterfaceStateUpdateHelper() {
     }
 
-    public static List<ListenableFuture<Void>> updatePhysicalSwitch(ManagedNewTransactionRunner txRunner,
+    public static List<? extends ListenableFuture<?>> updatePhysicalSwitch(ManagedNewTransactionRunner txRunner,
             InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier, Tunnels tunnelsNew) {
         LOG.debug("updating physical switch for tunnels");
         return Collections.singletonList(txRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL, tx -> {
@@ -69,7 +69,7 @@ public final class HwVTEPInterfaceStateUpdateHelper {
         return livenessState;
     }
 
-    public static List<ListenableFuture<Void>> startBfdMonitoring(ManagedNewTransactionRunner txRunner,
+    public static List<? extends ListenableFuture<?>> startBfdMonitoring(ManagedNewTransactionRunner txRunner,
             InstanceIdentifier<Tunnels> tunnelsInstanceIdentifier, Tunnels tunnelsNew) {
         LOG.debug("starting bfd monitoring for the hwvtep {}", tunnelsInstanceIdentifier);
 

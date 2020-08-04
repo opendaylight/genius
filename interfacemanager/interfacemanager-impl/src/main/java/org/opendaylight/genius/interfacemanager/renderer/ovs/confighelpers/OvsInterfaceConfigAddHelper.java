@@ -7,8 +7,8 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers;
 
-import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
-import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+import static org.opendaylight.mdsal.binding.util.Datastore.CONFIGURATION;
+import static org.opendaylight.mdsal.binding.util.Datastore.OPERATIONAL;
 
 import com.google.common.base.Strings;
 import com.google.common.util.concurrent.FutureCallback;
@@ -24,11 +24,6 @@ import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
-import org.opendaylight.genius.infra.Datastore.Configuration;
-import org.opendaylight.genius.infra.Datastore.Operational;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
-import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
@@ -40,6 +35,11 @@ import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.util.Datastore.Configuration;
+import org.opendaylight.mdsal.binding.util.Datastore.Operational;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.mdsal.binding.util.TypedWriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.BridgeRefInfo;
@@ -95,8 +95,8 @@ public final class OvsInterfaceConfigAddHelper {
         this.eventCallbacks = eventCallbacks;
     }
 
-    public List<ListenableFuture<Void>> addConfiguration(ParentRefs parentRefs, Interface interfaceNew) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
+    public List<? extends ListenableFuture<?>> addConfiguration(ParentRefs parentRefs, Interface interfaceNew) {
+        List<ListenableFuture<?>> futures = new ArrayList<>();
         // TODO Disentangle the transactions
         futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, configTx -> {
             futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(OPERATIONAL, operTx -> {
@@ -113,7 +113,7 @@ public final class OvsInterfaceConfigAddHelper {
 
     private void addVlanConfiguration(Interface interfaceNew, ParentRefs parentRefs,
         TypedWriteTransaction<Configuration> confTx, TypedWriteTransaction<Operational> operTx,
-        List<ListenableFuture<Void>> futures) {
+        List<ListenableFuture<?>> futures) {
         IfL2vlan ifL2vlan = interfaceNew.augmentation(IfL2vlan.class);
         if (ifL2vlan == null || IfL2vlan.L2vlanMode.Trunk != ifL2vlan.getL2vlanMode()
                 && IfL2vlan.L2vlanMode.Transparent != ifL2vlan.getL2vlanMode()) {
@@ -133,7 +133,7 @@ public final class OvsInterfaceConfigAddHelper {
 
     private void addTunnelConfiguration(ParentRefs parentRefs, Interface interfaceNew, IfTunnel ifTunnel,
             TypedWriteTransaction<Configuration> confTx, TypedWriteTransaction<Operational> operTx,
-            List<ListenableFuture<Void>> futures) {
+            List<ListenableFuture<?>> futures) {
         if (parentRefs == null) {
             LOG.warn(
                     "ParentRefs for interface: {} Not Found. "
@@ -224,7 +224,7 @@ public final class OvsInterfaceConfigAddHelper {
         return groupId;
     }
 
-    private ListenableFuture<Void> addLogicalTunnelGroup(Interface itfNew, TypedWriteTransaction<Operational> operTx,
+    private ListenableFuture<?> addLogicalTunnelGroup(Interface itfNew, TypedWriteTransaction<Operational> operTx,
         TypedWriteTransaction<Configuration> confTx) {
         String ifaceName = itfNew.getName();
         LOG.debug("MULTIPLE_VxLAN_TUNNELS: adding Interface State for logic tunnel group {}", ifaceName);
@@ -243,7 +243,7 @@ public final class OvsInterfaceConfigAddHelper {
 
     private void setupTunnelFlowsAndMonitoring(Interface interfaceNew, TypedWriteTransaction<Configuration> confTx,
                                                IfTunnel ifTunnel, Uint64 dpId,
-                                               List<ListenableFuture<Void>> futures) {
+                                               List<ListenableFuture<?>> futures) {
         // if TEP is already configured on switch, start LLDP monitoring and
         // program tunnel ingress flow
         org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
@@ -255,13 +255,13 @@ public final class OvsInterfaceConfigAddHelper {
                 long portNo = IfmUtil.getPortNumberFromNodeConnectorId(ncId);
                 interfaceManagerCommonUtils.addTunnelIngressFlow(confTx, ifTunnel, dpId, portNo,
                         interfaceNew.getName(), ifState.getIfIndex());
-                ListenableFuture<Void> future =
+                ListenableFuture<?> future =
                         FlowBasedServicesUtils.bindDefaultEgressDispatcherService(txRunner, interfaceNew,
                                 Long.toString(portNo), interfaceNew.getName(), ifState.getIfIndex());
                 futures.add(future);
-                Futures.addCallback(future, new FutureCallback<Void>() {
+                Futures.addCallback(future, new FutureCallback<Object>() {
                     @Override
-                    public void onSuccess(@Nullable Void result) {
+                    public void onSuccess(@Nullable Object result) {
                         // start LLDP monitoring for the tunnel interface
                         alivenessMonitorUtils.startLLDPMonitoring(ifTunnel, interfaceNew.getName());
                     }

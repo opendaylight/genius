@@ -7,8 +7,8 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.ovs.statehelpers;
 
-import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
-import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+import static org.opendaylight.mdsal.binding.util.Datastore.CONFIGURATION;
+import static org.opendaylight.mdsal.binding.util.Datastore.OPERATIONAL;
 
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -19,15 +19,14 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
-import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.AlivenessMonitorUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.PhysAddress;
@@ -62,7 +61,7 @@ public final class OvsInterfaceStateAddHelper {
         this.alivenessMonitorUtils = alivenessMonitorUtils;
     }
 
-    public List<ListenableFuture<Void>> addState(String interfaceName, Interface parentInterface) {
+    public List<? extends ListenableFuture<?>> addState(String interfaceName, Interface parentInterface) {
         if (parentInterface.getLowerLayerIf() == null || parentInterface.getLowerLayerIf().isEmpty()) {
             LOG.trace("Cannot obtain lower layer if, not proceeding with Interface State addition for interface: {}",
                     interfaceName);
@@ -75,14 +74,14 @@ public final class OvsInterfaceStateAddHelper {
 
 
 
-    public List<ListenableFuture<Void>> addState(NodeConnectorId nodeConnectorId, String interfaceName,
+    public List<? extends ListenableFuture<?>> addState(NodeConnectorId nodeConnectorId, String interfaceName,
             FlowCapableNodeConnector fcNodeConnectorNew) {
         long portNo = IfmUtil.getPortNumberFromNodeConnectorId(nodeConnectorId);
         PhysAddress physAddress = IfmUtil.getPhyAddress(portNo, fcNodeConnectorNew);
         return addState(nodeConnectorId, interfaceName, portNo, physAddress);
     }
 
-    private List<ListenableFuture<Void>> addState(NodeConnectorId nodeConnectorId, String interfaceName,
+    private List<ListenableFuture<?>> addState(NodeConnectorId nodeConnectorId, String interfaceName,
             long portNo, PhysAddress physAddress) {
         LOG.info("Adding Interface State to Oper DS for interface: {}", interfaceName);
 
@@ -92,7 +91,7 @@ public final class OvsInterfaceStateAddHelper {
             return null;
         }
 
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
+        List<ListenableFuture<?>> futures = new ArrayList<>();
 
         Interface.OperStatus operStatus = Interface.OperStatus.Up;
         Interface.AdminStatus adminStatus = Interface.AdminStatus.Up;
@@ -136,22 +135,22 @@ public final class OvsInterfaceStateAddHelper {
         return futures;
     }
 
-    public void handleTunnelMonitoringAddition(List<ListenableFuture<Void>> futures, NodeConnectorId nodeConnectorId,
+    public void handleTunnelMonitoringAddition(List<ListenableFuture<?>> futures, NodeConnectorId nodeConnectorId,
             Integer ifIndex,
             org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang
                     .ietf.interfaces.rev140508.interfaces.Interface interfaceInfo, String interfaceName, long portNo) {
         EVENT_LOGGER.debug("IFM-OvsInterfaceState,ADD,TunnelIngressFlow {}", interfaceName);
         Uint64 dpId = IfmUtil.getDpnFromNodeConnectorId(nodeConnectorId);
-        ListenableFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
+        ListenableFuture<?> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
             interfaceManagerCommonUtils.addTunnelIngressFlow(
                 tx, interfaceInfo.augmentation(IfTunnel.class), dpId, portNo, interfaceName, ifIndex);
             FlowBasedServicesUtils.bindDefaultEgressDispatcherService(tx, interfaceInfo,
                 Long.toString(portNo), interfaceName, ifIndex);
         });
         futures.add(future);
-        Futures.addCallback(future, new FutureCallback<Void>() {
+        Futures.addCallback(future, new FutureCallback<Object>() {
             @Override
-            public void onSuccess(@Nullable Void result) {
+            public void onSuccess(Object result) {
                 alivenessMonitorUtils.startLLDPMonitoring(interfaceInfo.augmentation(IfTunnel.class), interfaceName);
             }
 

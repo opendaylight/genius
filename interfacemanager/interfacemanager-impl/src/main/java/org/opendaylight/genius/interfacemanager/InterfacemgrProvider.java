@@ -7,7 +7,7 @@
  */
 package org.opendaylight.genius.interfacemanager;
 
-import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+import static org.opendaylight.mdsal.binding.util.Datastore.CONFIGURATION;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
@@ -25,10 +25,6 @@ import org.apache.aries.blueprint.annotation.service.Reference;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.genius.datastoreutils.ExpectedDataObjectNotFoundException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
-import org.opendaylight.genius.infra.Datastore.Configuration;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
-import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.diagstatus.IfmDiagStatusProvider;
@@ -45,6 +41,10 @@ import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.infrautils.utils.concurrent.LoggingFutures;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.binding.util.Datastore.Configuration;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.mdsal.binding.util.TypedWriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.eos.binding.api.Entity;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipCandidateRegistration;
@@ -388,7 +388,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     }
 
     @Override
-    public ListenableFuture<Void> createVLANInterface(String interfaceName, String portName, Integer vlanId,
+    public ListenableFuture<?> createVLANInterface(String interfaceName, String portName, Integer vlanId,
             String description, IfL2vlan.L2vlanMode l2vlanMode) throws InterfaceAlreadyExistsException {
         return createVLANInterface(interfaceName, portName, vlanId, description, l2vlanMode, false);
     }
@@ -401,7 +401,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     }
 
     @Override
-    public ListenableFuture<Void> createVLANInterface(String interfaceName, String portName, Integer vlanId,
+    public ListenableFuture<?> createVLANInterface(String interfaceName, String portName, Integer vlanId,
                                                       String description, IfL2vlan.L2vlanMode l2vlanMode,
                                                       boolean isExternal)
             throws InterfaceAlreadyExistsException {
@@ -426,10 +426,9 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         }
         InstanceIdentifier<Interface> interfaceIId = InterfaceManagerCommonUtils
                 .getInterfaceIdentifier(new InterfaceKey(interfaceName));
-        ListenableFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
-            tx -> tx.mergeParentStructurePut(interfaceIId, interfaceBuilder.build()));
-        LoggingFutures.addErrorLogging(future, LOG, "Failed to (async) write {}", interfaceIId);
-        return future;
+        return LoggingFutures.addErrorLogging(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
+            tx -> tx.mergeParentStructurePut(interfaceIId, interfaceBuilder.build())),
+            LOG, "Failed to (async) write {}", interfaceIId);
     }
 
     private boolean isServiceBoundOnInterface(short servicePriority, String interfaceName,
@@ -776,7 +775,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() {
+        public List<? extends ListenableFuture<?>> call() {
             if (readInterfaceBeforeWrite) {
                 Interface iface = interfaceManagerCommonUtils.getInterfaceFromConfigDS(interfaceName);
                 if (iface == null) {

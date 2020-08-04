@@ -7,8 +7,8 @@
  */
 package org.opendaylight.genius.interfacemanager.listeners;
 
-import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
-import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+import static org.opendaylight.mdsal.binding.util.Datastore.CONFIGURATION;
+import static org.opendaylight.mdsal.binding.util.Datastore.OPERATIONAL;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -25,10 +25,6 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.opendaylight.genius.infra.Datastore.Configuration;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
-import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
@@ -42,8 +38,12 @@ import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilit
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.infrautils.utils.concurrent.Executors;
-import org.opendaylight.infrautils.utils.function.InterruptibleCheckedConsumer;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.util.Datastore.Configuration;
+import org.opendaylight.mdsal.binding.util.InterruptibleCheckedConsumer;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.mdsal.binding.util.TypedReadWriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.serviceutils.srm.RecoverableListener;
 import org.opendaylight.serviceutils.srm.ServiceRecoveryRegistry;
@@ -304,7 +304,7 @@ public class InterfaceInventoryStateListener
 
         @Override
         public Object call() {
-            List<ListenableFuture<Void>> futures = ovsInterfaceStateAddHelper.addState(nodeConnectorId,
+            List<? extends ListenableFuture<?>> futures = ovsInterfaceStateAddHelper.addState(nodeConnectorId,
                     interfaceName, fcNodeConnectorNew);
             Map<InterfaceChildEntryKey, InterfaceChildEntry> interfaceChildEntries =
                     getInterfaceChildEntries(interfaceName);
@@ -340,8 +340,8 @@ public class InterfaceInventoryStateListener
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() {
-            List<ListenableFuture<Void>> futures = ovsInterfaceStateUpdateHelper.updateState(
+        public List<? extends ListenableFuture<?>> call() {
+            List<? extends ListenableFuture<?>> futures = ovsInterfaceStateUpdateHelper.updateState(
                     interfaceName, fcNodeConnectorNew, fcNodeConnectorOld);
             Map<InterfaceChildEntryKey, InterfaceChildEntry> interfaceChildEntries =
                     getInterfaceChildEntries(interfaceName);
@@ -384,7 +384,7 @@ public class InterfaceInventoryStateListener
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() {
+        public List<? extends ListenableFuture<?>> call() {
             // VM Migration: Skip OFPPR_DELETE event received after OFPPR_ADD
             // for same interface from Older DPN
             if (isParentInterface && isNetworkEvent) {
@@ -397,7 +397,7 @@ public class InterfaceInventoryStateListener
                 }
             }
 
-            List<ListenableFuture<Void>> futures = removeInterfaceStateConfiguration();
+            List<? extends ListenableFuture<?>> futures = removeInterfaceStateConfiguration();
 
             Map<InterfaceChildEntryKey, InterfaceChildEntry> interfaceChildEntries =
                     getInterfaceChildEntries(interfaceName);
@@ -412,8 +412,8 @@ public class InterfaceInventoryStateListener
             return futures;
         }
 
-        private List<ListenableFuture<Void>> removeInterfaceStateConfiguration() {
-            List<ListenableFuture<Void>> futures = new ArrayList<>();
+        private List<? extends ListenableFuture<?>> removeInterfaceStateConfiguration() {
+            List<ListenableFuture<?>> futures = new ArrayList<>();
 
             //VM Migration: Use old nodeConnectorId to delete the interface entry
             NodeConnectorId nodeConnectorId = nodeConnectorIdOld != null

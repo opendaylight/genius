@@ -7,17 +7,17 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.hwvtep.confighelpers;
 
-import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
-import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+import static org.opendaylight.mdsal.binding.util.Datastore.CONFIGURATION;
+import static org.opendaylight.mdsal.binding.util.Datastore.OPERATIONAL;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
-import org.opendaylight.genius.infra.Datastore.Configuration;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.renderer.hwvtep.utilities.SouthboundUtils;
+import org.opendaylight.mdsal.binding.util.Datastore.Configuration;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.TypedWriteTransaction;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
@@ -39,13 +39,13 @@ public final class HwVTEPInterfaceConfigAddHelper {
 
     }
 
-    public static List<ListenableFuture<Void>> addConfiguration(ManagedNewTransactionRunner txRunner,
+    public static List<? extends ListenableFuture<?>> addConfiguration(ManagedNewTransactionRunner txRunner,
             InstanceIdentifier<Node> physicalSwitchNodeId, InstanceIdentifier<Node> globalNodeId,
             Interface interfaceNew, IfTunnel ifTunnel) {
         LOG.info("adding hwvtep configuration for {}", interfaceNew.getName());
 
         // create hwvtep through ovsdb plugin
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
+        List<ListenableFuture<?>> futures = new ArrayList<>();
         // Topology config shard
         if (globalNodeId != null) {
             futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,

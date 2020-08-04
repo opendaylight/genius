@@ -11,12 +11,12 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import org.opendaylight.genius.infra.Datastore.Configuration;
-import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.exceptions.InterfaceAlreadyExistsException;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
+import org.opendaylight.mdsal.binding.util.Datastore.Configuration;
+import org.opendaylight.mdsal.binding.util.TypedWriteTransaction;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
@@ -87,9 +87,8 @@ public interface IInterfaceManager {
     void createVLANInterface(String interfaceName, String portName, Uint64 dpId, Integer vlanId, String description,
             IfL2vlan.L2vlanMode l2vlanMode) throws InterfaceAlreadyExistsException;
 
-    ListenableFuture<Void> createVLANInterface(String interfaceName, String portName, Integer vlanId,
-                                               String description,
-                                               IfL2vlan.L2vlanMode l2vlanMode) throws InterfaceAlreadyExistsException;
+    ListenableFuture<? extends Object> createVLANInterface(String interfaceName, String portName, Integer vlanId,
+            String description, IfL2vlan.L2vlanMode l2vlanMode) throws InterfaceAlreadyExistsException;
 
     /**
      * Create a VLAN interface.
@@ -100,9 +99,9 @@ public interface IInterfaceManager {
     void createVLANInterface(String interfaceName, String portName, Uint64 dpId, Integer vlanId, String description,
             IfL2vlan.L2vlanMode l2vlanMode, boolean isExternal) throws InterfaceAlreadyExistsException;
 
-    ListenableFuture<Void> createVLANInterface(String interfaceName, String portName, Integer vlanId,
-                                               String description, IfL2vlan.L2vlanMode l2vlanMode,
-                                               boolean isExternal) throws InterfaceAlreadyExistsException;
+    ListenableFuture<? extends Object> createVLANInterface(String interfaceName, String portName, Integer vlanId,
+            String description, IfL2vlan.L2vlanMode l2vlanMode, boolean isExternal)
+                    throws InterfaceAlreadyExistsException;
 
     boolean isServiceBoundOnInterfaceForIngress(short servicePriority, String interfaceName);
 
