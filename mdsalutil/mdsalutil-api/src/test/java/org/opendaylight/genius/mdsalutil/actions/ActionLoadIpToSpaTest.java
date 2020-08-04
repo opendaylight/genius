@@ -28,14 +28,14 @@ import org.opendaylight.yangtools.yang.common.Uint64;
 public class ActionLoadIpToSpaTest {
     private static final String IP_ADDRESS = "1.2.3.4";
 
-    private XtendBeanGenerator generator = new XtendBeanGenerator();
+    private final XtendBeanGenerator generator = new XtendBeanGenerator();
 
     @Test
     public void actionInfoTest() {
         verifyAction(new ActionLoadIpToSpa(IP_ADDRESS).buildAction());
     }
 
-    private void verifyAction(Action action) {
+    private static void verifyAction(Action action) {
         assertTrue(action.getAction() instanceof NxActionRegLoadNodesNodeTableFlowApplyActionsCase);
         NxActionRegLoadNodesNodeTableFlowApplyActionsCase actionCase =
             (NxActionRegLoadNodesNodeTableFlowApplyActionsCase) action.getAction();

@@ -24,14 +24,14 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.acti
 public class ActionSetFieldEthernetDestinationTest {
     private static final String MAC_ADDRESS = "11:22:33:44:55:66";
 
-    private XtendBeanGenerator generator = new XtendBeanGenerator();
+    private final XtendBeanGenerator generator = new XtendBeanGenerator();
 
     @Test
     public void actionInfoTest() {
         verifyAction(new ActionSetFieldEthernetDestination(new MacAddress(MAC_ADDRESS)).buildAction());
     }
 
-    private void verifyAction(Action action) {
+    private static void verifyAction(Action action) {
         assertTrue(action.getAction() instanceof SetFieldCase);
         SetFieldCase actionCase = (SetFieldCase) action.getAction();
         assertNotNull(actionCase.getSetField().getEthernetMatch());
@@ -44,7 +44,7 @@ public class ActionSetFieldEthernetDestinationTest {
     public void generateAction() {
         ActionInfo actionInfo = new ActionSetFieldEthernetDestination(new MacAddress(MAC_ADDRESS));
         actionInfo.buildAction();
-        assertEquals(("MacAddress{_value=" + MAC_ADDRESS + "}"),
+        assertEquals("MacAddress{_value=" + MAC_ADDRESS + "}",
                 ((ActionSetFieldEthernetDestination) actionInfo).getDestination().toString());
     }
 }

@@ -435,7 +435,7 @@ public class IPv4 extends Packet {
      * in IPv4 Header.
      * @return short
      */
-    private short generateId() {
+    private static short generateId() {
         Random randomgen = new Random();
         return (short) randomgen.nextInt(Short.MAX_VALUE + 1);
     }

@@ -24,14 +24,14 @@ import org.opendaylight.yangtools.yang.common.Empty;
  * Test class for {@link ActionMoveSourceDestinationIp}.
  */
 public class ActionMoveSourceDestinationIpTest {
-    private XtendBeanGenerator generator = new XtendBeanGenerator();
+    private final XtendBeanGenerator generator = new XtendBeanGenerator();
 
     @Test
     public void actionInfoTest() {
         verifyAction(new ActionMoveSourceDestinationIp().buildAction());
     }
 
-    private void verifyAction(Action action) {
+    private static void verifyAction(Action action) {
         assertTrue(action.getAction() instanceof NxActionRegMoveNodesNodeTableFlowApplyActionsCase);
         NxActionRegMoveNodesNodeTableFlowApplyActionsCase actionCase =
             (NxActionRegMoveNodesNodeTableFlowApplyActionsCase) action.getAction();

@@ -65,7 +65,7 @@ public abstract class NxMatchInfoHelper<T extends DataObject, B extends Builder<
         }
     }
 
-    private GeneralAugMatchNodesNodeTableFlow generalAugMatchBuilder(
+    private static GeneralAugMatchNodesNodeTableFlow generalAugMatchBuilder(
             GeneralAugMatchNodesNodeTableFlow existingAugmentations, NxAugMatchNodesNodeTableFlow nxAugMatch,
             Class<? extends ExtensionKey> extentionKey) {
 

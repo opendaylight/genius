@@ -170,7 +170,7 @@ public abstract class TestIMdsalApiManager implements IMdsalApiManager {
         }
     }
 
-    private List<FlowEntity> sortFlows(Iterable<FlowEntity> flowsToSort) {
+    private static List<FlowEntity> sortFlows(Iterable<FlowEntity> flowsToSort) {
         List<FlowEntity> sortedFlows = Lists.newArrayList(flowsToSort);
         sortedFlows.sort((flow1, flow2) -> ComparisonChain.start()
                 .compare(flow1.getTableId(), flow2.getTableId())

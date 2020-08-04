@@ -24,14 +24,14 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026
 public class ActionSetTcpDestinationPortTest {
     private static final int PORT = 22;
 
-    private XtendBeanGenerator generator = new XtendBeanGenerator();
+    private final XtendBeanGenerator generator = new XtendBeanGenerator();
 
     @Test
     public void actionInfoTest() {
         verifyAction(new ActionSetTcpDestinationPort(PORT).buildAction());
     }
 
-    private void verifyAction(Action action) {
+    private static void verifyAction(Action action) {
         assertTrue(action.getAction() instanceof SetFieldCase);
         SetFieldCase actionCase = (SetFieldCase) action.getAction();
         assertNotNull(actionCase.getSetField().getLayer4Match());

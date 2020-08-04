@@ -41,7 +41,7 @@ public class ActionLearnTest {
     private static final int FIN_IDLE_TIMEOUT = 8;
     private static final int FIN_HARD_TIMEOUT = 9;
 
-    private void verifyAction(Action action) {
+    private static void verifyAction(Action action) {
         assertTrue(action.getAction() instanceof NxActionLearnNodesNodeTableFlowApplyActionsCase);
         NxActionLearnNodesNodeTableFlowApplyActionsCase nxAction =
             (NxActionLearnNodesNodeTableFlowApplyActionsCase) action.getAction();
@@ -118,7 +118,7 @@ public class ActionLearnTest {
         verifyAction(buildActionLearn().buildAction());
     }
 
-    private ActionLearn buildActionLearn() {
+    private static ActionLearn buildActionLearn() {
         return new ActionLearn(IDLE_TIMEOUT, HARD_TIMEOUT, PRIORITY, COOKIE, FLAGS, TABLE_ID, FIN_IDLE_TIMEOUT,
             FIN_HARD_TIMEOUT,
             Arrays.asList(
