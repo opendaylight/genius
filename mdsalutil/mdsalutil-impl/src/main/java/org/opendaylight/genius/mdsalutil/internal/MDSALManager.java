@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.genius.mdsalutil.internal;
 
 import static org.opendaylight.infrautils.utils.concurrent.Executors.newListeningSingleThreadExecutor;
@@ -26,12 +25,6 @@ import java.util.concurrent.ExecutorService;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
-import org.opendaylight.genius.infra.Datastore;
-import org.opendaylight.genius.infra.Datastore.Configuration;
-import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.TypedReadTransaction;
-import org.opendaylight.genius.infra.TypedReadWriteTransaction;
-import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.FlowInfoKey;
 import org.opendaylight.genius.mdsalutil.GroupEntity;
@@ -44,6 +37,12 @@ import org.opendaylight.infrautils.utils.concurrent.NamedLocks;
 import org.opendaylight.infrautils.utils.concurrent.NamedSimpleReentrantLock.Acquired;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.binding.util.Datastore;
+import org.opendaylight.mdsal.binding.util.Datastore.Configuration;
+import org.opendaylight.mdsal.binding.util.RetryingManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.TypedReadTransaction;
+import org.opendaylight.mdsal.binding.util.TypedReadWriteTransaction;
+import org.opendaylight.mdsal.binding.util.TypedWriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.OptimisticLockFailedException;
 import org.opendaylight.serviceutils.tools.listener.AbstractClusteredAsyncDataTreeChangeListener;
@@ -192,13 +191,13 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     }
 
     @VisibleForTesting
-    FluentFuture<Void> installFlowInternal(FlowEntity flowEntity) {
+    FluentFuture<?> installFlowInternal(FlowEntity flowEntity) {
         return addCallBackForInstallFlowAndReturn(txRunner
             .callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
                 tx -> writeFlowEntityInternal(flowEntity, tx)));
     }
 
-    private FluentFuture<Void> installFlowInternal(Uint64 dpId, Flow flow) {
+    private FluentFuture<?> installFlowInternal(Uint64 dpId, Flow flow) {
         return txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
             tx -> writeFlowInternal(dpId, flow, tx));
     }
@@ -221,7 +220,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     }
 
     @VisibleForTesting
-    FluentFuture<Void> installGroupInternal(GroupEntity groupEntity) {
+    FluentFuture<?> installGroupInternal(GroupEntity groupEntity) {
         return addCallBackForInstallGroupAndReturn(txRunner
             .callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
                 tx -> writeGroupEntityInternal(groupEntity, tx)));
@@ -236,7 +235,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     }
 
     @VisibleForTesting
-    FluentFuture<Void> removeFlowInternal(FlowEntity flowEntity) {
+    FluentFuture<?> removeFlowInternal(FlowEntity flowEntity) {
         return addCallBackForDeleteFlowAndReturn(txRunner
                 .callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
                     tx -> deleteFlowEntityInternal(flowEntity, tx)));
@@ -268,7 +267,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         }
     }
 
-    private FluentFuture<Void> removeFlowNewInternal(Uint64 dpnId, Flow flowEntity) {
+    private FluentFuture<?> removeFlowNewInternal(Uint64 dpnId, Flow flowEntity) {
         LOG.debug("Remove flow {}", flowEntity);
         return txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
             tx -> {
@@ -279,7 +278,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     }
 
     @VisibleForTesting
-    FluentFuture<Void> removeGroupInternal(Uint64 dpnId, long groupId) {
+    FluentFuture<?> removeGroupInternal(Uint64 dpnId, long groupId) {
         return addCallBackForInstallGroupAndReturn(txRunner
             .callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
                 tx -> removeGroupInternal(dpnId, groupId, tx)));
@@ -457,28 +456,28 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     }
 
     @Override
-    public FluentFuture<Void> installFlow(FlowEntity flowEntity) {
+    public FluentFuture<?> installFlow(FlowEntity flowEntity) {
         return installFlowInternal(flowEntity);
     }
 
     @Override
-    public FluentFuture<Void> installFlow(Uint64 dpId, Flow flowEntity) {
+    public FluentFuture<?> installFlow(Uint64 dpId, Flow flowEntity) {
         return installFlowInternal(dpId, flowEntity);
     }
 
     @Override
-    public FluentFuture<Void> installFlow(Uint64 dpId, FlowEntity flowEntity) {
+    public FluentFuture<?> installFlow(Uint64 dpId, FlowEntity flowEntity) {
         return installFlowInternal(dpId, flowEntity.getFlowBuilder().build());
     }
 
     @Override
-    public ListenableFuture<Void> removeFlow(Uint64 dpId, short tableId, FlowId flowId) {
-        ListenableFuture<Void> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(
+    public ListenableFuture<?> removeFlow(Uint64 dpId, short tableId, FlowId flowId) {
+        ListenableFuture<?> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
             tx -> deleteFlow(dpId, tableId, new FlowKey(flowId), tx));
 
-        Futures.addCallback(future, new FutureCallback<Void>() {
+        Futures.addCallback(future, new FutureCallback<Object>() {
             @Override
-            public void onSuccess(final Void result) {
+            public void onSuccess(final Object result) {
                 // Committed successfully
                 LOG.debug("Delete Flow -- Committed successfully");
             }
@@ -502,12 +501,12 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     }
 
     @Override
-    public FluentFuture<Void> removeFlow(Uint64 dpId, Flow flowEntity) {
+    public FluentFuture<?> removeFlow(Uint64 dpId, Flow flowEntity) {
         return removeFlowNewInternal(dpId, flowEntity);
     }
 
     @Override
-    public FluentFuture<Void> removeFlow(FlowEntity flowEntity) {
+    public FluentFuture<?> removeFlow(FlowEntity flowEntity) {
         return removeFlowInternal(flowEntity);
     }
 
@@ -702,23 +701,23 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
         return bucketInstanceId;
     }
 
-    private static FluentFuture<Void> addCallBackForDeleteFlowAndReturn(FluentFuture<Void> fluentFuture) {
+    private static FluentFuture<?> addCallBackForDeleteFlowAndReturn(FluentFuture<?> fluentFuture) {
         return callBack(fluentFuture, "Delete Flow");
     }
 
-    private static FluentFuture<Void> addCallBackForInstallFlowAndReturn(FluentFuture<Void> fluentFuture) {
+    private static FluentFuture<?> addCallBackForInstallFlowAndReturn(FluentFuture<?> fluentFuture) {
         return callBack(fluentFuture, "Install Flow");
     }
 
-    private static FluentFuture<Void> addCallBackForInstallGroupAndReturn(FluentFuture<Void> fluentFuture) {
+    private static FluentFuture<?> addCallBackForInstallGroupAndReturn(FluentFuture<?> fluentFuture) {
         return callBack(fluentFuture, "Install Group");
     }
 
     // Generic for handling callbacks
-    private static FluentFuture<Void> callBack(FluentFuture<Void> fluentFuture, String log) {
-        fluentFuture.addCallback(new FutureCallback<Void>() {
+    private static FluentFuture<?> callBack(FluentFuture<?> fluentFuture, String log) {
+        fluentFuture.addCallback(new FutureCallback<Object>() {
             @Override
-            public void onSuccess(final Void result) {
+            public void onSuccess(final Object result) {
                 // Committed successfully
                 LOG.debug("{} -- Committedsuccessfully ", log);
             }

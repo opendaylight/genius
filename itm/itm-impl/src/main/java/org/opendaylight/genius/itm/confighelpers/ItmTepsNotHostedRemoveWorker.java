@@ -11,9 +11,9 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
-import org.opendaylight.genius.infra.Datastore;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.util.Datastore;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
@@ -39,7 +39,7 @@ public class ItmTepsNotHostedRemoveWorker implements Callable<List<? extends Lis
     }
 
     @Override
-    public List<ListenableFuture<Void>> call() throws Exception {
+    public List<? extends ListenableFuture<?>> call() throws Exception {
         LOG.trace("Remove TEP from TepsNotHosted list task is picked from DataStoreJobCoordinator for execution.");
 
         // Remove TEP from TepsNotHosted list.
