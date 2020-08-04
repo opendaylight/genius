@@ -16,8 +16,8 @@ import org.opendaylight.yangtools.yang.common.Uint64;
 
 public interface FlowBasedServicesStateAddable {
 
-    void bindServices(List<ListenableFuture<Void>> futures, Interface ifaceState, List<BoundServices> allServices,
+    void bindServices(List<ListenableFuture<?>> futures, Interface ifaceState, List<BoundServices> allServices,
                       Class<? extends ServiceModeBase> serviceMode);
 
-    void bindServicesOnInterfaceType(List<ListenableFuture<Void>> futures, Uint64 dpnId, String ifaceName);
+    void bindServicesOnInterfaceType(List<ListenableFuture<?>> futures, Uint64 dpnId, String ifaceName);
 }

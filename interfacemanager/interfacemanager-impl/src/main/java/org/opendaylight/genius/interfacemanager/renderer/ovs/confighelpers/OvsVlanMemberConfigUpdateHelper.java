@@ -7,7 +7,7 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers;
 
-import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+import static org.opendaylight.mdsal.binding.util.Datastore.OPERATIONAL;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
@@ -16,12 +16,12 @@ import java.util.Objects;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface.OperStatus;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceBuilder;
@@ -59,13 +59,13 @@ public class OvsVlanMemberConfigUpdateHelper {
         this.interfaceMetaUtils = interfaceMetaUtils;
     }
 
-    public List<ListenableFuture<Void>> updateConfiguration(ParentRefs parentRefsNew, Interface interfaceOld,
+    public List<? extends ListenableFuture<?>> updateConfiguration(ParentRefs parentRefsNew, Interface interfaceOld,
             IfL2vlan ifL2vlanNew, Interface interfaceNew) {
         LOG.info("updating interface configuration for vlan memeber {} with parent-interface {}", interfaceNew
             .getName(), parentRefsNew.getParentInterface());
         EVENT_LOGGER.debug("IFM-OVSVlanMemberConfig,UPDATE Parent {},Child {}", parentRefsNew.getParentInterface(),
                 interfaceNew.getName());
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
+        List<ListenableFuture<?>> futures = new ArrayList<>();
         ParentRefs parentRefsOld = interfaceOld.augmentation(ParentRefs.class);
 
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(
