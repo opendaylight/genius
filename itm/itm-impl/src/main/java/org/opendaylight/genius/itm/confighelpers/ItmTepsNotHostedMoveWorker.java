@@ -11,8 +11,8 @@ import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
-import org.opendaylight.genius.infra.Datastore;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.Datastore;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.Vteps;
 import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
@@ -33,7 +33,7 @@ public class ItmTepsNotHostedMoveWorker implements Callable<List<? extends Liste
     }
 
     @Override
-    public List<ListenableFuture<Void>> call() throws Exception {
+    public List<? extends ListenableFuture<?>> call() throws Exception {
         LOG.trace("Move TEP from TepsNotHosted list to NBI configured TZ task is picked from "
                 + "DataStoreJobCoordinator for execution.");
 
