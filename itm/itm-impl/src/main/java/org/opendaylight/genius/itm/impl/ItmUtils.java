@@ -187,68 +187,6 @@ public final class ItmUtils {
         }
     }
 
-
-    /**
-     * Asynchronous non-blocking write to data store.
-     *
-     * @deprecated Use {@link ManagedNewTransactionRunner} instead of this.
-     */
-    /*@Deprecated
-    public static <T extends DataObject> void asyncWrite(LogicalDatastoreType datastoreType,
-                                                         InstanceIdentifier<T> path, T data, DataBroker broker,
-                                                         FutureCallback<Void> callback) {
-        WriteTransaction tx = broker.newWriteOnlyTransaction();
-        tx.put(datastoreType, path, data, true);
-        Futures.addCallback(tx.commit(),callback, MoreExecutors.directExecutor());
-    }*/
-
-    /**
-     * Asynchronous non-blocking update to data store.
-     *
-     * @deprecated Use {@link ManagedNewTransactionRunner} instead of this.
-     */
-    /*@Deprecated
-    public static <T extends DataObject> void asyncUpdate(LogicalDatastoreType datastoreType,
-                                                          InstanceIdentifier<T> path, T data, DataBroker broker,
-                                                          FutureCallback<Void> callback) {
-        WriteTransaction tx = broker.newWriteOnlyTransaction();
-        tx.merge(datastoreType, path, data, true);
-        Futures.addCallback(tx.commit(), callback, MoreExecutors.directExecutor());
-    }*/
-
-    /**
-     * Asynchronous non-blocking single delete to data store.
-     *
-     * @deprecated Use {@link ManagedNewTransactionRunner} instead of this.
-     */
-    /*@Deprecated
-    public static <T extends DataObject> void asyncDelete(LogicalDatastoreType datastoreType,
-                                                          InstanceIdentifier<T> path, DataBroker broker,
-                                                          FutureCallback<Void> callback) {
-        WriteTransaction tx = broker.newWriteOnlyTransaction();
-        tx.delete(datastoreType, path);
-        Futures.addCallback(tx.commit(), callback, MoreExecutors.directExecutor());
-    }*/
-
-    /**
-     * Asynchronous non-blocking bulk delete to data store.
-     *
-     * @deprecated Use {@link org.opendaylight.genius.infra.ManagedNewTransactionRunner} instead of this.
-     */
-    /*@Deprecated
-    public static <T extends DataObject> void asyncBulkRemove(final DataBroker broker,
-                                                              final LogicalDatastoreType datastoreType,
-                                                              List<InstanceIdentifier<T>> pathList,
-                                                              FutureCallback<Void> callback) {
-        if (!pathList.isEmpty()) {
-            WriteTransaction tx = broker.newWriteOnlyTransaction();
-            for (InstanceIdentifier<T> path : pathList) {
-                tx.delete(datastoreType, path);
-            }
-            Futures.addCallback(tx.commit(), callback ,MoreExecutors.directExecutor());
-        }
-    }*/
-
     //ITM cleanup:portname and vlanId are removed, causes change in generated
     //interface name: This has upgrade impact
     public static String getInterfaceName(final Uint64 datapathid, final String portName, final Integer vlanId) {
