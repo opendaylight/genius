@@ -98,8 +98,8 @@ public class FlowBasedServicesNodeStateListener extends AbstractSyncDataTreeChan
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() {
-            final List<ListenableFuture<Void>> futures = new ArrayList<>();
+        public List<? extends ListenableFuture<?>> call() {
+            final List<ListenableFuture<?>> futures = new ArrayList<>();
             flowBasedServicesStateAddable.bindServicesOnInterfaceType(futures, dpnId, iface);
             return futures;
         }

@@ -7,8 +7,8 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.ovs.confighelpers;
 
-import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
-import static org.opendaylight.genius.infra.Datastore.OPERATIONAL;
+import static org.opendaylight.mdsal.binding.util.Datastore.CONFIGURATION;
+import static org.opendaylight.mdsal.binding.util.Datastore.OPERATIONAL;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
@@ -18,13 +18,13 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.IfmUtil;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceManagerCommonUtils;
 import org.opendaylight.genius.interfacemanager.commons.InterfaceMetaUtils;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntryKey;
@@ -52,7 +52,7 @@ public class OvsVlanMemberConfigRemoveHelper {
         this.interfaceMetaUtils = interfaceMetaUtils;
     }
 
-    public List<ListenableFuture<Void>> removeConfiguration(ParentRefs parentRefs, Interface interfaceOld) {
+    public List<? extends ListenableFuture<?>> removeConfiguration(ParentRefs parentRefs, Interface interfaceOld) {
         LOG.debug("remove vlan member configuration {}", interfaceOld.getName());
 
         InterfaceParentEntryKey interfaceParentEntryKey = new InterfaceParentEntryKey(parentRefs.getParentInterface());
@@ -66,7 +66,7 @@ public class OvsVlanMemberConfigRemoveHelper {
         }
 
         return txRunner.applyWithNewTransactionChainAndClose(txChain -> {
-            List<ListenableFuture<Void>> futures = new ArrayList<>();
+            List<ListenableFuture<?>> futures = new ArrayList<>();
 
             // Configuration changes
             futures.add(txChain.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {

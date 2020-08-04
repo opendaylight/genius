@@ -16,7 +16,6 @@ import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorCountedEve
 import org.opendaylight.genius.datastoreutils.testutils.TestableDataTreeChangeListener;
 import org.opendaylight.genius.datastoreutils.testutils.TestableJobCoordinatorCountedEventsWaiter;
 import org.opendaylight.genius.idmanager.IdManager;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
 import org.opendaylight.genius.interfacemanager.InterfacemgrProvider;
 import org.opendaylight.genius.interfacemanager.diagstatus.IfmDiagStatusProvider;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
@@ -48,6 +47,7 @@ import org.opendaylight.infrautils.inject.guice.testutils.AbstractGuiceJsr250Mod
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.dom.adapter.ConstantAdapterContext;
 import org.opendaylight.mdsal.binding.testutils.DataBrokerTestModule;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
 import org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService;
 import org.opendaylight.mdsal.eos.binding.dom.adapter.BindingDOMEntityOwnershipServiceAdapter;
 import org.opendaylight.mdsal.eos.dom.simple.SimpleDOMEntityOwnershipService;

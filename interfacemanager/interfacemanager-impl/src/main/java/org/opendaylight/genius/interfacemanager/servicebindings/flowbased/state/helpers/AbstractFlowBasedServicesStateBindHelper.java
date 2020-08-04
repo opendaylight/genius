@@ -7,16 +7,16 @@
  */
 package org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.helpers;
 
-import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+import static org.opendaylight.mdsal.binding.util.Datastore.CONFIGURATION;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.List;
-import org.opendaylight.genius.infra.Datastore.Configuration;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
-import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateAddable;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.util.Datastore.Configuration;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.mdsal.binding.util.TypedReadWriteTransaction;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.L2vlan;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.Interface;
@@ -55,7 +55,7 @@ public abstract class AbstractFlowBasedServicesStateBindHelper implements FlowBa
 
 
     @Override
-    public final void bindServices(List<ListenableFuture<Void>> futures, Interface ifaceState,
+    public final void bindServices(List<ListenableFuture<?>> futures, Interface ifaceState,
                                    List<BoundServices> allServices, Class<? extends ServiceModeBase> serviceMode) {
         futures.add(txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION, tx -> {
             if (L2vlan.class.equals(ifaceState.getType()) || Tunnel.class.equals(ifaceState.getType())) {
@@ -69,7 +69,7 @@ public abstract class AbstractFlowBasedServicesStateBindHelper implements FlowBa
                                                     List<BoundServices> allServices, Interface ifState);
 
     @Override
-    public abstract void bindServicesOnInterfaceType(List<ListenableFuture<Void>> futures, Uint64 dpnId,
+    public abstract void bindServicesOnInterfaceType(List<ListenableFuture<?>> futures, Uint64 dpnId,
                                                      String ifaceName);
 }
 
