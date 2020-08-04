@@ -535,7 +535,7 @@ public class IdManager implements IdManagerService, IdManagerMonitor {
         return 0;
     }
 
-    private long allocateIdBlockFromReleasedIdsHolder(IdLocalPool localIdPool,
+    private static long allocateIdBlockFromReleasedIdsHolder(IdLocalPool localIdPool,
             ReleasedIdsHolderBuilder releasedIdsBuilderParent, IdPool parentIdPool,
             TypedWriteTransaction<Configuration> confTx) {
         if (releasedIdsBuilderParent.getAvailableIdCount().toJava() == 0) {
