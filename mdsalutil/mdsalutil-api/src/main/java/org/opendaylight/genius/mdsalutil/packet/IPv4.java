@@ -11,7 +11,7 @@ import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.opendaylight.openflowplugin.libraries.liblldp.BitBufferHelper;
@@ -58,7 +58,7 @@ public class IPv4 extends Packet {
 
     @SuppressWarnings("serial")
     private static final Map<String, Pair<Integer, Integer>> FIELD_COORDINATES
-        = new LinkedHashMap<String, Pair<Integer, Integer>>() { {
+        = new LinkedHashMap<>() { {
                 put(VERSION, new ImmutablePair<>(0, 4));
                 put(HEADERLENGTH, new ImmutablePair<>(4, 4));
                 put(DIFFSERV, new ImmutablePair<>(8, 6));
@@ -431,13 +431,11 @@ public class IPv4 extends Packet {
     }
 
     /**
-     * Generate a random number to set the Identification field
-     * in IPv4 Header.
+     * Generate a random number to set the Identification field in IPv4 Header.
      * @return short
      */
     private static short generateId() {
-        Random randomgen = new Random();
-        return (short) randomgen.nextInt(Short.MAX_VALUE + 1);
+        return (short) ThreadLocalRandom.current().nextInt(Short.MAX_VALUE + 1);
     }
 
     /**
