@@ -29,12 +29,12 @@ class TypedReadTransactionImpl<D extends Datastore> extends TypedTransaction<D>
 
     @Override
     public <T extends DataObject> FluentFuture<Optional<T>> read(InstanceIdentifier<T> path) {
-        return FluentFuture.from(delegate.read(getDatastoreType(), path));
+        return delegate.read(getDatastoreType(), path);
     }
 
     @Override
     public FluentFuture<Boolean> exists(InstanceIdentifier<?> path) {
-        return FluentFuture.from(delegate.exists(getDatastoreType(), path));
+        return delegate.exists(getDatastoreType(), path);
     }
 
     @Override
