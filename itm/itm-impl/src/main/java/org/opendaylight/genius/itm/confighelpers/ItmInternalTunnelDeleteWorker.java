@@ -8,7 +8,7 @@
 package org.opendaylight.genius.itm.confighelpers;
 
 import static java.util.Collections.singletonList;
-import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+import static org.opendaylight.mdsal.binding.util.Datastore.CONFIGURATION;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.Collection;
@@ -21,11 +21,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.genius.cloudscaler.api.TombstonedNodeManager;
-import org.opendaylight.genius.infra.Datastore.Configuration;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
-import org.opendaylight.genius.infra.TypedReadWriteTransaction;
-import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
 import org.opendaylight.genius.itm.cache.OfEndPointCache;
@@ -40,6 +35,11 @@ import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfo;
 import org.opendaylight.genius.mdsalutil.interfaces.IMdsalApiManager;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.util.Datastore.Configuration;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.mdsal.binding.util.TypedReadWriteTransaction;
+import org.opendaylight.mdsal.binding.util.TypedWriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
@@ -121,7 +121,7 @@ public class ItmInternalTunnelDeleteWorker {
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
-    public List<ListenableFuture<Void>> deleteTunnels(IMdsalApiManager mdsalManager,
+    public List<? extends ListenableFuture<?>> deleteTunnels(IMdsalApiManager mdsalManager,
             Collection<DPNTEPsInfo> dpnTepsList, Collection<DPNTEPsInfo> meshedDpnList) {
         LOG.trace("TEPs to be deleted {} " , dpnTepsList);
         return Collections.singletonList(txRunner.callWithNewReadWriteTransactionAndSubmit(CONFIGURATION, tx -> {
@@ -350,7 +350,7 @@ public class ItmInternalTunnelDeleteWorker {
         }
 
         @Override
-        public List<ListenableFuture<Void>> call() {
+        public List<? extends ListenableFuture<?>> call() {
             Collection<InternalTunnel> tunnels = ItmUtils.ITM_CACHE.getAllInternalTunnel();
 
             //The logical tunnel interface be removed only when the last tunnel interface on each OVS is deleted
@@ -371,16 +371,16 @@ public class ItmInternalTunnelDeleteWorker {
                 }
             }
             if (emptyTunnelGroup && foundLogicGroupIface) {
-                return singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> {
+                return singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
                     LOG.debug("MULTIPLE_VxLAN_TUNNELS: remove the logical tunnel group {} because a last tunnel"
                         + " interface on srcDpnId {} dstDpnId {} is removed", logicTunnelName, srcDpnId, dstDpnId);
                     InstanceIdentifier<Interface> trunkIdentifier = ItmUtils.buildId(logicTunnelName);
-                    tx.delete(LogicalDatastoreType.CONFIGURATION, trunkIdentifier);
+                    tx.delete(trunkIdentifier);
                     ItmUtils.ITM_CACHE.removeInterface(logicTunnelName);
                     InstanceIdentifier<InternalTunnel> path = InstanceIdentifier.create(TunnelList.class)
                             .child(InternalTunnel.class,
                                     new InternalTunnelKey(dstDpnId, srcDpnId, TunnelTypeLogicalGroup.class));
-                    tx.delete(LogicalDatastoreType.CONFIGURATION, path);
+                    tx.delete(path);
                     ItmUtils.ITM_CACHE.removeInternalTunnel(logicTunnelName);
                 }));
             } else if (!emptyTunnelGroup) {

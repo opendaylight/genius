@@ -10,9 +10,9 @@ package org.opendaylight.genius.itm.confighelpers;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.List;
 import java.util.concurrent.Callable;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunnerImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +35,7 @@ public class OvsdbTepRemoveWorker implements Callable<List<? extends ListenableF
     }
 
     @Override
-    public List<ListenableFuture<Void>> call() throws Exception {
+    public List<? extends ListenableFuture<?>> call() throws Exception {
 
         LOG.trace("Remove TEP task is picked from DataStoreJobCoordinator for execution.");
 
