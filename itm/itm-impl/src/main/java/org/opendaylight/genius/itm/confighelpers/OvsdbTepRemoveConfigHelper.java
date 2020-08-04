@@ -13,13 +13,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.eclipse.jdt.annotation.Nullable;
-import org.opendaylight.genius.infra.Datastore;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.util.Datastore;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.TypedWriteTransaction;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddressBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.NotHostedTransportZones;
@@ -58,11 +58,10 @@ public final class OvsdbTepRemoveConfigHelper {
      * @param dataBroker data broker handle to perform operations on config/operational datastore
      * @param txRunner ManagedNewTransactionRunner object
      */
-
-    public static List<ListenableFuture<Void>> removeTepReceivedFromOvsdb(String tepIp, String strDpnId, String tzName,
-                                                                          DataBroker dataBroker,
-                                                                          ManagedNewTransactionRunner txRunner) {
-        List<ListenableFuture<Void>> futures = new ArrayList<>();
+    public static List<? extends ListenableFuture<?>> removeTepReceivedFromOvsdb(String tepIp, String strDpnId,
+                                                                                 String tzName, DataBroker dataBroker,
+                                                                                 ManagedNewTransactionRunner txRunner) {
+        List<ListenableFuture<?>> futures = new ArrayList<>();
         Uint64 dpnId = Uint64.ZERO;
         LOG.trace("Remove TEP: TEP-IP: {}, TZ name: {}, DPID: {}", tepIp, tzName, strDpnId);
 
