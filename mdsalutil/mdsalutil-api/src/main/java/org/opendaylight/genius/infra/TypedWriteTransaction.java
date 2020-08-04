@@ -19,7 +19,9 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  *
  * @param <D> The logical datastore handled by the transaction.
  * @see WriteTransaction
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.util.TypedWriteTransaction} instead.
  */
+@Deprecated(forRemoval = true)
 public interface TypedWriteTransaction<D extends Datastore> extends
         Transaction {
     /**

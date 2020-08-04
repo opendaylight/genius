@@ -15,7 +15,6 @@ import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 
-
 /**
  * Read transaction which is specific to a single logical datastore (configuration or operational). Designed for use
  * with {@link ManagedNewTransactionRunner} (it doesn’t support explicit cancel or commit operations).
@@ -23,7 +22,9 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * @see ReadTransaction
  *
  * @param <D> The logical datastore handled by the transaction.
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.util.TypedReadTransaction} instead.
  */
+@Deprecated(forRemoval = true)
 public interface TypedReadTransaction<D extends Datastore>
         extends Transaction {
     /**

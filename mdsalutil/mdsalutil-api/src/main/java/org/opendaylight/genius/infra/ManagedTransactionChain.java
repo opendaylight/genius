@@ -10,6 +10,10 @@ package org.opendaylight.genius.infra;
 /**
  * Managed transaction chains provide managed semantics around transaction chains, <em>i.e.</em> chains which provide
  * transactions which are automatically submitted or cancelled.
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.util.ManagedTransactionChain} instead.
  */
+@Deprecated
 public interface ManagedTransactionChain extends ManagedTransactionFactory {
+
 }

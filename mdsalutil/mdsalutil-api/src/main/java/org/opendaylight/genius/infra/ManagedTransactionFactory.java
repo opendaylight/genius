@@ -24,7 +24,10 @@ import org.opendaylight.mdsal.binding.api.WriteTransaction;
 /**
  * Managed transaction factories provide managed transactions, <em>i.e.</em> transactions which are automatically
  * submitted or cancelled (write) or closed (read).
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.util.ManagedTransactionFactory} instead.
  */
+@Deprecated(forRemoval = true)
 public interface ManagedTransactionFactory {
     /**
      * Invokes a function with a <b>NEW</b> {@link TypedReadTransaction}, and ensures that that transaction is closed.

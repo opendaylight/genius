@@ -13,7 +13,9 @@ package org.opendaylight.genius.infra;
  *
  * @param <D> The logical datastore handled by the transaction.
  * @see org.opendaylight.mdsal.binding.api.ReadWriteTransaction
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.util.TypedReadWriteTransaction} instead.
  */
+@Deprecated(forRemoval = true)
 public interface TypedReadWriteTransaction<D extends Datastore>
         extends TypedReadTransaction<D>, TypedWriteTransaction<D> {
 }

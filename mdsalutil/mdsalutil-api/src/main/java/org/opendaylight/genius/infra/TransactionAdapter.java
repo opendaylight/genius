@@ -24,8 +24,10 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
  * <p>The adapted transactions maintain the following constraints: they cannot be cancelled or
  * submitted (only the transaction manager can do this), and they cannot access a logical datastore
  * other than the one they were created for.
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.util.TransactionAdapter} instead.
  */
-@Deprecated
+@Deprecated(forRemoval = true)
 public final class TransactionAdapter {
     private TransactionAdapter() {
 

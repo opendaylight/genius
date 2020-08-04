@@ -30,8 +30,11 @@ import org.opendaylight.mdsal.binding.api.WriteTransaction;
  * <p>This should typically be used (only) directly in code which really must be creating its own new transactions,
  * such as RPC entry points, or background jobs.  Other lower level code "behind" such entry points should
  * just get handed over the transaction provided by this API.
+ *
+ * @deprecated Use {@link org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner} instead.
  */
 @Beta
+@Deprecated(forRemoval = true)
 public interface ManagedNewTransactionRunner extends ManagedTransactionFactory {
 
     /**
