@@ -22,6 +22,8 @@ import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.infrautils.utils.concurrent.Executors;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadWriteTransaction;
+import org.opendaylight.mdsal.binding.util.Datastore.Configuration;
+import org.opendaylight.mdsal.binding.util.TypedReadWriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.cloudscaler.rpcs.rev171220.ComputeNodes;
@@ -99,8 +101,8 @@ public class ComputeNodeManager {
         return computeNodeCache.get(computeIid).orElse(null);
     }
 
-    public void deleteComputeNode(ReadWriteTransaction tx, ComputeNode computeNode) {
-        tx.delete(LogicalDatastoreType.CONFIGURATION, buildComputeNodeIid(computeNode.getComputeName()));
+    public void deleteComputeNode(TypedReadWriteTransaction<@NonNull Configuration> tx, ComputeNode computeNode) {
+        tx.delete(buildComputeNodeIid(computeNode.getComputeName()));
     }
 
     public void add(@NonNull Node node) throws ExecutionException, InterruptedException {
