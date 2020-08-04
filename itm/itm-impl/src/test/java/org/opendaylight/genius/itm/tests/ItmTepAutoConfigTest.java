@@ -7,8 +7,8 @@
  */
 package org.opendaylight.genius.itm.tests;
 
-import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
 import static org.opendaylight.mdsal.binding.testutils.AssertDataObjects.assertEqualBeans;
+import static org.opendaylight.mdsal.binding.util.Datastore.CONFIGURATION;
 
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -29,7 +29,6 @@ import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorEventsWaiter;
 import org.opendaylight.genius.datastoreutils.testutils.JobCoordinatorTestModule;
 import org.opendaylight.genius.datastoreutils.testutils.TestableDataTreeChangeListenerModule;
-import org.opendaylight.genius.infra.RetryingManagedNewTransactionRunner;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ItmProvider;
 import org.opendaylight.genius.itm.impl.ItmUtils;
@@ -40,6 +39,7 @@ import org.opendaylight.infrautils.caches.testutils.CacheModule;
 import org.opendaylight.infrautils.inject.guice.testutils.GuiceRule;
 import org.opendaylight.infrautils.testutils.LogRule;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.util.RetryingManagedNewTransactionRunner;
 import org.opendaylight.mdsal.common.api.CommitInfo;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpPrefix;
@@ -118,8 +118,7 @@ public class ItmTepAutoConfigTest {
 
         // write into config DS
 
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(LogicalDatastoreType.CONFIGURATION,
-                        iid,itmConfigObj));
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> tx.merge(iid, itmConfigObj));
         coordinatorEventsWaiter.awaitEventsConsumption();
 
         // read from config DS
@@ -138,8 +137,7 @@ public class ItmTepAutoConfigTest {
         //txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION,
           //  tx -> tx.put(iid, itmConfigObj, true));
 
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.merge(LogicalDatastoreType.CONFIGURATION,
-                iid,itmConfigObj)).get();
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> tx.merge(iid, itmConfigObj)).get();
 
         coordinatorEventsWaiter.awaitEventsConsumption();
 
@@ -174,8 +172,8 @@ public class ItmTepAutoConfigTest {
 
         InstanceIdentifier<TransportZone> tzPath =
                 ItmUtils.getTZInstanceIdentifier(ITMConstants.DEFAULT_TRANSPORT_ZONE);
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
-                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath,
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx ->
+                tx.mergeParentStructureMerge(tzPath,
                         new TransportZoneBuilder().setZoneName(ITMConstants.DEFAULT_TRANSPORT_ZONE)
                         .setTunnelType(TunnelTypeGre.class)
                         .withKey(new TransportZoneKey(ITMConstants.DEFAULT_TRANSPORT_ZONE))
@@ -215,8 +213,8 @@ public class ItmTepAutoConfigTest {
 
         InstanceIdentifier<TransportZone> tzPath =
                 ItmUtils.getTZInstanceIdentifier(ITMConstants.DEFAULT_TRANSPORT_ZONE);
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
-                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath,
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx ->
+                tx.mergeParentStructureMerge(tzPath,
                         new TransportZoneBuilder().setZoneName(ITMConstants.DEFAULT_TRANSPORT_ZONE)
                         .setTunnelType(TunnelTypeVxlan.class)
                         .withKey(new TransportZoneKey(ITMConstants.DEFAULT_TRANSPORT_ZONE))
@@ -235,8 +233,8 @@ public class ItmTepAutoConfigTest {
         defTzTunnelType = ITMConstants.TUNNEL_TYPE_GRE;
 
 
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
-                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath,
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx ->
+                tx.mergeParentStructureMerge(tzPath,
                         new TransportZoneBuilder().setZoneName(ITMConstants.DEFAULT_TRANSPORT_ZONE)
                         .setTunnelType(TunnelTypeGre.class)
                         .withKey(new TransportZoneKey(ITMConstants.DEFAULT_TRANSPORT_ZONE))
@@ -267,8 +265,8 @@ public class ItmTepAutoConfigTest {
 
         InstanceIdentifier<TransportZone> tzPath =
                 ItmUtils.getTZInstanceIdentifier(ITMConstants.DEFAULT_TRANSPORT_ZONE);
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
-                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath,
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx ->
+                tx.mergeParentStructureMerge(tzPath,
                         new TransportZoneBuilder().setZoneName(ITMConstants.DEFAULT_TRANSPORT_ZONE)
                         .setTunnelType(TunnelTypeGre.class)
                         .withKey(new TransportZoneKey(ITMConstants.DEFAULT_TRANSPORT_ZONE))
@@ -300,8 +298,8 @@ public class ItmTepAutoConfigTest {
 
         InstanceIdentifier<TransportZone> tzPath =
                 ItmUtils.getTZInstanceIdentifier(ITMConstants.DEFAULT_TRANSPORT_ZONE);
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
-                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath,
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx ->
+                tx.mergeParentStructureMerge(tzPath,
                         new TransportZoneBuilder().setZoneName(ITMConstants.DEFAULT_TRANSPORT_ZONE)
                         .setTunnelType(TunnelTypeVxlan.class)
                         .withKey(new TransportZoneKey(ITMConstants.DEFAULT_TRANSPORT_ZONE))
@@ -350,8 +348,8 @@ public class ItmTepAutoConfigTest {
 
         // create TZA
         InstanceIdentifier<TransportZone> tzPath = ItmUtils.getTZInstanceIdentifier(ItmTestConstants.TZ_NAME);
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
-                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath, transportZone)).get();
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx ->
+                tx.mergeParentStructureMerge(tzPath, transportZone)).get();
 
         // check TZ is created with correct TZ name
         Assert.assertEquals(ItmTestConstants.TZ_NAME, dataBroker.newReadOnlyTransaction()
@@ -403,8 +401,8 @@ public class ItmTepAutoConfigTest {
 
         InstanceIdentifier<TransportZone> tzPath =
                 ItmUtils.getTZInstanceIdentifier(ITMConstants.DEFAULT_TRANSPORT_ZONE);
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
-                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath,
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx ->
+                tx.mergeParentStructureMerge(tzPath,
                         new TransportZoneBuilder().setZoneName(ITMConstants.DEFAULT_TRANSPORT_ZONE)
                         .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN)
                         .withKey(new TransportZoneKey(ITMConstants.DEFAULT_TRANSPORT_ZONE))
@@ -461,8 +459,8 @@ public class ItmTepAutoConfigTest {
 
         // create Transport-zone in advance
         InstanceIdentifier<TransportZone> tzPath = ItmUtils.getTZInstanceIdentifier(ItmTestConstants.TZ_NAME);
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
-                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath, transportZone)).get();
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx ->
+                tx.mergeParentStructureMerge(tzPath, transportZone)).get();
 
         // add bridge into node
         future = OvsdbTestUtil.addBridgeIntoNode(connInfo, ItmTestConstants.DEF_BR_NAME,
@@ -551,8 +549,8 @@ public class ItmTepAutoConfigTest {
 
         InstanceIdentifier<TransportZone> tzPath =
                 ItmUtils.getTZInstanceIdentifier(ITMConstants.DEFAULT_TRANSPORT_ZONE);
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
-                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath,
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx ->
+                tx.mergeParentStructureMerge(tzPath,
                         new TransportZoneBuilder().setZoneName(ITMConstants.DEFAULT_TRANSPORT_ZONE)
                         .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN)
                         .withKey(new TransportZoneKey(ITMConstants.DEFAULT_TRANSPORT_ZONE))
@@ -639,8 +637,8 @@ public class ItmTepAutoConfigTest {
 
         // create Transport-zone TZA
         InstanceIdentifier<TransportZone> tzPath = ItmUtils.getTZInstanceIdentifier(ItmTestConstants.TZ_NAME);
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
-                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath, transportZone)).get();
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx ->
+                tx.mergeParentStructureMerge(tzPath, transportZone)).get();
         // iid for TZA configured from NB
         InstanceIdentifier<TransportZone> tzaTzonePath = ItmTepAutoConfigTestUtil.getTzIid(
                 ItmTestConstants.TZ_NAME);
@@ -677,8 +675,8 @@ public class ItmTepAutoConfigTest {
 
         // create Transport-zone in advance
         InstanceIdentifier<TransportZone> tzPath = ItmUtils.getTZInstanceIdentifier(ItmTestConstants.TZ_NAME);
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
-                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath, transportZone)).get();
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx ->
+                tx.mergeParentStructureMerge(tzPath, transportZone)).get();
 
         // add bridge into node
         future = OvsdbTestUtil.addBridgeIntoNode(connInfo, ItmTestConstants.DEF_BR_NAME,
@@ -834,8 +832,8 @@ public class ItmTepAutoConfigTest {
     public void tzDeletedAndReaddedTest() throws Exception {
         // create TZ
         InstanceIdentifier<TransportZone> tzPath = ItmUtils.getTZInstanceIdentifier(ItmTestConstants.TZ_NAME);
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
-                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath, transportZone)).get();
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx ->
+                tx.mergeParentStructureMerge(tzPath, transportZone)).get();
 
         InstanceIdentifier<TransportZone> tzonePath = ItmTepAutoConfigTestUtil.getTzIid(
                 ItmTestConstants.TZ_NAME);
@@ -863,8 +861,7 @@ public class ItmTepAutoConfigTest {
                         .read(LogicalDatastoreType.CONFIGURATION, tzonePath).get().get());
 
         // remove Transport Zone
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.delete(LogicalDatastoreType.CONFIGURATION,
-                tzPath));
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> tx.delete(tzPath));
 
         // wait for TransportZoneListener to perform config DS update
         // for TEP movement through transaction
@@ -882,8 +879,8 @@ public class ItmTepAutoConfigTest {
                 .read(LogicalDatastoreType.OPERATIONAL, notHostedPath).get().get().getZoneName());
 
         //readd the same tz
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
-                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath, transportZone)).get();
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx ->
+                tx.mergeParentStructureMerge(tzPath, transportZone)).get();
         // wait for TransportZoneListener to perform config DS update
         // for TEP movement through transaction
         coordinatorEventsWaiter.awaitEventsConsumption();
@@ -901,8 +898,8 @@ public class ItmTepAutoConfigTest {
     public void tzDeletedAndReaddedWithSameVtepsTest() throws Exception {
         // create TZ
         InstanceIdentifier<TransportZone> tzPath = ItmUtils.getTZInstanceIdentifier(ItmTestConstants.TZ_NAME);
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
-                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath, transportZone)).get();
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx ->
+                tx.mergeParentStructureMerge(tzPath, transportZone)).get();
 
         coordinatorEventsWaiter.awaitEventsConsumption();
 
@@ -933,8 +930,7 @@ public class ItmTepAutoConfigTest {
                         .read(LogicalDatastoreType.CONFIGURATION, tzonePath).get().get());
 
         // remove Transport Zone
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.delete(LogicalDatastoreType.CONFIGURATION,
-                tzPath));
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> tx.delete(tzPath));
 
         // wait for TransportZoneListener to perform config DS update
         // for TEP movement through transaction
@@ -968,8 +964,8 @@ public class ItmTepAutoConfigTest {
                 .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN).setVteps(vtepsList)
                 .withKey(new TransportZoneKey(ItmTestConstants.TZ_NAME)).build();
 
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
-                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath, recreatedTransportZone)).get();
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx ->
+                tx.mergeParentStructureMerge(tzPath, recreatedTransportZone)).get();
 
         // wait for TransportZoneListener to perform config DS update
         // for TEP movement through transaction
@@ -989,8 +985,8 @@ public class ItmTepAutoConfigTest {
     public void tzReaddWithSameVtepsAndDiffDpnIDTest() throws Exception {
         // create TZ
         InstanceIdentifier<TransportZone> tzPath = ItmUtils.getTZInstanceIdentifier(ItmTestConstants.TZ_NAME);
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
-                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath, transportZone)).get();
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx ->
+                tx.mergeParentStructureMerge(tzPath, transportZone)).get();
 
         InstanceIdentifier<TransportZone> tzonePath = ItmTepAutoConfigTestUtil.getTzIid(
                 ItmTestConstants.TZ_NAME);
@@ -1018,8 +1014,7 @@ public class ItmTepAutoConfigTest {
                         .read(LogicalDatastoreType.CONFIGURATION, tzonePath).get().get());
 
         // remove Transport Zone
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx -> tx.delete(LogicalDatastoreType.CONFIGURATION,
-                tzPath));
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> tx.delete(tzPath));
 
         // wait for TransportZoneListener to perform config DS update
         // for TEP movement through transaction
@@ -1053,8 +1048,8 @@ public class ItmTepAutoConfigTest {
                 .setTunnelType(ItmTestConstants.TUNNEL_TYPE_VXLAN).setVteps(vtepsList)
                 .withKey(new TransportZoneKey(ItmTestConstants.TZ_NAME)).build();
 
-        txRunner.callWithNewWriteOnlyTransactionAndSubmit(tx ->
-                tx.mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION, tzPath, recreatedTransportZone)).get();
+        txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx ->
+                tx.mergeParentStructureMerge(tzPath, recreatedTransportZone)).get();
 
         // wait for TransportZoneListener to perform config DS update
         // for TEP movement through transaction

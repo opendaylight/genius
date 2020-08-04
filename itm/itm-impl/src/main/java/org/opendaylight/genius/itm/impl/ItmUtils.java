@@ -30,8 +30,6 @@ import java.util.concurrent.ExecutionException;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
-import org.opendaylight.genius.infra.Datastore.Configuration;
-import org.opendaylight.genius.infra.TypedReadWriteTransaction;
 import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
@@ -51,6 +49,8 @@ import org.opendaylight.genius.mdsalutil.matches.MatchTunnelId;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.ReadTransaction;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.binding.util.Datastore.Configuration;
+import org.opendaylight.mdsal.binding.util.TypedReadWriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.TransactionCommitFailedException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.Tunnel;
@@ -157,9 +157,9 @@ public final class ItmUtils {
     private ItmUtils() {
     }
 
-    public static final FutureCallback<Void> DEFAULT_WRITE_CALLBACK = new FutureCallback<>() {
+    public static final FutureCallback<Object> DEFAULT_WRITE_CALLBACK = new FutureCallback<>() {
         @Override
-        public void onSuccess(Void result) {
+        public void onSuccess(Object result) {
             LOG.debug("Success in Datastore write operation");
         }
 
@@ -251,6 +251,7 @@ public final class ItmUtils {
 
     //ITM cleanup:portname and vlanId are removed, causes change in generated
     //interface name: This has upgrade impact
+    @Deprecated
     public static String getInterfaceName(final Uint64 datapathid, final String portName, final Integer vlanId) {
         return datapathid + ":" + portName + ":" + vlanId;
     }
@@ -1111,7 +1112,7 @@ public final class ItmUtils {
         if (transportZonesOptional.isPresent()) {
             TransportZones tzones = transportZonesOptional.get();
             for (TransportZone tzone : tzones.getTransportZone()) {
-                List<Vteps> vtepList = new ArrayList<Vteps>(tzone.nonnullVteps().values());
+                List<Vteps> vtepList = new ArrayList<>(tzone.nonnullVteps().values());
                 if (vtepList != null && !vtepList.isEmpty()) {
                     for (Vteps vtep : vtepList) {
                         if (vtep.getDpnId().equals(dpid)) {
