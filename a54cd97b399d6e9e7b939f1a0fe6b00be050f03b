@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0e191547_988d9282",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/cache/OfTepStateCache.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 61,
+      "author": {
+        "id": 6545
+      },
+      "writtenOn": "2020-08-24T06:39:05Z",
+      "side": 1,
+      "message": "StringAppender can be used here",
+      "range": {
+        "startLine": 60,
+        "startChar": 0,
+        "endLine": 61,
+        "endChar": 62
+      },
+      "revId": "a54cd97b399d6e9e7b939f1a0fe6b00be050f03b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f2bab954_241f530d",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmOfTunnelDeleteWorker.java",
+        "patchSetId": 13
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 6545
+      },
+      "writtenOn": "2020-08-24T06:39:05Z",
+      "side": 1,
+      "message": "2020",
+      "range": {
+        "startLine": 2,
+        "startChar": 19,
+        "endLine": 2,
+        "endChar": 21
+      },
+      "revId": "a54cd97b399d6e9e7b939f1a0fe6b00be050f03b",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
