@@ -22,6 +22,30 @@
       "revId": "4cfe9c76126225b35791fa716debb4517abdeacf",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7f0addc4_3a01bc9a",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmOfPortRemoveWorker.java",
+        "patchSetId": 15
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-08-24T06:33:46Z",
+      "side": 1,
+      "message": "This is implemented in delete patch",
+      "parentUuid": "96ede343_f91ea828",
+      "range": {
+        "startLine": 24,
+        "startChar": 0,
+        "endLine": 27,
+        "endChar": 5
+      },
+      "revId": "4cfe9c76126225b35791fa716debb4517abdeacf",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
