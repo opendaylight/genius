@@ -49,7 +49,7 @@ public interface ItmTestConstants {
 
     String DEF_TZ_TEP_IP = "192.168.56.30";
     String NB_TZ_TEP_IP = "192.168.56.40";
-
+// small change for testing
     String DEF_BR_NAME = "br-int";
     String DEF_BR_DPID = "00:00:00:00:00:00:00:01";
     Uint64 INT_DEF_BR_DPID = Uint64.ONE;
