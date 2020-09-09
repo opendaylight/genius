@@ -32,6 +32,7 @@ import org.opendaylight.genius.itm.confighelpers.ItmInternalTunnelDeleteWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmTepAddWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmTepRemoveWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
+import org.opendaylight.genius.itm.impl.GeniusString;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.impl.TunnelMonitoringConfig;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
@@ -140,7 +141,7 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
 
     private void recoverTep(String entityId) throws InterruptedException {
         List<DPNTEPsInfo> tepsToRecover = new ArrayList<>();
-        String[] params = entityId.split(":");
+        String[] params = GeniusString.stringSplit(entityId,':');
         if (params.length < 2) {
             LOG.error("Not enough arguments..Exiting...");
         } else if (params.length > 2) {
