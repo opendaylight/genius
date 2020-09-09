@@ -27,6 +27,8 @@ import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo;
 import org.opendaylight.genius.interfacemanager.globals.InterfaceInfo.InterfaceAdminState;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
+import org.opendaylight.genius.itm.globals.ITMConstants;
+import org.opendaylight.genius.itm.impl.GeniusString;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
@@ -289,7 +291,7 @@ public class ItmTunnelAggregationHelper {
             return;
         }
         String lowerLayerIf = ifaceState.getLowerLayerIf().get(0); // openflow:dpnid:portnum
-        String[] split = lowerLayerIf.split(IfmConstants.OF_URI_SEPARATOR);
+        String[] split = GeniusString.stringSplit(lowerLayerIf, ITMConstants.OF_URI_SEPARATOR);
         Uint64 srcDpnId = Uint64.valueOf(split[1]);
         int portNumber = Integer.parseInt(split[2]);
         if (action == ADD_TUNNEL) {
