@@ -45,6 +45,7 @@ import org.opendaylight.genius.itm.cache.TunnelStateCache;
 import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelAddWorker;
 import org.opendaylight.genius.itm.confighelpers.ItmExternalTunnelDeleteWorker;
 import org.opendaylight.genius.itm.globals.ITMConstants;
+import org.opendaylight.genius.itm.impl.GeniusString;
 import org.opendaylight.genius.itm.impl.ItmUtils;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.itm.utils.DpnTepInterfaceInfo;
@@ -1237,7 +1238,7 @@ public class ItmManagerRpcService implements ItmRpcService {
         for (Node node : operInventoryNodes.getNode().values()) {
             String name = node.augmentation(FlowCapableNode.class).getDescription();
             if (nodeNames.contains(name)) {
-                String[] nodeId = node.getId().getValue().split(":");
+                String[] nodeId = GeniusString.stringSplit(node.getId().getValue(), ':');
                 result.put(name, Uint64.valueOf(nodeId[1]));
             }
         }
