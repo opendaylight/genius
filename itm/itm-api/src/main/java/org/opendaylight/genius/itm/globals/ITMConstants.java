@@ -73,6 +73,6 @@ public interface ITMConstants {
     String ITM_CONFIG_ENTITY = "itm_config";
     int INVALID_PORT_NO = -1;
     int DEFAULT_FLOW_PRIORITY = 5;
-    String OF_URI_SEPARATOR = ":";
+    char OF_URI_SEPARATOR = ':';
     int INVALID_ID = 0;
 }

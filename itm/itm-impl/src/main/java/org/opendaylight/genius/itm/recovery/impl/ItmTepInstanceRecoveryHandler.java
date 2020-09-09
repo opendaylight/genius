@@ -19,6 +19,7 @@ import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.Nullable;
 import org.opendaylight.genius.cloudscaler.api.TombstonedNodeManager;
 import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
+import org.opendaylight.genius.geniusutils.GeniusString;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
 import org.opendaylight.genius.itm.cache.DpnTepStateCache;
@@ -140,7 +141,7 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
 
     private void recoverTep(String entityId) throws InterruptedException {
         List<DPNTEPsInfo> tepsToRecover = new ArrayList<>();
-        String[] params = entityId.split(":");
+        String[] params = GeniusString.stringSplit(entityId, ITMConstants.OF_URI_SEPARATOR);
         if (params.length < 2) {
             LOG.error("Not enough arguments..Exiting...");
         } else if (params.length > 2) {
