@@ -34,6 +34,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
+import org.opendaylight.genius.geniusutils.GeniusString;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.interfacemanager.interfaces.InterfaceManagerService;
 import org.opendaylight.genius.itm.cache.DPNTEPsInfoCache;
@@ -1237,7 +1238,7 @@ public class ItmManagerRpcService implements ItmRpcService {
         for (Node node : operInventoryNodes.getNode().values()) {
             String name = node.augmentation(FlowCapableNode.class).getDescription();
             if (nodeNames.contains(name)) {
-                String[] nodeId = node.getId().getValue().split(":");
+                String[] nodeId = GeniusString.stringSplit(node.getId().getValue(), ITMConstants.OF_URI_SEPARATOR);
                 result.put(name, Uint64.valueOf(nodeId[1]));
             }
         }

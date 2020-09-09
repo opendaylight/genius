@@ -15,6 +15,7 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
+import org.opendaylight.genius.geniusutils.GeniusString;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Ipv6Address;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715.MacAddress;
@@ -55,7 +56,7 @@ public final class Ipv6Util {
         if (values != null) {
             target = values;
         }
-        String[] octets = target.split(":");
+        String[] octets = GeniusString.stringSplit(target, ':');
 
         byte[] ret = new byte[octets.length];
         for (int i = 0; i < octets.length; i++) {
