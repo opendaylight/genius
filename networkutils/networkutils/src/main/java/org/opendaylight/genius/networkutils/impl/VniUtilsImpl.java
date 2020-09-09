@@ -16,6 +16,7 @@ import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.apache.aries.blueprint.annotation.service.Service;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
+import org.opendaylight.genius.geniusutils.GeniusString;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.networkutils.VniUtils;
 import org.opendaylight.mdsal.binding.api.DataBroker;
@@ -102,7 +103,7 @@ public class VniUtilsImpl implements VniUtils {
         long highLimit = NwConstants.VNI_DEFAULT_HIGH_VALUE;
         String configureVniRange = networkConfig.getOpendaylightVniRanges();
         if (configureVniRange != null) {
-            String[] configureVniRangeSplit = configureVniRange.split(":");
+            String[] configureVniRangeSplit = GeniusString.stringSplit(configureVniRange, ':');
             lowLimit = Long.parseLong(configureVniRangeSplit[0]);
             highLimit = Long.parseLong(configureVniRangeSplit[1]);
         }
