@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.genius.geniusutils.GeniusString;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateAddable;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.state.factory.FlowBasedServicesStateRendererFactoryResolver;
 import org.opendaylight.genius.interfacemanager.servicebindings.flowbased.utilities.FlowBasedServicesUtils;
@@ -106,7 +107,7 @@ public class FlowBasedServicesNodeStateListener extends AbstractSyncDataTreeChan
     }
 
     private static Uint64 getDpnID(final Node id) {
-        final String[] node =  id.getId().getValue().split(":");
+        final String[] node = GeniusString.stringSplit(id.getId().getValue(), ':');
         if (node.length < 2) {
             LOG.warn("Unexpected nodeId {}", id.getId().getValue());
             return null;

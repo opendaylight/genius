@@ -16,6 +16,7 @@ import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandler;
 import org.opendaylight.genius.alivenessmonitor.protocols.AlivenessProtocolHandlerRegistry;
+import org.opendaylight.genius.geniusutils.GeniusString;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
 import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunnerImpl;
@@ -74,7 +75,7 @@ abstract class AbstractAlivenessProtocolHandler<P extends Packet> implements Ali
     private byte[] parseMacAddress(String macAddress) {
         byte cur;
 
-        String[] addressPart = macAddress.split(":");
+        String[] addressPart = GeniusString.stringSplit(macAddress, ':');
         int size = addressPart.length;
 
         byte[] part = new byte[size];

@@ -18,6 +18,7 @@ import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
+import org.opendaylight.genius.geniusutils.GeniusString;
 import org.opendaylight.genius.mdsalutil.interfaces.ShardStatusMonitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,7 @@ public final class ShardStatusMonitorImpl implements ShardStatusMonitor {
     public boolean getShardStatus(List<String> shards) {
         boolean status = true;
         for (String shard : shards) {
-            String[] params = shard.split(":");
+            String[] params = GeniusString.stringSplit(shard, ':');
             if (!getDataStoreStatus(params[0], params[1]).equalsIgnoreCase("operational")) {
                 status = false;
                 break;
