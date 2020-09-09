@@ -18,6 +18,7 @@ import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.opendaylight.genius.fcapsapp.FcapsConstants;
 import org.opendaylight.genius.fcapsapp.portinfo.PortNameMapping;
+import org.opendaylight.genius.geniusutils.GeniusString;
 import org.opendaylight.genius.utils.clustering.EntityOwnershipUtils;
 import org.opendaylight.infrautils.metrics.Counter;
 import org.opendaylight.infrautils.metrics.Labeled;
@@ -168,7 +169,7 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
 
     public void nodeRemovedNotification(String node) {
         Counter counter;
-        String[] switchId = node.split(":");
+        String[] switchId = GeniusString.stringSplit(node, ':');
         counter = packetInCounter.label("OFSwitch").label(String.valueOf(switchId[1])).label("portsperswitch");
         counter.close();
     }

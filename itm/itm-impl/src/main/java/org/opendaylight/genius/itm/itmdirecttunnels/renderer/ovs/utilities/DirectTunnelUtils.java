@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNull;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
+import org.opendaylight.genius.geniusutils.GeniusString;
 import org.opendaylight.genius.interfacemanager.globals.IfmConstants;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
@@ -228,7 +229,7 @@ public final class DirectTunnelUtils {
         /*
          * NodeConnectorId is of form 'openflow:dpnid:portnum'
          */
-        return Uint64.valueOf(portId.getValue().split(ITMConstants.OF_URI_SEPARATOR)[1]);
+        return Uint64.valueOf(GeniusString.stringSplit(portId.getValue(),ITMConstants.OF_URI_SEPARATOR)[1]);
     }
 
     public static long getPortNumberFromNodeConnectorId(NodeConnectorId portId) {
@@ -245,7 +246,7 @@ public final class DirectTunnelUtils {
         /*
          * NodeConnectorId is of form 'openflow:dpnid:portnum'
          */
-        return portId.getValue().split(ITMConstants.OF_URI_SEPARATOR)[2];
+        return GeniusString.stringSplit(portId.getValue(), ITMConstants.OF_URI_SEPARATOR)[2];
     }
 
     // Convert Interface Oper State to Tunnel Oper state

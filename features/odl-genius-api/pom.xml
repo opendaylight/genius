@@ -199,5 +199,10 @@
       <artifactId>ipv6util-api</artifactId>
       <version>${project.version}</version>
     </dependency>
+	<dependency>
+      <groupId>org.opendaylight.genius</groupId>
+      <artifactId>genius-utils</artifactId>
+	  <version>0.10.0-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 </project>

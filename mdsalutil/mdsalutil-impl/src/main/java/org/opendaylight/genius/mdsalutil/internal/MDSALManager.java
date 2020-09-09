@@ -25,6 +25,7 @@ import java.util.concurrent.ExecutorService;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
+import org.opendaylight.genius.geniusutils.GeniusString;
 import org.opendaylight.genius.mdsalutil.FlowEntity;
 import org.opendaylight.genius.mdsalutil.FlowInfoKey;
 import org.opendaylight.genius.mdsalutil.GroupEntity;
@@ -441,7 +442,7 @@ public class MDSALManager extends AbstractLifecycle implements IMdsalApiManager 
     @SuppressFBWarnings(value = "UPM_UNCALLED_PRIVATE_METHOD",
             justification = "https://github.com/spotbugs/spotbugs/issues/811")
     private static Uint64 getDpnFromString(String dpnString) {
-        String[] split = dpnString.split(":");
+        String[] split = GeniusString.stringSplit(dpnString, ':');
         return Uint64.valueOf(split[1]);
     }
 
