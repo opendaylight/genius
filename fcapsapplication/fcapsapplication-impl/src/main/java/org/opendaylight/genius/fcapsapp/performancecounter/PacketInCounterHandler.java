@@ -10,6 +10,7 @@ package org.opendaylight.genius.fcapsapp.performancecounter;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.genius.geniusutils.GeniusString;
 import org.opendaylight.infrautils.metrics.Counter;
 import org.opendaylight.infrautils.metrics.Labeled;
 import org.opendaylight.infrautils.metrics.MetricDescriptor;
@@ -57,15 +58,15 @@ public class PacketInCounterHandler implements PacketProcessingListener {
 
     @NonNull
     private String getDpnId(@NonNull String id) {
-        String[] nodeNo = id.split(":");
-        String[] dpnId = nodeNo[1].split("]");
+        String[] nodeNo = GeniusString.stringSplit(id, ':');
+        String[] dpnId = GeniusString.stringSplit(nodeNo[1], ']');
         return dpnId[0];
     }
 
     public void nodeRemovedNotification(String dpnId) {
         Counter counter;
         if (dpnId != null) {
-            dpnId = dpnId.split(":")[1];
+            dpnId = GeniusString.stringSplit(dpnId, ':')[1];
             LOG.debug("Dpnvalue Id {}", dpnId);
             counter = packetInCounter.label("OFSwitch").label(dpnId).label("packetin");
             counter.close();

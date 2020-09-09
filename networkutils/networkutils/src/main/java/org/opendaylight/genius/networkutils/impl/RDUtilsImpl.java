@@ -16,6 +16,7 @@ import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.apache.aries.blueprint.annotation.service.Service;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
+import org.opendaylight.genius.geniusutils.GeniusString;
 import org.opendaylight.genius.mdsalutil.NwConstants;
 import org.opendaylight.genius.networkutils.RDUtils;
 import org.opendaylight.mdsal.binding.api.DataBroker;
@@ -72,9 +73,9 @@ public class RDUtilsImpl implements RDUtils {
 
     public String convertIdValuetoRD(long idValue) {
         String configuredRDStartValue = networkConfig.getOpendaylightRdStartValue();
-        String[] configureRDSplit = NwConstants.RD_DEFAULT_LOW_VALUE.split(":");
+        String[] configureRDSplit = GeniusString.stringSplit(NwConstants.RD_DEFAULT_LOW_VALUE, ':');
         if (configuredRDStartValue != null) {
-            configureRDSplit = configuredRDStartValue.split(":");
+            configureRDSplit = GeniusString.stringSplit(configuredRDStartValue, ':');
         }
         long baseAsNum = Long.parseLong(configureRDSplit[0]);
         long baseValue = Long.parseLong(configureRDSplit[1]);

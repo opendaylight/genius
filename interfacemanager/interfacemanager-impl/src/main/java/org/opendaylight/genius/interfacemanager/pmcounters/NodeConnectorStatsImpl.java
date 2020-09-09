@@ -28,6 +28,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.aries.blueprint.annotation.service.Reference;
 import org.eclipse.jdt.annotation.NonNull;
+import org.opendaylight.genius.geniusutils.GeniusString;
 import org.opendaylight.genius.interfacemanager.IfmConstants;
 import org.opendaylight.genius.interfacemanager.listeners.InterfaceChildCache;
 import org.opendaylight.genius.interfacemanager.listeners.PortNameCache;
@@ -411,7 +412,7 @@ public class NodeConnectorStatsImpl extends AbstractClusteredAsyncDataTreeChange
     @Override
     public void remove(InstanceIdentifier<Node> identifier, Node node) {
         NodeId nodeId = node.getId();
-        String dpId = nodeId.getValue().split(":")[1];
+        String dpId = GeniusString.stringSplit(nodeId.getValue(),':')[1];
         if (nodes.contains(dpId)) {
             nodes.remove(dpId);
             // remove counters set from node
@@ -439,7 +440,7 @@ public class NodeConnectorStatsImpl extends AbstractClusteredAsyncDataTreeChange
         NodeId nodeId = node.getId();
         if (entityOwnershipUtils.isEntityOwner(IfmConstants.SERVICE_ENTITY_TYPE, nodeId.getValue())) {
             LOG.trace("Locally connected switch {}",nodeId.getValue());
-            String dpId = nodeId.getValue().split(":")[1];
+            String dpId = GeniusString.stringSplit(nodeId.getValue(),':')[1];
             if (nodes.contains(dpId)) {
                 return;
             }
