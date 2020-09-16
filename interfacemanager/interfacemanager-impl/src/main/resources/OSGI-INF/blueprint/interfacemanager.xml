@@ -21,6 +21,8 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
 
     <reference id="entityOwnershipService"
                interface="org.opendaylight.mdsal.eos.binding.api.EntityOwnershipService" />
+    <reference id="reconciliationManager"
+               interface="org.opendaylight.openflowplugin.applications.reconciliation.ReconciliationManager"/>
 
     <odl:rpc-implementation ref="interfaceManagerRpcService" />
 
