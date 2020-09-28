@@ -5,7 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.genius.itm.confighelpers;
 
 import com.google.common.collect.ImmutableMap;
@@ -17,14 +16,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.mdsal.binding.api.DataBroker;
 import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -148,10 +147,10 @@ public class ItmOfTunnelAddWorker {
         ImmutableMap.Builder<String, String> options = new ImmutableMap.Builder<>();
 
         // Options common to any kind of tunnel
-        options.put(directTunnelUtils.TUNNEL_OPTIONS_KEY, directTunnelUtils.TUNNEL_OPTIONS_VALUE_FLOW);
+        options.put(DirectTunnelUtils.TUNNEL_OPTIONS_KEY, DirectTunnelUtils.TUNNEL_OPTIONS_VALUE_FLOW);
         IpAddress localIp = dpnTep.getTepIp();
         options.put(DirectTunnelUtils.TUNNEL_OPTIONS_LOCAL_IP, localIp.stringValue());
-        options.put(directTunnelUtils.TUNNEL_OPTIONS_REMOTE_IP, directTunnelUtils.TUNNEL_OPTIONS_VALUE_FLOW);
+        options.put(DirectTunnelUtils.TUNNEL_OPTIONS_REMOTE_IP, DirectTunnelUtils.TUNNEL_OPTIONS_VALUE_FLOW);
         options.put(DirectTunnelUtils.TUNNEL_OPTIONS_TOS, DirectTunnelUtils.TUNNEL_OPTIONS_TOS_VALUE_INHERIT);
 
         if (TunnelTypeVxlanGpe.class.equals(type)) {
