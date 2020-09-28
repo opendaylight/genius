@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.interfacemanager.interfaces.IInterfaceManager;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.genius.itm.servicebinding.BindServiceUtils;
@@ -21,6 +19,8 @@ import org.opendaylight.genius.mdsalutil.MDSALUtil;
 import org.opendaylight.genius.mdsalutil.cache.DataObjectCache;
 import org.opendaylight.infrautils.caches.CacheProvider;
 import org.opendaylight.mdsal.binding.api.DataBroker;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.Tunnel;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.state.InterfaceBuilder;
@@ -32,15 +32,14 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 @Singleton
 public class OfTepStateCache extends DataObjectCache<String, OfTep> {
+    private static final Logger LOG = LoggerFactory.getLogger(OfTepStateCache.class);
 
     private final ManagedNewTransactionRunner txRunner;
     private final IInterfaceManager interfaceManager;
     private final DirectTunnelUtils directTunnelUtils;
-    List<ListenableFuture<Void>> futures = new ArrayList<>();
-    private static final Logger LOG = LoggerFactory.getLogger(OfTepStateCache.class);
+    private final List<ListenableFuture<?>> futures = new ArrayList<>();
 
     @Inject
     public OfTepStateCache(DataBroker dataBroker, CacheProvider cacheProvider,
@@ -54,6 +53,7 @@ public class OfTepStateCache extends DataObjectCache<String, OfTep> {
         this.txRunner =  new ManagedNewTransactionRunnerImpl(dataBroker);
     }
 
+    @Override
     protected void added(InstanceIdentifier<OfTep> path, OfTep ofTep) {
         LOG.debug("Adding interface name to internal cache.");
         List<String> childLowerLayerIfList = new ArrayList<>();
@@ -74,6 +74,7 @@ public class OfTepStateCache extends DataObjectCache<String, OfTep> {
         }
     }
 
+    @Override
     protected void removed(InstanceIdentifier<OfTep> path, OfTep ofTep) {
         BindServiceUtils.unbindService(futures, txRunner, ofTep.getOfPortName());
         interfaceManager.removeInternalTunnelFromCache(ofTep.getOfPortName());
