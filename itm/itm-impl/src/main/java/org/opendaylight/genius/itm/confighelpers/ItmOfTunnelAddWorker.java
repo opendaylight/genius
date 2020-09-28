@@ -5,26 +5,27 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.genius.itm.confighelpers;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.time.Duration;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.opendaylight.genius.datastoreutils.listeners.DataTreeEventCallbackRegistrar;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunnerImpl;
 import org.opendaylight.genius.itm.cache.OvsBridgeRefEntryCache;
 import org.opendaylight.genius.itm.impl.ITMBatchingUtils;
 import org.opendaylight.genius.itm.itmdirecttunnels.renderer.ovs.utilities.DirectTunnelUtils;
 import org.opendaylight.infrautils.jobcoordinator.JobCoordinator;
 import org.opendaylight.mdsal.binding.api.DataBroker;
-import org.opendaylight.mdsal.binding.api.WriteTransaction;
+import org.opendaylight.mdsal.binding.util.Datastore;
+import org.opendaylight.mdsal.binding.util.Datastore.Configuration;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunnerImpl;
+import org.opendaylight.mdsal.binding.util.TypedWriteTransaction;
 import org.opendaylight.mdsal.common.api.LogicalDatastoreType;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.IpAddress;
@@ -77,23 +78,25 @@ public class ItmOfTunnelAddWorker {
         this.eventCallbacks = eventCallbacks;
     }
 
-    public Collection<? extends ListenableFuture<Void>> addOfPort(Map<OfDpnTepKey, OfDpnTep> dpnsTepMap) {
-        return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(transaction -> {
-            for (OfDpnTep dpn : dpnsTepMap.values()) {
-                buildOfPort(dpn, transaction);
-            }
-            updateOfDpnsConfig(dpnsTepMap, transaction);
-        }));
+    public List<? extends ListenableFuture<?>> addOfPort(Map<OfDpnTepKey, OfDpnTep> dpnsTepMap) {
+        return Collections.singletonList(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.CONFIGURATION,
+            transaction -> {
+                for (OfDpnTep dpn : dpnsTepMap.values()) {
+                    buildOfPort(dpn, transaction);
+                }
+                updateOfDpnsConfig(dpnsTepMap, transaction);
+            }));
     }
 
-    private void updateOfDpnsConfig(Map<OfDpnTepKey, OfDpnTep> dpnsTepMap, WriteTransaction tx) {
+    private void updateOfDpnsConfig(Map<OfDpnTepKey, OfDpnTep> dpnsTepMap, TypedWriteTransaction<Configuration> tx) {
         DpnTepConfigBuilder tepConfigBuilder = new DpnTepConfigBuilder();
         tepConfigBuilder.setOfDpnTep(dpnsTepMap);
         InstanceIdentifier<DpnTepConfig> dpnTepsConfII = InstanceIdentifier.builder(DpnTepConfig.class).build();
-        tx.merge(LogicalDatastoreType.CONFIGURATION, dpnTepsConfII, tepConfigBuilder.build());
+        tx.merge(dpnTepsConfII, tepConfigBuilder.build());
     }
 
-    private void buildOfPort(OfDpnTep dpnTep, WriteTransaction transaction) throws ReadFailedException {
+    private void buildOfPort(OfDpnTep dpnTep, TypedWriteTransaction<Configuration> transaction)
+            throws ReadFailedException {
         Optional<OvsBridgeRefEntry> ovsBridgeRefEntry = ovsBridgeRefEntryCache.get(dpnTep.getSourceDpnId());
         DirectTunnelUtils.createBridgeTunnelEntryInConfigDS(dpnTep.getSourceDpnId(), dpnTep.getOfPortName());
 
@@ -148,10 +151,10 @@ public class ItmOfTunnelAddWorker {
         ImmutableMap.Builder<String, String> options = new ImmutableMap.Builder<>();
 
         // Options common to any kind of tunnel
-        options.put(directTunnelUtils.TUNNEL_OPTIONS_KEY, directTunnelUtils.TUNNEL_OPTIONS_VALUE_FLOW);
+        options.put(DirectTunnelUtils.TUNNEL_OPTIONS_KEY, DirectTunnelUtils.TUNNEL_OPTIONS_VALUE_FLOW);
         IpAddress localIp = dpnTep.getTepIp();
         options.put(DirectTunnelUtils.TUNNEL_OPTIONS_LOCAL_IP, localIp.stringValue());
-        options.put(directTunnelUtils.TUNNEL_OPTIONS_REMOTE_IP, directTunnelUtils.TUNNEL_OPTIONS_VALUE_FLOW);
+        options.put(DirectTunnelUtils.TUNNEL_OPTIONS_REMOTE_IP, DirectTunnelUtils.TUNNEL_OPTIONS_VALUE_FLOW);
         options.put(DirectTunnelUtils.TUNNEL_OPTIONS_TOS, DirectTunnelUtils.TUNNEL_OPTIONS_TOS_VALUE_INHERIT);
 
         if (TunnelTypeVxlanGpe.class.equals(type)) {

@@ -5,11 +5,9 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.genius.itm.confighelpers;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -31,9 +29,7 @@ public class ItmOfPortAddWorker implements Callable<List<? extends ListenableFut
     }
 
     @Override
-    public List<ListenableFuture<Void>> call() throws Exception {
-        List<ListenableFuture<Void>> futures = new ArrayList<>() ;
-        futures.addAll(itmOfTunnelAddWorker.addOfPort(dpnsTepMap));
-        return futures;
+    public List<? extends ListenableFuture<?>> call() throws Exception {
+        return itmOfTunnelAddWorker.addOfPort(dpnsTepMap);
     }
 }

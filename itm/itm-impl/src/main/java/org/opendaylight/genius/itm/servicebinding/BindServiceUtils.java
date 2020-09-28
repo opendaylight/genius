@@ -7,16 +7,13 @@
  */
 package org.opendaylight.genius.itm.servicebinding;
 
-import static org.opendaylight.genius.infra.Datastore.CONFIGURATION;
+import static org.opendaylight.mdsal.binding.util.Datastore.CONFIGURATION;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.opendaylight.genius.infra.Datastore;
-import org.opendaylight.genius.infra.ManagedNewTransactionRunner;
-import org.opendaylight.genius.infra.TypedWriteTransaction;
 import org.opendaylight.genius.itm.globals.ITMConstants;
 import org.opendaylight.genius.mdsalutil.ActionInfo;
 import org.opendaylight.genius.mdsalutil.MDSALUtil;
@@ -28,6 +25,9 @@ import org.opendaylight.genius.mdsalutil.actions.ActionOutput;
 import org.opendaylight.genius.mdsalutil.actions.ActionRegLoad;
 import org.opendaylight.genius.mdsalutil.actions.ActionSetFieldTunnelId;
 import org.opendaylight.genius.utils.ServiceIndex;
+import org.opendaylight.mdsal.binding.util.Datastore;
+import org.opendaylight.mdsal.binding.util.ManagedNewTransactionRunner;
+import org.opendaylight.mdsal.binding.util.TypedWriteTransaction;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.inet.types.rev130715.Uri;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.action.types.rev131112.action.list.Action;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.Instruction;
@@ -59,7 +59,7 @@ public final class BindServiceUtils {
     }
 
     public static void bindDefaultEgressDispatcherService(ManagedNewTransactionRunner txRunner,
-                                                          List<ListenableFuture<Void>> futures, String tunType,
+                                                          List<ListenableFuture<?>> futures, String tunType,
                                                           String portNo, String interfaceName, Uint16 ifIndex) {
         Map<InstructionKey, Instruction> instructions =
                 getEgressInstructionsForInterface(tunType, portNo, null, true, ifIndex, 0);
@@ -67,7 +67,7 @@ public final class BindServiceUtils {
     }
 
     public static void bindDefaultEgressDispatcherService(ManagedNewTransactionRunner txRunner,
-                                                          List<ListenableFuture<Void>> futures,
+                                                          List<ListenableFuture<?>> futures,
                                                           String interfaceName,
                                                           Map<InstructionKey, Instruction> instructions) {
         futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
@@ -188,7 +188,7 @@ public final class BindServiceUtils {
                 .child(BoundServices.class, new BoundServicesKey(servicePriority)).build();
     }
 
-    public static void unbindService(List<ListenableFuture<Void>> futures,
+    public static void unbindService(List<ListenableFuture<?>> futures,
                                      ManagedNewTransactionRunner txRunner,
                                      String interfaceName) {
         LOG.info("Unbinding service for : {}", interfaceName);
