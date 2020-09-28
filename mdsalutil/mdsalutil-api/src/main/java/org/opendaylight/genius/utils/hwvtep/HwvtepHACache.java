@@ -44,8 +44,8 @@ public class HwvtepHACache {
     private final ConcurrentHashMap<String, Boolean> connectedNodes = new ConcurrentHashMap<>();
 
     private final LinkedBlockingQueue<DebugEvent> debugEvents = new LinkedBlockingQueue<>(MAX_EVENT_BUFFER_SIZE);
-    private Map<InstanceIdentifier<Node>, IpAddress> tepIps = new ConcurrentHashMap();
-    private Map<IpAddress, InstanceIdentifier<Node>> nodeIds = new ConcurrentHashMap();
+    private final Map<InstanceIdentifier<Node>, IpAddress> tepIps = new ConcurrentHashMap<>();
+    private final Map<IpAddress, InstanceIdentifier<Node>> nodeIds = new ConcurrentHashMap<>();
 
     public HwvtepHACache() {
     }
@@ -67,11 +67,11 @@ public class HwvtepHACache {
     }
 
     public IpAddress getTepIpOfNode(InstanceIdentifier<Node> iid) {
-        return (IpAddress)this.tepIps.get(iid);
+        return this.tepIps.get(iid);
     }
 
     public InstanceIdentifier<Node> getNodeIdFromTepIp(IpAddress ipAddress) {
-        return (InstanceIdentifier)this.nodeIds.get(ipAddress);
+        return this.nodeIds.get(ipAddress);
     }
 
     public void setTepIpOfNode(InstanceIdentifier<Node> iid, IpAddress ipAddress) {
