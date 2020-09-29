@@ -299,7 +299,7 @@ public class InterfaceInventoryStateListener
     }
 
 
-    private class InterfaceStateAddWorker implements Callable {
+    private class InterfaceStateAddWorker implements Callable<List<? extends ListenableFuture<?>>> {
         private final NodeConnectorId nodeConnectorId;
         private final FlowCapableNodeConnector fcNodeConnectorNew;
         private final String interfaceName;
@@ -319,7 +319,7 @@ public class InterfaceInventoryStateListener
         }
 
         @Override
-        public Object call() {
+        public List<? extends ListenableFuture<?>> call() {
             List<? extends ListenableFuture<?>> futures = ovsInterfaceStateAddHelper.addState(nodeConnectorId,
                     interfaceName, fcNodeConnectorNew);
             Map<InterfaceChildEntryKey, InterfaceChildEntry> interfaceChildEntries =
