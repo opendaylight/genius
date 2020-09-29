@@ -7,6 +7,8 @@
  */
 package org.opendaylight.genius.itm.confighelpers;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorInterval;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.config.rev160406.TunnelMonitorIntervalBuilder;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,28 +32,28 @@ public class ItmMonitorIntervalWorker implements Callable<List<? extends Listena
 
     private final DataBroker dataBroker;
     private final String tzone;
-    private final Integer interval;
+    private final Uint16 interval;
     private final ManagedNewTransactionRunner txRunner;
 
-    public ItmMonitorIntervalWorker(String tzone, Integer interval, DataBroker dataBroker) {
+    public ItmMonitorIntervalWorker(String tzone, Uint16 interval, DataBroker dataBroker) {
         this.dataBroker = dataBroker;
         this.tzone = tzone;
-        this.interval = interval;
+        this.interval = requireNonNull(interval);
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
-        LOG.debug("ItmMonitorIntervalWorker: monitorInterval = {}",interval);
-        LOG.trace("ItmMonitorToggleWorker initialized with  tzone {} and Interval {}",tzone,interval);
+        LOG.debug("ItmMonitorIntervalWorker: monitorInterval = {}", interval);
+        LOG.trace("ItmMonitorToggleWorker initialized with  tzone {} and Interval {}", tzone, interval);
     }
 
     @Override
     public List<? extends ListenableFuture<?>> call() {
-        LOG.debug("Invoking Tunnel Monitor Worker tzone = {} Interval= {}",tzone,interval);
+        LOG.debug("Invoking Tunnel Monitor Worker tzone = {} Interval= {}", tzone, interval);
         return toggleTunnelMonitoring();
     }
 
     private List<? extends ListenableFuture<?>> toggleTunnelMonitoring() {
         List<ListenableFuture<?>> futures = new ArrayList<>();
         List<String> tunnelList = ItmUtils.getInternalTunnelInterfaces(dataBroker);
-        LOG.debug("ItmMonitorIntervalWorker toggleTunnelMonitoring: List of tunnel interfaces: {}" , tunnelList);
+        LOG.debug("ItmMonitorIntervalWorker toggleTunnelMonitoring: List of tunnel interfaces: {}", tunnelList);
         InstanceIdentifier<TunnelMonitorInterval> iid = InstanceIdentifier.create(TunnelMonitorInterval.class);
         TunnelMonitorInterval monitorInterval = new TunnelMonitorIntervalBuilder().setInterval(interval).build();
         futures.add(txRunner.callWithNewWriteOnlyTransactionAndSubmit(Datastore.OPERATIONAL,
@@ -64,7 +67,7 @@ public class ItmMonitorIntervalWorker implements Callable<List<? extends Listena
         if (tunnelInterfaceName != null) {
             LOG.debug("tunnel {} will have monitor interval {}", tunnelInterfaceName, interval);
             tx.merge(ItmUtils.buildTunnelId(tunnelInterfaceName),
-                new IfTunnelBuilder().setMonitorInterval(interval.longValue()).build());
+                new IfTunnelBuilder().setMonitorInterval(interval.toUint32()).build());
         }
     }
 }

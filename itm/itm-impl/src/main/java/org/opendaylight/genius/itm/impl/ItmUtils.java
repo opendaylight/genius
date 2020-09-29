@@ -134,6 +134,7 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeKey;
 import org.opendaylight.yangtools.yang.binding.DataObject;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint32;
 import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -144,7 +145,7 @@ public final class ItmUtils {
     private static final String ITM_LLDP_FLOW_ENTRY = "ITM Flow Entry ::" + ITMConstants.LLDP_SERVICE_ID;
     private static final String TUNNEL = "tun";
     private static final IpPrefix DUMMY_IP_PREFIX = IpPrefixBuilder.getDefaultInstance(ITMConstants.DUMMY_PREFIX);
-    private static final long DEFAULT_MONITORING_INTERVAL = 100L;
+    private static final Uint32 DEFAULT_MONITORING_INTERVAL = Uint32.valueOf(100);
     public static final ItmCache ITM_CACHE = new ItmCache();
 
     public static final ImmutableMap<String, Class<? extends TunnelTypeBase>>
@@ -325,12 +326,12 @@ public final class ItmUtils {
                 .setDatapathNodeIdentifier(dpn)
                 .setParentInterface(parentIfaceName)
                 .build());
-        Long monitoringInterval = null;
+        Uint32 monitoringInterval = null;
         LOG.debug("buildTunnelInterface: monitorProtocol = {} and monitorInterval = {}",
                 monitorProtocol.getName(), monitorInterval);
 
         if (monitorInterval != null) {
-            monitoringInterval = monitorInterval.longValue();
+            monitoringInterval = Uint32.valueOf(monitorInterval);
         }
 
         return builder.addAugmentation(new IfTunnelBuilder()
