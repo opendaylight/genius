@@ -9,8 +9,7 @@ package org.opendaylight.genius.arputil.test;
 
 import static org.opendaylight.genius.arputil.test.ArpUtilTestUtil.INTERFACE_NAME;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
 import org.junit.Assert;
@@ -50,11 +49,9 @@ public class ArpUtilTest extends AbstractConcurrentDataBrokerTest {
                 .setIpAddress(new IpAddress(Ipv4Address.getDefaultInstance("192.168.0.1")))
                 .setMacaddress(new PhysAddress("1F:1F:1F:1F:1F:1F")).build();
 
-        final List<InterfaceAddress> itf = Collections.singletonList(interfaceAddress);
-
         GetMacInput getMacInput = new GetMacInputBuilder()
                 .setIpaddress(new IpAddress(Ipv4Address.getDefaultInstance("192.168.0.2")))
-                .setInterfaceAddress(itf).build();
+                .setInterfaceAddress(Map.of(interfaceAddress.key(), interfaceAddress)).build();
 
         PacketReceived packetReceived = ArpUtilTestUtil.createPayload(0); //request payload
 
