@@ -78,7 +78,7 @@ public class TunnelMonitorIntervalListener extends AbstractSyncDataTreeChangeLis
                         ovsBridgeRefEntryCache));
                 } else {
                     ItmMonitorIntervalWorker toggleWorker = new ItmMonitorIntervalWorker(tzone.getZoneName(),
-                        dataObjectModification.getInterval().toJava(), broker);
+                        dataObjectModification.getInterval(), broker);
                     jobCoordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
                 }
             }
@@ -104,7 +104,7 @@ public class TunnelMonitorIntervalListener extends AbstractSyncDataTreeChangeLis
                     jobCoordinator.enqueueJob(tzone.getZoneName(), monitorWorker);
                 } else {
                     ItmMonitorIntervalWorker intervalWorker = new ItmMonitorIntervalWorker(tzone.getZoneName(),
-                        dataObjectModificationAfter.getInterval().toJava(), broker);
+                        dataObjectModificationAfter.getInterval(), broker);
                     jobCoordinator.enqueueJob(tzone.getZoneName(), intervalWorker);
                 }
             }
@@ -129,7 +129,7 @@ public class TunnelMonitorIntervalListener extends AbstractSyncDataTreeChangeLis
                     jobCoordinator.enqueueJob(tzone.getZoneName(), toggleWorker);
                 } else {
                     ItmMonitorIntervalWorker intervalWorker = new ItmMonitorIntervalWorker(tzone.getZoneName(),
-                        dataObjectModification.getInterval().toJava(), broker);
+                        dataObjectModification.getInterval(), broker);
                     //conversion to milliseconds done while writing to i/f-mgr config DS
                     jobCoordinator.enqueueJob(tzone.getZoneName(), intervalWorker);
                 }

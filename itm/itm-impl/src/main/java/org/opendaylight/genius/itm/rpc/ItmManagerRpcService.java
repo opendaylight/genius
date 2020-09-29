@@ -172,6 +172,7 @@ import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.opendaylight.yangtools.yang.common.Uint16;
+import org.opendaylight.yangtools.yang.common.Uint32;
 import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -401,8 +402,8 @@ public class ItmManagerRpcService implements ItmRpcService {
         LOG.debug("setBfdParamOnTunnel srcDpnId: {}, destDpnId: {}", srcDpnId, destDpnId);
         final SettableFuture<RpcResult<SetBfdParamOnTunnelOutput>> result = SettableFuture.create();
         FluentFuture<?> future = txRunner.callWithNewWriteOnlyTransactionAndSubmit(CONFIGURATION, tx -> {
-            enableBFD(tx, srcDpnId, destDpnId, input.isMonitoringEnabled(), input.getMonitoringInterval().toJava());
-            enableBFD(tx, destDpnId, srcDpnId, input.isMonitoringEnabled(), input.getMonitoringInterval().toJava());
+            enableBFD(tx, srcDpnId, destDpnId, input.isMonitoringEnabled(), input.getMonitoringInterval());
+            enableBFD(tx, destDpnId, srcDpnId, input.isMonitoringEnabled(), input.getMonitoringInterval());
         });
 
         future.addCallback(new FutureCallback<Object>() {
@@ -423,7 +424,7 @@ public class ItmManagerRpcService implements ItmRpcService {
     }
 
     private void enableBFD(TypedWriteTransaction<Datastore.Configuration> tx, Uint64 srcDpnId, Uint64 destDpnId,
-                           final Boolean enabled, final Integer interval) throws ReadFailedException {
+                           final Boolean enabled, final Uint16 interval) throws ReadFailedException {
         DpnTepInterfaceInfo dpnTepInterfaceInfo = dpnTepStateCache.getDpnTepInterface(srcDpnId, destDpnId);
         RemoteDpnsBuilder remoteDpnsBuilder = new RemoteDpnsBuilder();
         remoteDpnsBuilder.withKey(new RemoteDpnsKey(destDpnId)).setDestinationDpnId(destDpnId)
@@ -1109,21 +1110,18 @@ public class ItmManagerRpcService implements ItmRpcService {
     @Override
     public ListenableFuture<RpcResult<IsTunnelInternalOrExternalOutput>> isTunnelInternalOrExternal(
             IsTunnelInternalOrExternalInput input) {
-        RpcResultBuilder<IsTunnelInternalOrExternalOutput> resultBld;
         String tunIfName = input.getTunnelInterfaceName();
-        long tunVal = 0;
-        IsTunnelInternalOrExternalOutputBuilder output = new IsTunnelInternalOrExternalOutputBuilder()
-                .setTunnelType(tunVal);
-
+        final Uint32 tunVal;
         if (ItmUtils.ITM_CACHE.getInternalTunnel(tunIfName) != null) {
-            tunVal = 1;
+            tunVal = Uint32.ONE;
         } else if (ItmUtils.ITM_CACHE.getExternalTunnel(tunIfName) != null) {
-            tunVal = 2;
+            tunVal = Uint32.TWO;
+        } else {
+            tunVal = Uint32.ZERO;
         }
-        output.setTunnelType(tunVal);
-        resultBld = RpcResultBuilder.success();
-        resultBld.withResult(output.build());
-        return Futures.immediateFuture(resultBld.build());
+
+        return RpcResultBuilder.success(new IsTunnelInternalOrExternalOutputBuilder().setTunnelType(tunVal).build())
+                .buildFuture();
     }
 
     @Override
@@ -1135,18 +1133,15 @@ public class ItmManagerRpcService implements ItmRpcService {
             tx -> dcGatewayIpList.putAll(getDcGatewayIpList(tx))).isDone();
         String dcgwIpStr = input.getDcgwIp();
         IpAddress dcgwIpAddr = IpAddressBuilder.getDefaultInstance(dcgwIpStr);
-        long retVal;
 
         if (!dcGatewayIpList.isEmpty()
                 && dcGatewayIpList.values().stream().anyMatch(gwIp -> dcgwIpAddr.equals(gwIp.getIpAddress()))) {
             //Match found
-            retVal = 1;
-            IsDcgwPresentOutputBuilder output = new IsDcgwPresentOutputBuilder().setRetVal(retVal);
+            IsDcgwPresentOutputBuilder output = new IsDcgwPresentOutputBuilder().setRetVal(Uint32.ONE);
             resultBld.withResult(output.build());
         } else {
             //Match not found
-            retVal = 2;
-            IsDcgwPresentOutputBuilder output = new IsDcgwPresentOutputBuilder().setRetVal(retVal);
+            IsDcgwPresentOutputBuilder output = new IsDcgwPresentOutputBuilder().setRetVal(Uint32.TWO);
             resultBld.withResult(output.build());
         }
         return Futures.immediateFuture(resultBld.build());
