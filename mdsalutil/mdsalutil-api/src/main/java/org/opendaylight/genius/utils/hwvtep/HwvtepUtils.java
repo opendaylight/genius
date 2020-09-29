@@ -316,11 +316,10 @@ public final class HwvtepUtils {
                                           final HwvtepPhysicalLocatorAugmentation phyLocator) {
         InstanceIdentifier<TerminationPoint> iid = HwvtepSouthboundUtils.createPhysicalLocatorInstanceIdentifier(nodeId,
                 phyLocator);
-        TerminationPoint terminationPoint = new TerminationPointBuilder()
+        transaction.mergeParentStructurePut(LogicalDatastoreType.CONFIGURATION, iid, new TerminationPointBuilder()
                 .withKey(HwvtepSouthboundUtils.getTerminationPointKey(phyLocator))
-                .addAugmentation(HwvtepPhysicalLocatorAugmentation.class, phyLocator).build();
-
-        transaction.mergeParentStructurePut(LogicalDatastoreType.CONFIGURATION, iid, terminationPoint);
+                .addAugmentation(phyLocator)
+                .build());
     }
 
     /**

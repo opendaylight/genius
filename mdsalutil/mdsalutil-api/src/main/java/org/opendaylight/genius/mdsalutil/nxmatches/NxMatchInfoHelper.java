@@ -66,9 +66,7 @@ public abstract class NxMatchInfoHelper<T extends DataObject, B extends Builder<
             NxAugMatchNodesNodeTableFlow nxAugMatch = nxAugMatchBuilder.build();
             GeneralAugMatchNodesNodeTableFlow existingAugmentations = matchBuilder
                     .augmentation(GeneralAugMatchNodesNodeTableFlow.class);
-            GeneralAugMatchNodesNodeTableFlow genAugMatch = generalAugMatchBuilder(existingAugmentations,
-                    nxAugMatch, keyClass);
-            matchBuilder.addAugmentation(GeneralAugMatchNodesNodeTableFlow.class, genAugMatch);
+            matchBuilder.addAugmentation(generalAugMatchBuilder(existingAugmentations, nxAugMatch, keyClass));
         }
     }
 
@@ -86,8 +84,7 @@ public abstract class NxMatchInfoHelper<T extends DataObject, B extends Builder<
         }
 
         ExtensionList extensionList = new ExtensionListBuilder().setExtensionKey(extentionKey)
-                .setExtension(new ExtensionBuilder().addAugmentation(NxAugMatchNodesNodeTableFlow.class,
-                        nxAugMatch).build()).build();
+                .setExtension(new ExtensionBuilder().addAugmentation(nxAugMatch).build()).build();
         extensions.put(extensionList.key(),extensionList);
         return new GeneralAugMatchNodesNodeTableFlowBuilder().setExtensionList(extensions).build();
     }
