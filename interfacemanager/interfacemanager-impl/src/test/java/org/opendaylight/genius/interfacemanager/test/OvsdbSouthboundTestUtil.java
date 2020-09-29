@@ -71,6 +71,7 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPointBuilder;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPointKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -267,7 +268,7 @@ public class OvsdbSouthboundTestUtil {
         }
 
         IpAddress address = createIpAddress(inetAddress);
-        PortNumber port = new PortNumber(Integer.parseInt(portStr));
+        PortNumber port = new PortNumber(Uint16.valueOf(portStr));
 
         LOG.info("connectionInfo: {}", new ConnectionInfoBuilder().setRemoteIp(address).setRemotePort(port).build());
         return new ConnectionInfoBuilder().setRemoteIp(address).setRemotePort(port).build();

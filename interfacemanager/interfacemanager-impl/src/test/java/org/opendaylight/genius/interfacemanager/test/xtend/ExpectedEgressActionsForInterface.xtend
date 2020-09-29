@@ -16,6 +16,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.^extension.n
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.^extension.nicira.action.rev140714.nx.action.reg.load.grouping.NxRegLoadBuilder
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.^extension.nicira.action.rev140714.nx.action.reg.load.grouping.nx.reg.load.DstBuilder
 import org.opendaylight.yang.gen.v1.urn.opendaylight.openflowplugin.^extension.nicira.action.rev140714.nx.action.resubmit.grouping.NxResubmitBuilder
+import org.opendaylight.yangtools.yang.common.Uint16
+import org.opendaylight.yangtools.yang.common.Uint64
+import org.opendaylight.yangtools.yang.common.Uint8
 
 import static extension org.opendaylight.mdsal.binding.testutils.XtendBuilderExtensions.operator_doubleGreaterThan
 
@@ -31,10 +34,10 @@ class EgressActionsForInterfaceOutput {
                                 dstChoice = new DstNxRegCaseBuilder >> [
                                     nxReg = NxmNxReg6
                                 ]
-                                end = 31
-                                start = 0
+                                end = Uint16.valueOf(31)
+                                start = Uint16.ZERO
                             ]
-                            value = 256bi
+                            value = Uint64.valueOf(256)
                         ]
                     ]
                     order = 0
@@ -42,7 +45,7 @@ class EgressActionsForInterfaceOutput {
                 new ActionBuilder >> [
                     action = new NxActionResubmitRpcAddGroupCaseBuilder >> [
                         nxResubmit = new NxResubmitBuilder >> [
-                            table = 220 as short
+                            table = Uint8.valueOf(220)
                         ]
                     ]
                     order = 1

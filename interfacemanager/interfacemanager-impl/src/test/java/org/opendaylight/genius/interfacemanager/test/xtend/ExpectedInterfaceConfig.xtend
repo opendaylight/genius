@@ -14,6 +14,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlanBuilder
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefsBuilder
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId
+import org.opendaylight.yangtools.yang.common.Uint16
 
 import static extension org.opendaylight.mdsal.binding.testutils.XtendBuilderExtensions.operator_doubleGreaterThan
 
@@ -27,7 +28,7 @@ class ExpectedInterfaceConfig {
                 parentInterface = "tap23701c04-7e"
             ])addAugmentation(new IfL2vlanBuilder >> [
                 l2vlanMode = L2vlanMode.Trunk
-                vlanId = new VlanId(0)
+                vlanId = new VlanId(Uint16.ZERO)
             ])
         ]
     }
@@ -69,7 +70,7 @@ class ExpectedInterfaceConfig {
                 type = L2vlan
                 addAugmentation(new IfL2vlanBuilder >> [
                     l2vlanMode = L2vlanMode.Trunk
-                    vlanId = new VlanId(0)
+                    vlanId = new VlanId(Uint16.ZERO)
                 ])addAugmentation(new ParentRefsBuilder >> [
                     parentInterface = parentRefs
                 ])
