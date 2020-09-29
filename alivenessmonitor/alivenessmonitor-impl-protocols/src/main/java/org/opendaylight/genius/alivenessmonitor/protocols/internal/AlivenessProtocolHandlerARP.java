@@ -16,8 +16,7 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import java.util.Collections;
-import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -151,8 +150,9 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
             if (srcMacAddress != null) {
                 interfaceAddressBuilder.setMacaddress(srcMacAddress);
             }
-            List<InterfaceAddress> addresses = Collections.singletonList(interfaceAddressBuilder.build());
-            SendArpRequestInput input = new SendArpRequestInputBuilder().setInterfaceAddress(addresses)
+            final InterfaceAddress interfaceAddress = interfaceAddressBuilder.build();
+            SendArpRequestInput input = new SendArpRequestInputBuilder()
+                    .setInterfaceAddress(Map.of(interfaceAddress.key(), interfaceAddress))
                     .setIpaddress(IpAddressBuilder.getDefaultInstance(targetIp)).build();
             ListenableFuture<RpcResult<SendArpRequestOutput>> future = arpService.sendArpRequest(input);
             final String msgFormat = String.format("Send ARP Request on interface %s to destination %s",

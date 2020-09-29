@@ -16,8 +16,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.MoreExecutors;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.net.UnknownHostException;
-import java.util.Collections;
-import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
@@ -175,10 +174,12 @@ public class AlivenessProtocolHandlerIPv6ND extends AbstractAlivenessProtocolHan
         if (srcMacAddress != null) {
             interfaceAddressBuilder.setSrcMacAddress(srcMacAddress);
         }
-        List<InterfaceAddress> addresses = Collections.singletonList(interfaceAddressBuilder.build());
-        SendNeighborSolicitationInput input = new SendNeighborSolicitationInputBuilder().setInterfaceAddress(addresses)
-                .setTargetIpAddress(Ipv6Address.getDefaultInstance(targetIp)).build();
-        return input;
+
+        InterfaceAddress interfaceAddress = interfaceAddressBuilder.build();
+        return new SendNeighborSolicitationInputBuilder()
+                .setInterfaceAddress(Map.of(interfaceAddress.key(), interfaceAddress))
+                .setTargetIpAddress(Ipv6Address.getDefaultInstance(targetIp))
+                .build();
     }
 
     @Override
