@@ -7,9 +7,9 @@
  */
 package org.opendaylight.genius.alivenessmonitor.protocols.test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
@@ -124,8 +124,8 @@ public class AlivenessMonitorTest {
     @Mock
     private OdlArputilService arpService;
     private AlivenessMonitor alivenessMonitor;
-    private AlivenessProtocolHandler arpHandler;
-    private AlivenessProtocolHandler lldpHandler;
+    private AlivenessProtocolHandler<?> arpHandler;
+    private AlivenessProtocolHandler<?> lldpHandler;
     private long mockId;
     @Mock
     private ReadTransaction readTx;
@@ -138,7 +138,7 @@ public class AlivenessMonitorTest {
 
     private <T extends DataObject> Matcher<InstanceIdentifier<T>> isType(
             final Class<T> klass) {
-        return new TypeSafeMatcher<InstanceIdentifier<T>>() {
+        return new TypeSafeMatcher<>() {
             @Override
             public void describeTo(Description desc) {
                 desc.appendText(
@@ -153,7 +153,7 @@ public class AlivenessMonitorTest {
     }
 
     private Matcher<RpcError> hasErrorType(final ErrorType errorType) {
-        return new TypeSafeMatcher<RpcError>() {
+        return new TypeSafeMatcher<>() {
             @Override
             public void describeTo(Description desc) {
                 desc.appendText("Error type do not match " + errorType);
@@ -186,7 +186,7 @@ public class AlivenessMonitorTest {
                 .thenReturn(
                         Futures.immediateFuture(RpcResultBuilder
                                 .success(new AllocateIdOutputBuilder()
-                                        .setIdValue(mockId++).build())
+                                        .setIdValue(Uint32.valueOf(mockId++)).build())
                                 .build()));
         when(idManager.releaseId(any(ReleaseIdInput.class))).thenReturn(Futures
                 .immediateFuture(RpcResultBuilder.<ReleaseIdOutput>success().build()));
@@ -209,7 +209,7 @@ public class AlivenessMonitorTest {
             throws InterruptedException, ExecutionException {
         MonitorProfileCreateInput input = new MonitorProfileCreateInputBuilder()
                 .setProfile(new ProfileBuilder().setFailureThreshold(Uint32.TEN)
-                        .setMonitorInterval(10000L).setMonitorWindow(Uint32.TEN)
+                        .setMonitorInterval(Uint32.valueOf(10000)).setMonitorWindow(Uint32.TEN)
                         .setProtocolType(MonitorProtocolType.Arp).build())
                 .build();
         doReturn(FluentFutures.immediateFluentFuture(Optional.empty()))
@@ -228,7 +228,7 @@ public class AlivenessMonitorTest {
             throws InterruptedException, ExecutionException {
         MonitorProfileCreateInput input = new MonitorProfileCreateInputBuilder()
                 .setProfile(new ProfileBuilder().setFailureThreshold(Uint32.TEN)
-                        .setMonitorInterval(10000L).setMonitorWindow(Uint32.TEN)
+                        .setMonitorInterval(Uint32.valueOf(10000)).setMonitorWindow(Uint32.TEN)
                         .setProtocolType(MonitorProtocolType.Arp).build())
                 .build();
         doReturn(FluentFutures.immediateFluentFuture(Optional.of(input))).when(readWriteTx).read(
@@ -244,7 +244,7 @@ public class AlivenessMonitorTest {
     @Test
     public void testMonitorStart()
             throws InterruptedException, ExecutionException {
-        Long profileId = createProfile();
+        Uint32 profileId = createProfile();
         MonitorStartInput input = new MonitorStartInputBuilder()
                 .setConfig(
                         new ConfigBuilder()
@@ -287,7 +287,7 @@ public class AlivenessMonitorTest {
                 argThat(isType(MonitorProfile.class))))
                         .thenReturn(FluentFutures.immediateFluentFuture(optProfile));
         Optional<MonitoringInfo> optInfo = Optional.of(
-                new MonitoringInfoBuilder().setId(2L).setProfileId(1L).build());
+                new MonitoringInfoBuilder().setId(Uint32.TWO).setProfileId(Uint32.ONE).build());
         when(readTx.read(eq(LogicalDatastoreType.OPERATIONAL),
                 argThat(isType(MonitoringInfo.class))))
                         .thenReturn(FluentFutures.immediateFluentFuture(optInfo));
@@ -346,8 +346,7 @@ public class AlivenessMonitorTest {
     @Test
     public void testMonitorStop()
             throws InterruptedException, ExecutionException {
-        MonitorStopInput input = new MonitorStopInputBuilder().setMonitorId(Uint32.TWO)
-                .build();
+        MonitorStopInput input = new MonitorStopInputBuilder().setMonitorId(Uint32.TWO).build();
         Optional<MonitoringInfo> optInfo = Optional
                 .of(new MonitoringInfoBuilder().setId(Uint32.MAX_VALUE).setSource(new SourceBuilder()
                         .setEndpointType(getInterface("testInterface", "10.1.1.1"))
@@ -397,11 +396,11 @@ public class AlivenessMonitorTest {
     }
 
     @SuppressWarnings("unchecked")
-    private long createProfile()
+    private Uint32 createProfile()
             throws InterruptedException, ExecutionException {
         MonitorProfileCreateInput input = new MonitorProfileCreateInputBuilder()
                 .setProfile(new ProfileBuilder().setFailureThreshold(Uint32.TEN)
-                        .setMonitorInterval(10000L).setMonitorWindow(Uint32.TEN)
+                        .setMonitorInterval(Uint32.valueOf(10000)).setMonitorWindow(Uint32.TEN)
                         .setProtocolType(MonitorProtocolType.Arp).build())
                 .build();
         doReturn(FluentFutures.immediateFluentFuture(Optional.empty()))
@@ -410,19 +409,19 @@ public class AlivenessMonitorTest {
         doReturn(CommitInfo.emptyFluentFuture()).when(readWriteTx).commit();
         RpcResult<MonitorProfileCreateOutput> output = alivenessMonitor
                 .monitorProfileCreate(input).get();
-        return output.getResult().getProfileId().toJava();
+        return output.getResult().getProfileId();
     }
 
     private MonitorProfile getTestMonitorProfile() {
         return new MonitorProfileBuilder().setId(Uint32.MAX_VALUE).setFailureThreshold(Uint32.TEN)
-                .setMonitorInterval(10000L).setMonitorWindow(Uint32.TEN)
+                .setMonitorInterval(Uint32.valueOf(10000)).setMonitorWindow(Uint32.TEN)
                 .setProtocolType(MonitorProtocolType.Arp).build();
     }
 
     private InterfaceMonitorEntry getInterfaceMonitorEntry() {
         return new InterfaceMonitorEntryBuilder()
                 .setInterfaceName("test-interface")
-                .setMonitorIds(Arrays.asList(Uint32.valueOf(1L), Uint32.valueOf(2L))).build();
+                .setMonitorIds(Arrays.asList(Uint32.ONE, Uint32.TWO)).build();
     }
 
     private Interface getInterface(String ipAddress) {
