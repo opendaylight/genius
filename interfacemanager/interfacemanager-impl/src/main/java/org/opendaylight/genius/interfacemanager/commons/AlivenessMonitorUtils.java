@@ -100,7 +100,7 @@ public final class AlivenessMonitorUtils {
                 Future<RpcResult<MonitorStartOutput>> result = alivenessMonitorService.monitorStart(lldpMonitorInput);
                 RpcResult<MonitorStartOutput> rpcResult = result.get();
                 if (rpcResult.isSuccessful()) {
-                    long monitorId = rpcResult.getResult().getMonitorId().toJava();
+                    Uint32 monitorId = rpcResult.getResult().getMonitorId();
                     LoggingFutures.addErrorLogging(
                         txRunner.callWithNewReadWriteTransactionAndSubmit(OPERATIONAL, tx -> {
                             createOrUpdateInterfaceMonitorIdMap(tx, trunkInterfaceName, monitorId);
@@ -216,7 +216,7 @@ public final class AlivenessMonitorUtils {
     }
 
     private static void createOrUpdateInterfaceMonitorIdMap(TypedReadWriteTransaction<Operational> tx, String infName,
-        long monitorId) throws ExecutionException, InterruptedException {
+            Uint32 monitorId) throws ExecutionException, InterruptedException {
         InterfaceMonitorId interfaceMonitorIdInstance;
         List<Uint32> existingMonitorIds;
         InterfaceMonitorIdBuilder interfaceMonitorIdBuilder = new InterfaceMonitorIdBuilder();
@@ -229,15 +229,15 @@ public final class AlivenessMonitorUtils {
             if (existingMonitorIds == null) {
                 existingMonitorIds = new ArrayList<>();
             }
-            if (!existingMonitorIds.contains(Uint32.valueOf(monitorId))) {
-                existingMonitorIds.add(Uint32.valueOf(monitorId));
+            if (!existingMonitorIds.contains(monitorId)) {
+                existingMonitorIds.add(monitorId);
                 interfaceMonitorIdInstance = interfaceMonitorIdBuilder.withKey(new InterfaceMonitorIdKey(infName))
                         .setMonitorId(existingMonitorIds).build();
                 tx.mergeParentStructureMerge(id, interfaceMonitorIdInstance);
             }
         } else {
             existingMonitorIds = new ArrayList<>();
-            existingMonitorIds.add(Uint32.valueOf(monitorId));
+            existingMonitorIds.add(monitorId);
             interfaceMonitorIdInstance = interfaceMonitorIdBuilder.setMonitorId(existingMonitorIds)
                     .withKey(new InterfaceMonitorIdKey(infName)).setInterfaceName(infName).build();
             tx.mergeParentStructureMerge(id, interfaceMonitorIdInstance);
@@ -245,7 +245,7 @@ public final class AlivenessMonitorUtils {
     }
 
     private static void createOrUpdateMonitorIdInterfaceMap(TypedReadWriteTransaction<Operational> tx, String infName,
-        long monitorId) throws ExecutionException, InterruptedException {
+            Uint32 monitorId) throws ExecutionException, InterruptedException {
         MonitorIdInterface monitorIdInterfaceInstance;
         String existinginterfaceName;
         MonitorIdInterfaceBuilder monitorIdInterfaceBuilder = new MonitorIdInterfaceBuilder();
@@ -286,9 +286,8 @@ public final class AlivenessMonitorUtils {
                         rpcResult.getErrors());
                 Profile createProfile = monitorProfileCreateInput.getProfile();
                 Future<RpcResult<MonitorProfileGetOutput>> existingProfile = alivenessMonitorService.monitorProfileGet(
-                        buildMonitorGetProfile(createProfile.getMonitorInterval().toJava(),
-                                createProfile.getMonitorWindow().toJava(),
-                                createProfile.getFailureThreshold().toJava(), createProfile.getProtocolType()));
+                        buildMonitorGetProfile(createProfile.getMonitorInterval(), createProfile.getMonitorWindow(),
+                                createProfile.getFailureThreshold(), createProfile.getProtocolType()));
                 RpcResult<MonitorProfileGetOutput> rpcGetResult = existingProfile.get();
                 if (rpcGetResult.isSuccessful()) {
                     return rpcGetResult.getResult().getProfileId();
@@ -302,20 +301,17 @@ public final class AlivenessMonitorUtils {
         return Uint32.valueOf(0);
     }
 
-    private static MonitorProfileGetInput buildMonitorGetProfile(long monitorInterval, long monitorWindow,
-            long failureThreshold, MonitorProtocolType protocolType) {
-        org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor
-            .rev160411.monitor.profile.get.input.ProfileBuilder profileBuilder =
-            new org.opendaylight.yang.gen.v1.urn.opendaylight
-            .genius.alivenessmonitor.rev160411.monitor.profile.get.input.ProfileBuilder();
-
-        profileBuilder.setFailureThreshold(failureThreshold);
-        profileBuilder.setMonitorInterval(monitorInterval);
-        profileBuilder.setMonitorWindow(monitorWindow);
-        profileBuilder.setProtocolType(protocolType);
-        MonitorProfileGetInputBuilder buildGetProfile = new MonitorProfileGetInputBuilder();
-        buildGetProfile.setProfile(profileBuilder.build());
-        return buildGetProfile.build();
+    private static MonitorProfileGetInput buildMonitorGetProfile(Uint32 monitorInterval, Uint32 monitorWindow,
+            Uint32 failureThreshold, MonitorProtocolType protocolType) {
+        return new MonitorProfileGetInputBuilder()
+                .setProfile(new org.opendaylight.yang.gen.v1.urn.opendaylight.genius.alivenessmonitor.rev160411.monitor
+                    .profile.get.input.ProfileBuilder()
+                        .setFailureThreshold(failureThreshold)
+                        .setMonitorInterval(monitorInterval)
+                        .setMonitorWindow(monitorWindow)
+                        .setProtocolType(protocolType)
+                        .build())
+                .build();
     }
 
     public Uint32 allocateProfile(long failureThreshold, long monitoringInterval, long monitoringWindow,
