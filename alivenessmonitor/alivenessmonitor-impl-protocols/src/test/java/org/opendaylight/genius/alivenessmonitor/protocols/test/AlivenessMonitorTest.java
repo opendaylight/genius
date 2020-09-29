@@ -7,9 +7,9 @@
  */
 package org.opendaylight.genius.alivenessmonitor.protocols.test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.argThat;
@@ -124,8 +124,8 @@ public class AlivenessMonitorTest {
     @Mock
     private OdlArputilService arpService;
     private AlivenessMonitor alivenessMonitor;
-    private AlivenessProtocolHandler arpHandler;
-    private AlivenessProtocolHandler lldpHandler;
+    private AlivenessProtocolHandler<?> arpHandler;
+    private AlivenessProtocolHandler<?> lldpHandler;
     private long mockId;
     @Mock
     private ReadTransaction readTx;
@@ -138,7 +138,7 @@ public class AlivenessMonitorTest {
 
     private <T extends DataObject> Matcher<InstanceIdentifier<T>> isType(
             final Class<T> klass) {
-        return new TypeSafeMatcher<InstanceIdentifier<T>>() {
+        return new TypeSafeMatcher<>() {
             @Override
             public void describeTo(Description desc) {
                 desc.appendText(
@@ -153,7 +153,7 @@ public class AlivenessMonitorTest {
     }
 
     private Matcher<RpcError> hasErrorType(final ErrorType errorType) {
-        return new TypeSafeMatcher<RpcError>() {
+        return new TypeSafeMatcher<>() {
             @Override
             public void describeTo(Description desc) {
                 desc.appendText("Error type do not match " + errorType);
@@ -186,7 +186,7 @@ public class AlivenessMonitorTest {
                 .thenReturn(
                         Futures.immediateFuture(RpcResultBuilder
                                 .success(new AllocateIdOutputBuilder()
-                                        .setIdValue(mockId++).build())
+                                        .setIdValue(Uint32.valueOf(mockId++)).build())
                                 .build()));
         when(idManager.releaseId(any(ReleaseIdInput.class))).thenReturn(Futures
                 .immediateFuture(RpcResultBuilder.<ReleaseIdOutput>success().build()));
@@ -208,8 +208,8 @@ public class AlivenessMonitorTest {
     public void testMonitorProfileCreate()
             throws InterruptedException, ExecutionException {
         MonitorProfileCreateInput input = new MonitorProfileCreateInputBuilder()
-                .setProfile(new ProfileBuilder().setFailureThreshold(10L)
-                        .setMonitorInterval(10000L).setMonitorWindow(10L)
+                .setProfile(new ProfileBuilder().setFailureThreshold(Uint32.ZERO)
+                        .setMonitorInterval(Uint32.valueOf(10000)).setMonitorWindow(Uint32.ZERO)
                         .setProtocolType(MonitorProtocolType.Arp).build())
                 .build();
         doReturn(FluentFutures.immediateFluentFuture(Optional.empty()))
@@ -227,8 +227,8 @@ public class AlivenessMonitorTest {
     public void testMonitorProfileCreateAlreadyExist()
             throws InterruptedException, ExecutionException {
         MonitorProfileCreateInput input = new MonitorProfileCreateInputBuilder()
-                .setProfile(new ProfileBuilder().setFailureThreshold(10L)
-                        .setMonitorInterval(10000L).setMonitorWindow(10L)
+                .setProfile(new ProfileBuilder().setFailureThreshold(Uint32.ZERO)
+                        .setMonitorInterval(Uint32.valueOf(10000)).setMonitorWindow(Uint32.ZERO)
                         .setProtocolType(MonitorProtocolType.Arp).build())
                 .build();
         doReturn(FluentFutures.immediateFluentFuture(Optional.of(input))).when(readWriteTx).read(
@@ -244,7 +244,7 @@ public class AlivenessMonitorTest {
     @Test
     public void testMonitorStart()
             throws InterruptedException, ExecutionException {
-        Long profileId = createProfile();
+        Uint32 profileId = createProfile();
         MonitorStartInput input = new MonitorStartInputBuilder()
                 .setConfig(
                         new ConfigBuilder()
@@ -279,15 +279,13 @@ public class AlivenessMonitorTest {
     @Test
     public void testMonitorPause()
             throws InterruptedException, ExecutionException {
-        MonitorPauseInput input = new MonitorPauseInputBuilder()
-                .setMonitorId(2L).build();
-        Optional<MonitorProfile> optProfile = Optional
-                .of(getTestMonitorProfile());
+        MonitorPauseInput input = new MonitorPauseInputBuilder().setMonitorId(Uint32.TWO).build();
+        Optional<MonitorProfile> optProfile = Optional.of(getTestMonitorProfile());
         when(readTx.read(eq(LogicalDatastoreType.OPERATIONAL),
                 argThat(isType(MonitorProfile.class))))
                         .thenReturn(FluentFutures.immediateFluentFuture(optProfile));
         Optional<MonitoringInfo> optInfo = Optional.of(
-                new MonitoringInfoBuilder().setId(2L).setProfileId(1L).build());
+                new MonitoringInfoBuilder().setId(Uint32.TWO).setProfileId(Uint32.ONE).build());
         when(readTx.read(eq(LogicalDatastoreType.OPERATIONAL),
                 argThat(isType(MonitoringInfo.class))))
                         .thenReturn(FluentFutures.immediateFluentFuture(optInfo));
@@ -298,7 +296,7 @@ public class AlivenessMonitorTest {
                 argThat(isType(MonitoringState.class))))
                         .thenReturn(FluentFutures.immediateFluentFuture(optState));
         Optional<MonitoridKeyEntry> optMap = Optional
-                .of(new MonitoridKeyEntryBuilder().setMonitorId(2L)
+                .of(new MonitoridKeyEntryBuilder().setMonitorId(Uint32.TWO)
                         .setMonitorKey("Test monitor Key").build());
         when(readTx.read(eq(LogicalDatastoreType.OPERATIONAL),
                 argThat(isType(MonitoridKeyEntry.class))))
@@ -312,8 +310,7 @@ public class AlivenessMonitorTest {
     @Test
     public void testMonitorUnpause()
             throws InterruptedException, ExecutionException {
-        MonitorUnpauseInput input = new MonitorUnpauseInputBuilder()
-                .setMonitorId(2L).build();
+        MonitorUnpauseInput input = new MonitorUnpauseInputBuilder().setMonitorId(Uint32.TWO).build();
         Optional<MonitoringState> optState = Optional
                 .of(new MonitoringStateBuilder().setStatus(MonitorStatus.Paused)
                         .build());
@@ -321,7 +318,7 @@ public class AlivenessMonitorTest {
                 argThat(isType(MonitoringState.class))))
                         .thenReturn(FluentFutures.immediateFluentFuture(optState));
         Optional<MonitoringInfo> optInfo = Optional.of(
-                new MonitoringInfoBuilder().setId(2L).setProfileId(1L).build());
+                new MonitoringInfoBuilder().setId(Uint32.TWO).setProfileId(Uint32.ONE).build());
         when(readTx.read(eq(LogicalDatastoreType.OPERATIONAL),
                 argThat(isType(MonitoringInfo.class))))
                         .thenReturn(FluentFutures.immediateFluentFuture(optInfo));
@@ -331,7 +328,7 @@ public class AlivenessMonitorTest {
                 argThat(isType(MonitorProfile.class))))
                         .thenReturn(FluentFutures.immediateFluentFuture(optProfile));
         Optional<MonitoridKeyEntry> optMap = Optional
-                .of(new MonitoridKeyEntryBuilder().setMonitorId(2L)
+                .of(new MonitoridKeyEntryBuilder().setMonitorId(Uint32.TWO)
                         .setMonitorKey("Test monitor Key").build());
         when(readTx.read(eq(LogicalDatastoreType.OPERATIONAL),
                 argThat(isType(MonitoridKeyEntry.class))))
@@ -346,8 +343,7 @@ public class AlivenessMonitorTest {
     @Test
     public void testMonitorStop()
             throws InterruptedException, ExecutionException {
-        MonitorStopInput input = new MonitorStopInputBuilder().setMonitorId(2L)
-                .build();
+        MonitorStopInput input = new MonitorStopInputBuilder().setMonitorId(Uint32.TWO).build();
         Optional<MonitoringInfo> optInfo = Optional
                 .of(new MonitoringInfoBuilder().setSource(new SourceBuilder()
                         .setEndpointType(
@@ -357,7 +353,7 @@ public class AlivenessMonitorTest {
         when(readTx.read(eq(LogicalDatastoreType.OPERATIONAL),
                 argThat(isType(MonitoringInfo.class)))).thenReturn(outFuture);
         Optional<MonitoridKeyEntry> optMap = Optional
-                .of(new MonitoridKeyEntryBuilder().setMonitorId(2L)
+                .of(new MonitoridKeyEntryBuilder().setMonitorId(Uint32.TWO)
                         .setMonitorKey("Test monitor Key").build());
         when(readTx.read(eq(LogicalDatastoreType.OPERATIONAL),
                 argThat(isType(MonitoridKeyEntry.class))))
@@ -383,7 +379,7 @@ public class AlivenessMonitorTest {
     public void testMonitorProfileDelete()
             throws InterruptedException, ExecutionException {
         MonitorProfileDeleteInput input = new MonitorProfileDeleteInputBuilder()
-                .setProfileId(1L).build();
+                .setProfileId(Uint32.ONE).build();
         Optional<MonitorProfile> optProfile = Optional
                 .of(getTestMonitorProfile());
         when(readWriteTx.read(eq(LogicalDatastoreType.OPERATIONAL),
@@ -398,11 +394,11 @@ public class AlivenessMonitorTest {
     }
 
     @SuppressWarnings("unchecked")
-    private long createProfile()
+    private Uint32 createProfile()
             throws InterruptedException, ExecutionException {
         MonitorProfileCreateInput input = new MonitorProfileCreateInputBuilder()
-                .setProfile(new ProfileBuilder().setFailureThreshold(10L)
-                        .setMonitorInterval(10000L).setMonitorWindow(10L)
+                .setProfile(new ProfileBuilder().setFailureThreshold(Uint32.TEN)
+                        .setMonitorInterval(Uint32.valueOf(10000)).setMonitorWindow(Uint32.TEN)
                         .setProtocolType(MonitorProtocolType.Arp).build())
                 .build();
         doReturn(FluentFutures.immediateFluentFuture(Optional.empty()))
@@ -411,19 +407,19 @@ public class AlivenessMonitorTest {
         doReturn(CommitInfo.emptyFluentFuture()).when(readWriteTx).commit();
         RpcResult<MonitorProfileCreateOutput> output = alivenessMonitor
                 .monitorProfileCreate(input).get();
-        return output.getResult().getProfileId().toJava();
+        return output.getResult().getProfileId();
     }
 
     private MonitorProfile getTestMonitorProfile() {
-        return new MonitorProfileBuilder().setFailureThreshold(10L)
-                .setMonitorInterval(10000L).setMonitorWindow(10L)
+        return new MonitorProfileBuilder().setFailureThreshold(Uint32.TEN)
+                .setMonitorInterval(Uint32.valueOf(10000)).setMonitorWindow(Uint32.TEN)
                 .setProtocolType(MonitorProtocolType.Arp).build();
     }
 
     private InterfaceMonitorEntry getInterfaceMonitorEntry() {
         return new InterfaceMonitorEntryBuilder()
                 .setInterfaceName("test-interface")
-                .setMonitorIds(Arrays.asList(Uint32.valueOf(1L), Uint32.valueOf(2L))).build();
+                .setMonitorIds(Arrays.asList(Uint32.ONE, Uint32.TWO)).build();
     }
 
     private Interface getInterface(String ipAddress) {
