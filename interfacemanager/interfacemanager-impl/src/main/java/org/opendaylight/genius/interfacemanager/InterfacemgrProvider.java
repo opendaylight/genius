@@ -120,7 +120,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     private Map<InstanceIdentifier<Node>, OvsdbBridgeAugmentation> nodeIidToBridgeMap;
     private EntityOwnershipCandidateRegistration configEntityCandidate;
     private EntityOwnershipCandidateRegistration bindingEntityCandidate;
-    private InternalTunnelCache internalTunnelCache;
+    private final InternalTunnelCache internalTunnelCache;
 
     @Inject
     public InterfacemgrProvider(@Reference final DataBroker dataBroker,
@@ -421,12 +421,12 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
         if (vlanId != null && vlanId > 0) {
             l2vlanBuilder.setVlanId(new VlanId(vlanId));
         }
-        ParentRefs parentRefs = new ParentRefsBuilder().setParentInterface(portName).build();
         InterfaceBuilder interfaceBuilder = new InterfaceBuilder().setEnabled(true).setName(interfaceName)
-                .setType(L2vlan.class).addAugmentation(IfL2vlan.class, l2vlanBuilder.build())
-                .addAugmentation(ParentRefs.class, parentRefs).setDescription(description);
+                .setType(L2vlan.class).addAugmentation(l2vlanBuilder.build())
+                .addAugmentation(new ParentRefsBuilder().setParentInterface(portName).build())
+                .setDescription(description);
         if (isExternal) {
-            interfaceBuilder.addAugmentation(IfExternal.class, new IfExternalBuilder().setExternal(true).build());
+            interfaceBuilder.addAugmentation(new IfExternalBuilder().setExternal(true).build());
         }
         InstanceIdentifier<Interface> interfaceIId = InterfaceManagerCommonUtils
                 .getInterfaceIdentifier(new InterfaceKey(interfaceName));

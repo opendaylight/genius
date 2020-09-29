@@ -50,7 +50,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.met
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge.ref.info.BridgeRefEntryKey;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.inventory.rev130819.Nodes;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.DatapathId;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentationBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeRef;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.bridge.attributes.BridgeOtherConfigsBuilder;
@@ -139,7 +138,7 @@ public class CloudScalerServiceTest {
         otherConfigsBuilder.setBridgeOtherConfigValue(computeName);
         bridge.setDatapathId(new DatapathId(datapathid));
         bridge.setBridgeOtherConfigs(Lists.newArrayList(otherConfigsBuilder.build()));
-        nodeBuilder.addAugmentation(OvsdbBridgeAugmentation.class,bridge.build());
+        nodeBuilder.addAugmentation(bridge.build());
         return nodeBuilder.build();
     }
 
@@ -243,7 +242,7 @@ public class CloudScalerServiceTest {
             throws ExecutionException, InterruptedException, TransactionCommitFailedException {
 
         Set<Uint64> nodesRecoverd = new HashSet<>();
-        tombstonedNodeManager.addOnRecoveryCallback((dpnId) -> {
+        tombstonedNodeManager.addOnRecoveryCallback(dpnId -> {
             nodesRecoverd.add(dpnId);
             return null;
         });

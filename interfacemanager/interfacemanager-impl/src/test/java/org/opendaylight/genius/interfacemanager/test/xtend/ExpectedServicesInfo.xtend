@@ -15,12 +15,11 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instru
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.instruction.apply.actions._case.ApplyActionsBuilder
 import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instruction.list.InstructionBuilder
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceTypeFlowBased
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.StypeOpenflow
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.StypeOpenflowBuilder
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServicesBuilder
 
 import static extension org.opendaylight.mdsal.binding.testutils.XtendBuilderExtensions.operator_doubleGreaterThan
-
+ 
 class ExpectedServicesInfo {
 
     static def newboundService() {
@@ -28,7 +27,7 @@ class ExpectedServicesInfo {
             serviceName = "default.23701c04-7e58-4c65-9425-78a80d49a218"
             servicePriority = 9 as short
             serviceType = ServiceTypeFlowBased
-            addAugmentation(StypeOpenflow, new StypeOpenflowBuilder >> [
+            addAugmentation(new StypeOpenflowBuilder >> [
                 flowCookie = 134217735bi
                 flowPriority = 9
                 instruction = #[

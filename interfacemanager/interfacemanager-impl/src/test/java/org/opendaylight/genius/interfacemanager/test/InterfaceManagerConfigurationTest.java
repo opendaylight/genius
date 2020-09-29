@@ -558,8 +558,7 @@ public class InterfaceManagerConfigurationTest {
                 interfaceBfd.sort(Comparator.comparing(o -> o.key().toString()));
                 newOvsdbTpAugmentationBuilder.setInterfaceBfd(interfaceBfd);
             }
-            newTpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class,
-                    newOvsdbTpAugmentationBuilder.build());
+            newTpBuilder.addAugmentation(newOvsdbTpAugmentationBuilder.build());
         }
         return newTpBuilder.build();
     }

@@ -14,7 +14,6 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.google.common.util.concurrent.FluentFuture;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -256,7 +255,7 @@ public class TepCommandHelperTest {
         doReturn(mockReadTx).when(dataBroker).newReadOnlyTransaction();
         doReturn(mockWriteTx).when(dataBroker).newWriteOnlyTransaction();
         lenient().doReturn(FluentFutures.immediateNullFluentFuture()).when(mockWriteTx).commit();
-        doReturn(FluentFuture.from(FluentFutures.immediateFluentFuture(CommitInfo.empty()))).when(mockWriteTx).commit();
+        doReturn(CommitInfo.emptyFluentFuture()).when(mockWriteTx).commit();
     }
 
     @Test

@@ -287,18 +287,16 @@ public final class ItmUtils {
     }
 
     public static Interface buildLogicalTunnelInterface(Uint64 dpn, String ifName, String desc, boolean enabled) {
-        InterfaceBuilder builder = new InterfaceBuilder().withKey(new InterfaceKey(ifName)).setName(ifName)
-                .setDescription(desc).setEnabled(enabled).setType(Tunnel.class);
-        ParentRefs parentRefs = new ParentRefsBuilder().setDatapathNodeIdentifier(dpn).build();
-        builder.addAugmentation(ParentRefs.class, parentRefs);
-
-        IfTunnel tunnel = new IfTunnelBuilder()
-                .setTunnelDestination(IpAddressBuilder.getDefaultInstance(ITMConstants.DUMMY_IP_ADDRESS))
-                .setTunnelSource(IpAddressBuilder.getDefaultInstance(ITMConstants.DUMMY_IP_ADDRESS)).setInternal(true)
-                .setMonitorEnabled(false).setTunnelInterfaceType(TunnelTypeLogicalGroup.class)
-                .setTunnelRemoteIpFlow(false).build();
-        builder.addAugmentation(IfTunnel.class, tunnel);
-        return builder.build();
+        return new InterfaceBuilder().withKey(new InterfaceKey(ifName)).setName(ifName)
+                .setDescription(desc).setEnabled(enabled).setType(Tunnel.class)
+                .addAugmentation(new ParentRefsBuilder().setDatapathNodeIdentifier(dpn).build())
+                .addAugmentation(new IfTunnelBuilder()
+                        .setTunnelDestination(IpAddressBuilder.getDefaultInstance(ITMConstants.DUMMY_IP_ADDRESS))
+                        .setTunnelSource(IpAddressBuilder.getDefaultInstance(ITMConstants.DUMMY_IP_ADDRESS))
+                        .setInternal(true).setMonitorEnabled(false).setTunnelInterfaceType(TunnelTypeLogicalGroup.class)
+                        .setTunnelRemoteIpFlow(false)
+                        .build())
+                .build();
     }
 
     public static Interface buildTunnelInterface(Uint64 dpn, String ifName, String desc, boolean enabled,
@@ -323,9 +321,10 @@ public final class ItmUtils {
                                                  List<TunnelOptions> tunnelOptions) {
         InterfaceBuilder builder = new InterfaceBuilder().withKey(new InterfaceKey(ifName)).setName(ifName)
                 .setDescription(desc).setEnabled(enabled).setType(Tunnel.class);
-        ParentRefs parentRefs =
-                new ParentRefsBuilder().setDatapathNodeIdentifier(dpn).setParentInterface(parentIfaceName).build();
-        builder.addAugmentation(ParentRefs.class, parentRefs);
+        builder.addAugmentation(new ParentRefsBuilder()
+                .setDatapathNodeIdentifier(dpn)
+                .setParentInterface(parentIfaceName)
+                .build());
         Long monitoringInterval = null;
         LOG.debug("buildTunnelInterface: monitorProtocol = {} and monitorInterval = {}",
                 monitorProtocol.getName(), monitorInterval);
@@ -334,14 +333,13 @@ public final class ItmUtils {
             monitoringInterval = monitorInterval.longValue();
         }
 
-        IfTunnel tunnel = new IfTunnelBuilder().setTunnelDestination(remoteIp)
-                .setTunnelSource(localIp).setTunnelInterfaceType(tunType)
+        return builder.addAugmentation(new IfTunnelBuilder()
+                .setTunnelDestination(remoteIp).setTunnelSource(localIp).setTunnelInterfaceType(tunType)
                 .setMonitorEnabled(monitorEnabled).setMonitorProtocol(monitorProtocol)
                 .setMonitorInterval(monitoringInterval).setTunnelRemoteIpFlow(useOfTunnel)
                 .setTunnelOptions(tunnelOptions).setInternal(internal)
+                .build())
                 .build();
-        builder.addAugmentation(IfTunnel.class, tunnel);
-        return builder.build();
     }
 
     public static Interface buildHwTunnelInterface(String tunnelIfName, String desc, boolean enabled, String topoId,
@@ -356,14 +354,13 @@ public final class ItmUtils {
         NodeIdentifier hwNode = new NodeIdentifierBuilder().withKey(new NodeIdentifierKey(topoId))
                 .setTopologyId(topoId).setNodeId(nodeId).build();
         nodeIds.add(hwNode);
-        ParentRefs parent = new ParentRefsBuilder().setNodeIdentifier(nodeIds).build();
-        builder.addAugmentation(ParentRefs.class, parent);
+        builder.addAugmentation(new ParentRefsBuilder().setNodeIdentifier(nodeIds).build());
         IfTunnel tunnel = new IfTunnelBuilder().setTunnelDestination(destIp).setTunnelGateway(gwIp)
                 .setTunnelSource(srcIp).setMonitorEnabled(monitorEnabled == null || monitorEnabled)
                 .setMonitorProtocol(monitorProtocol == null ? ITMConstants.DEFAULT_MONITOR_PROTOCOL : monitorProtocol)
                 .setMonitorInterval(DEFAULT_MONITORING_INTERVAL).setTunnelInterfaceType(tunType).setInternal(false)
                 .build();
-        builder.addAugmentation(IfTunnel.class, tunnel);
+        builder.addAugmentation(tunnel);
         LOG.trace("iftunnel {} built from hwvtep {} ", tunnel, nodeId);
         return builder.build();
     }
