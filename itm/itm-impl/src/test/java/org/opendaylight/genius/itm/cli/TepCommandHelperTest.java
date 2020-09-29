@@ -68,6 +68,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transp
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rev160406.transport.zones.transport.zone.VtepsKey;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,7 +78,7 @@ public class TepCommandHelperTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(TepCommandHelper.class);
 
-    private final int interval = 1000;
+    private final Uint16 interval = Uint16.valueOf(1000);
     private final Boolean enabled = false ;
     private final Class<? extends TunnelMonitoringTypeBase> monitorProtocol = ITMConstants.DEFAULT_MONITOR_PROTOCOL;
     private final String tepIp1 = "192.168.56.30";
@@ -122,7 +123,7 @@ public class TepCommandHelperTest {
     private final List<InternalTunnel> internalTunnelList = new ArrayList<>();
     private final List<StateTunnelList> stateTunnelList = new ArrayList<>() ;
     private final List<String> lowerLayerIfList = new ArrayList<>();
-    private final List<InstanceIdentifier> instanceIdentifierList = new ArrayList<>();
+    private final List<InstanceIdentifier<?>> instanceIdentifierList = new ArrayList<>();
     private final java.lang.Class<? extends TunnelTypeBase> tunnelType1 = TunnelTypeVxlan.class;
     private final java.lang.Class<? extends TunnelTypeBase> tunnelType2 = TunnelTypeGre.class;
 
@@ -233,7 +234,7 @@ public class TepCommandHelperTest {
         mergeParentTransportZoneListGre.add(mergeTransportZoneGre);
         mergeParentTransportZonesGre = new TransportZonesBuilder().setTransportZone(mergeParentTransportZoneListGre)
                 .build();
-        tunnelMonitorInterval = new TunnelMonitorIntervalBuilder().setInterval(10000).build();
+        tunnelMonitorInterval = new TunnelMonitorIntervalBuilder().setInterval(Uint16.valueOf(10000)).build();
         tunnelMonitorParams = new TunnelMonitorParamsBuilder().setEnabled(true).build();
         InternalTunnel internalTunnelTest = new InternalTunnelBuilder().setSourceDPN(dpId1).setDestinationDPN(dpId2)
                 .setTunnelInterfaceNames(Collections.singletonList(tunnelInterfaceName))
@@ -251,7 +252,7 @@ public class TepCommandHelperTest {
                 .setIfIndex(100).setLowerLayerIf(lowerLayerIfList).setType(L2vlan.class).build();
         interfaceTestNew = ItmUtils.buildTunnelInterface(dpId1, tunnelInterfaceName, destinationDevice, enabled,
                 TunnelTypeVxlan.class, ipAddress1, ipAddress2, true, enabled,monitorProtocol,
-                interval, false, null);
+                interval.toJava(), false, null);
         doReturn(mockReadTx).when(dataBroker).newReadOnlyTransaction();
         doReturn(mockWriteTx).when(dataBroker).newWriteOnlyTransaction();
         lenient().doReturn(FluentFutures.immediateNullFluentFuture()).when(mockWriteTx).commit();
@@ -350,7 +351,7 @@ public class TepCommandHelperTest {
 
         TunnelMonitorInterval tunnelMonitor = new TunnelMonitorIntervalBuilder().setInterval(interval).build();
 
-        tepCommandHelper.configureTunnelMonitorInterval(interval);
+        tepCommandHelper.configureTunnelMonitorInterval(interval.toJava());
 
         verify(mockReadTx).read(LogicalDatastoreType.CONFIGURATION,tunnelMonitorIntervalIdentifier);
         verify(mockWriteTx).mergeParentStructureMerge(LogicalDatastoreType.CONFIGURATION,
@@ -452,7 +453,7 @@ public class TepCommandHelperTest {
     public void testShowTepsWithTransportZone() {
 
         try {
-            tepCommandHelper.showTeps(enabled, interval);
+            tepCommandHelper.showTeps(enabled, interval.toJava());
         } catch (TepException e) {
             LOG.error(e.getMessage());
         }
@@ -471,7 +472,7 @@ public class TepCommandHelperTest {
 
         String output = null;
         try {
-            tepCommandHelper.showTeps(enabled, interval);
+            tepCommandHelper.showTeps(enabled, interval.toJava());
         } catch (TepException e) {
             output = e.getMessage();
         }

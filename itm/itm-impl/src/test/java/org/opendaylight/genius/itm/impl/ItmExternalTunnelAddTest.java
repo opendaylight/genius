@@ -84,6 +84,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
 import org.opendaylight.yangtools.yang.common.Uint16;
+import org.opendaylight.yangtools.yang.common.Uint32;
 import org.opendaylight.yangtools.yang.common.Uint64;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -91,7 +92,7 @@ public class ItmExternalTunnelAddTest {
 
     Uint64 dpId1 = Uint64.ONE;
     int vlanId = 100 ;
-    int interval = 1000;
+    Uint16 interval = Uint16.valueOf(1000);
     String portName1 = "phy0";
     String tepIp1 = "192.168.56.30";
     String tepIp2 = "192.168.56.40";
@@ -144,17 +145,17 @@ public class ItmExternalTunnelAddTest {
             InstanceIdentifier.create(TunnelMonitorInterval.class);
     InstanceIdentifier<ExternalTunnel> externalTunnelIdentifier = null;
     InstanceIdentifier<DpnEndpoints> dpnEndpointsIdentifier = InstanceIdentifier.builder(DpnEndpoints.class).build();
-    AllocateIdOutput expectedId1 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("100")).build();
+    AllocateIdOutput expectedId1 = new AllocateIdOutputBuilder().setIdValue(Uint32.valueOf(100)).build();
     Future<RpcResult<AllocateIdOutput>> idOutputOptional1 ;
-    AllocateIdOutput expectedId2 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("101")).build();
+    AllocateIdOutput expectedId2 = new AllocateIdOutputBuilder().setIdValue(Uint32.valueOf(101)).build();
     Future<RpcResult<AllocateIdOutput>> idOutputOptional2 ;
-    AllocateIdOutput expectedId3 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("102")).build();
+    AllocateIdOutput expectedId3 = new AllocateIdOutputBuilder().setIdValue(Uint32.valueOf(102)).build();
     Future<RpcResult<AllocateIdOutput>> idOutputOptional3 ;
-    AllocateIdOutput expectedId4 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("103")).build();
+    AllocateIdOutput expectedId4 = new AllocateIdOutputBuilder().setIdValue(Uint32.valueOf(103)).build();
     Future<RpcResult<AllocateIdOutput>> idOutputOptional4 ;
-    AllocateIdOutput expectedId5 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("104")).build();
+    AllocateIdOutput expectedId5 = new AllocateIdOutputBuilder().setIdValue(Uint32.valueOf(104)).build();
     Future<RpcResult<AllocateIdOutput>> idOutputOptional5 ;
-    AllocateIdOutput expectedId6 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("105")).build();
+    AllocateIdOutput expectedId6 = new AllocateIdOutputBuilder().setIdValue(Uint32.valueOf(105)).build();
     Future<RpcResult<AllocateIdOutput>> idOutputOptional6 ;
     Optional<DpnEndpoints> optionalDpnEndPoints ;
     Optional<TunnelMonitorParams> tunnelMonitorParamsOptional;

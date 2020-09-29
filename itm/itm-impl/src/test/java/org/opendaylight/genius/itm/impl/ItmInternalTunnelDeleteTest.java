@@ -68,6 +68,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tun
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.op.rev160406.tunnel.list.InternalTunnelKey;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint64;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -76,7 +77,7 @@ public class ItmInternalTunnelDeleteTest {
     Uint64 dpId1 = Uint64.ONE;
     Uint64 dpId2 = Uint64.valueOf(2);
     int vlanId = 100 ;
-    int interval = 1000;
+    Uint16 interval = Uint16.valueOf(1000);
     String portName1 = "phy0";
     String portName2 = "phy1" ;
     String parentInterfaceName = "1:phy0:100" ;
