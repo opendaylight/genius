@@ -194,12 +194,12 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
                         StateTunnelListKey tlKey = new StateTunnelListKey(interfaceName);
                         LOG.trace("TunnelStateKey: {} for interface: {}", tlKey, interfaceName);
                         InstanceIdentifier<StateTunnelList> stListId = ItmUtils.buildStateTunnelListId(tlKey);
-                        eventCallbacks.onRemove(LogicalDatastoreType.OPERATIONAL, stListId, (unused) -> {
+                        eventCallbacks.onRemove(LogicalDatastoreType.OPERATIONAL, stListId, unused -> {
                             LOG.trace("callback event for a delete {} interface instance....", stListId);
                             // recreating the transportZone
                             recreateTEP(tzName, tepsToRecover, eventCallbackCount, interfaceListToRecover.size());
                             return DataTreeEventCallbackRegistrar.NextAction.UNREGISTER;
-                        }, Duration.ofMillis(5000), (id) -> {
+                        }, Duration.ofMillis(5000), id -> {
                                 LOG.trace("event callback timed out for {} tunnel interface ", interfaceName);
                                 recreateTEP(tzName, tepsToRecover, eventCallbackCount, interfaceListToRecover.size());
                             });
@@ -211,7 +211,8 @@ public class ItmTepInstanceRecoveryHandler implements ServiceRecoveryInterface {
         }
     }
 
-    private void recreateTEP(String tzName, List tepts, AtomicInteger eventCallbackCount, int registeredEventSize) {
+    private void recreateTEP(String tzName, List<DPNTEPsInfo> tepts, AtomicInteger eventCallbackCount,
+            int registeredEventSize) {
         eventCallbackCount.incrementAndGet();
         if (eventCallbackCount.intValue() == registeredEventSize || registeredEventSize == 0) {
             LOG.info("Re-creating TEP {}", tzName);

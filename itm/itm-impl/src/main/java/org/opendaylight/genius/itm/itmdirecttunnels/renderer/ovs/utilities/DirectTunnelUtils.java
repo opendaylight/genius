@@ -127,6 +127,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.OperationFailedException;
 import org.opendaylight.yangtools.yang.common.RpcError;
 import org.opendaylight.yangtools.yang.common.RpcResult;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -525,7 +526,7 @@ public final class DirectTunnelUtils {
 
         if (vlanId != 0) {
             tpAugmentationBuilder.setVlanMode(OvsdbPortInterfaceAttributes.VlanMode.Access);
-            tpAugmentationBuilder.setVlanTag(new VlanId(vlanId));
+            tpAugmentationBuilder.setVlanTag(new VlanId(Uint16.valueOf(vlanId)));
         }
 
         if (itmConfig.isUseOfTunnels()) {
