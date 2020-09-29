@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.mdsalutil.nxmatches;
 
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 import org.opendaylight.genius.mdsalutil.NxMatchInfo;
@@ -32,17 +33,23 @@ public abstract class NxMatchInfoHelper<T extends DataObject, B extends Builder<
     private final Class<B> builderClass;
     // The key class can't be a type parameter, it varies in some subclasses
     private final Class<? extends ExtensionKey> keyClass;
+    private final Constructor<B> ctor;
 
     protected NxMatchInfoHelper(Class<? extends ExtensionKey> keyClass) {
         this.keyClass = keyClass;
         builderClass = SuperTypeUtil.getTypeParameter(getClass(), 1);
+        try {
+            ctor = builderClass.getDeclaredConstructor();
+        } catch (NoSuchMethodException e) {
+            throw new IllegalStateException(builderClass + " does not define a no-arg constructor", e);
+        }
     }
 
     @Override
     public void createInnerMatchBuilder(Map<Class<?>, Object> mapMatchBuilder) {
         populateBuilder((B) mapMatchBuilder.computeIfAbsent(builderClass, key -> {
             try {
-                return builderClass.getDeclaredConstructor().newInstance();
+                return ctor.newInstance();
             } catch (ReflectiveOperationException e) {
                 throw new IllegalStateException("Unable to create an instance of " + builderClass, e);
             }
