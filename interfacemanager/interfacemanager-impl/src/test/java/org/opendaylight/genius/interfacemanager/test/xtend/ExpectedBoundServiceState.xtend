@@ -10,17 +10,19 @@ package org.opendaylight.genius.interfacemanager.test.xtend
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.L2vlan
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeIngress
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.bound.services.state.list.BoundServicesStateBuilder
+import org.opendaylight.yangtools.yang.common.Uint32
+import org.opendaylight.yangtools.yang.common.Uint64
 
 import static extension org.opendaylight.mdsal.binding.testutils.XtendBuilderExtensions.operator_doubleGreaterThan
 
 class ExpectedBoundServiceState {
     static def newBoundServiceState() {
         new BoundServicesStateBuilder >> [
-            dpid = 1bi
+            dpid = Uint64.ONE
             ifIndex = 1
             interfaceName = "23701c04-7e58-4c65-9425-78a80d49a218"
             interfaceType = L2vlan
-            portNo = 2L
+            portNo = Uint32.TWO
             serviceMode = ServiceModeIngress
         ]
     }

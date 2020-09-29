@@ -12,6 +12,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
+import org.opendaylight.yangtools.yang.common.Uint16;
 
 /**
  * Unit tests for {@link OvsVlanMemberConfigUpdateHelper}.
@@ -19,8 +20,8 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
 public class OvsVlanMemberConfigUpdateHelperTest {
     @Test
     public void testVlanIdModified() {
-        VlanId vlanId1 = new VlanId(1);
-        VlanId vlanId2 = new VlanId(2);
+        VlanId vlanId1 = new VlanId(Uint16.ONE);
+        VlanId vlanId2 = new VlanId(Uint16.TWO);
         assertFalse(OvsVlanMemberConfigUpdateHelper.vlanIdModified(null, null));
         assertTrue(OvsVlanMemberConfigUpdateHelper.vlanIdModified(null, vlanId2));
         assertTrue(OvsVlanMemberConfigUpdateHelper.vlanIdModified(vlanId1, null));
