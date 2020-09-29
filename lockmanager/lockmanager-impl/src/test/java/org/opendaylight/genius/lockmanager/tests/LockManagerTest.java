@@ -37,6 +37,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev16041
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.TryLockInputBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.UnlockInput;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.lockmanager.rev160413.UnlockInputBuilder;
+import org.opendaylight.yangtools.yang.common.Uint32;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,13 +93,13 @@ public class LockManagerTest extends AbstractConcurrentDataBrokerTest {
         String uniqueId = lockManagerUtils.getBladeId() + ":2";
         logCaptureRule.expectError("Failed to get lock testTryLock owner " + uniqueId + " after 3 retries");
 
-        TryLockInput lockInput = new TryLockInputBuilder().setLockName("testTryLock").setTime(3L)
+        TryLockInput lockInput = new TryLockInputBuilder().setLockName("testTryLock").setTime(Uint32.valueOf(3))
                 .setTimeUnit(TimeUnits.Seconds).build();
         assertRpcSuccess(lockManager.tryLock(lockInput));
 
         // The second acquireLock request will retry for 3 seconds
         // and since the first lock is not unlocked, the request will fail.
-        lockInput = new TryLockInputBuilder().setLockName("testTryLock").setTime(3000L)
+        lockInput = new TryLockInputBuilder().setLockName("testTryLock").setTime(Uint32.valueOf(3000))
                 .setTimeUnit(TimeUnits.Milliseconds).build();
         assertRpcErrorWithoutCausesOrMessages(lockManager.tryLock(lockInput));
 
@@ -106,7 +107,7 @@ public class LockManagerTest extends AbstractConcurrentDataBrokerTest {
         // if lock gets acquired.
         runUnlockTimerTask("testTryLock", 2000);
 
-        lockInput = new TryLockInputBuilder().setLockName("testTryLock").setTime(4000000L)
+        lockInput = new TryLockInputBuilder().setLockName("testTryLock").setTime(Uint32.valueOf(4000000))
                 .setTimeUnit(TimeUnits.Microseconds).build();
         assertRpcSuccess(lockManager.tryLock(lockInput));
     }
