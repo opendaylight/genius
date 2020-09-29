@@ -8,7 +8,6 @@
 package org.opendaylight.genius.interfacemanager.test.xtend
 
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.InterfaceTypeVxlan
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentationBuilder
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceBfdBuilder
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.port._interface.attributes.InterfaceExternalIdsBuilder
@@ -23,7 +22,7 @@ class ExpectedTerminationPoint {
     static def newTerminationPoint() {
         new TerminationPointBuilder >> [
             tpId = new TpId("tun414a856a7a4")
-            addAugmentation(OvsdbTerminationPointAugmentation, new OvsdbTerminationPointAugmentationBuilder >> [
+            addAugmentation(new OvsdbTerminationPointAugmentationBuilder >> [
                 interfaceType = InterfaceTypeVxlan
                 name = "tun414a856a7a4"
                 options = #[
@@ -48,7 +47,7 @@ class ExpectedTerminationPoint {
     static def newBfdEnabledTerminationPoint() {
     new TerminationPointBuilder >> [
         tpId = new TpId("tun414a856a7a4")
-        addAugmentation(OvsdbTerminationPointAugmentation, new OvsdbTerminationPointAugmentationBuilder >> [
+        addAugmentation(new OvsdbTerminationPointAugmentationBuilder >> [
             interfaceBfd = #[
                 new InterfaceBfdBuilder >> [
                     bfdKey = "forwarding_if_rx"

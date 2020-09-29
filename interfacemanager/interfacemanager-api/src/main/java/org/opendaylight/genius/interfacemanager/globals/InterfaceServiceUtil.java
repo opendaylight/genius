@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
@@ -33,7 +34,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instru
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeIngress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceTypeFlowBased;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.StypeOpenflow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.StypeOpenflowBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfoBuilder;
@@ -74,10 +74,11 @@ public final class InterfaceServiceUtil {
     }
 
     public static ServicesInfo buildServiceInfo(String serviceName, Uint8 servicePriority) {
-        List<BoundServices> boundService = new ArrayList<>();
-        boundService.add(new BoundServicesBuilder().setServicePriority(servicePriority)
-                .setServiceName(serviceName).build());
-        return new ServicesInfoBuilder().setBoundServices(boundService)
+        BoundServices boundService = new BoundServicesBuilder()
+                .setServicePriority(servicePriority)
+                .setServiceName(serviceName)
+                .build();
+        return new ServicesInfoBuilder().setBoundServices(Map.of(boundService.key(), boundService))
                 .withKey(new ServicesInfoKey(serviceName, ServiceModeIngress.class)).build();
     }
 
@@ -87,7 +88,7 @@ public final class InterfaceServiceUtil {
                 .setInstruction(instructions);
         return new BoundServicesBuilder().withKey(new BoundServicesKey(servicePriority)).setServiceName(serviceName)
                 .setServicePriority(servicePriority).setServiceType(ServiceTypeFlowBased.class)
-                .addAugmentation(StypeOpenflow.class, augBuilder.build()).build();
+                .addAugmentation(augBuilder.build()).build();
     }
 
     public static List<MatchInfo> getMatchInfoForVlanLPort(Uint64 dpId, long portNo, long vlanId,

@@ -55,7 +55,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceBindings;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeIngress;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceTypeFlowBased;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.StypeOpenflow;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.StypeOpenflowBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfo;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.ServicesInfoKey;
@@ -139,8 +138,7 @@ public final class InterfaceManagerTestUtil {
         NodeConnectorBuilder ncBuilder = new NodeConnectorBuilder()
                 .setId(ncId)
                 .withKey(new NodeConnectorKey(ncId));
-        ncBuilder.addAugmentation(FlowCapableNodeConnector.class,
-                buildFlowCapableNodeConnector(false, isLive,"AA:AA:AA:AA:AA:AA", portName));
+        ncBuilder.addAugmentation(buildFlowCapableNodeConnector(false, isLive,"AA:AA:AA:AA:AA:AA", portName));
         return ncBuilder.build();
     }
 
@@ -177,8 +175,7 @@ public final class InterfaceManagerTestUtil {
                                            String parentInterface, IfL2vlan.L2vlanMode l2vlanMode) {
         InterfaceBuilder builder = new InterfaceBuilder().withKey(new InterfaceKey(ifName)).setName(ifName)
                 .setDescription(desc).setEnabled(enabled).setType((Class<? extends InterfaceType>) ifType);
-        ParentRefs parentRefs = new ParentRefsBuilder().setParentInterface(parentInterface).build();
-        builder.addAugmentation(ParentRefs.class, parentRefs);
+        builder.addAugmentation(new ParentRefsBuilder().setParentInterface(parentInterface).build());
         if (ifType.equals(L2vlan.class)) {
             IfL2vlanBuilder ifL2vlanBuilder = new IfL2vlanBuilder().setL2vlanMode(l2vlanMode);
             if (IfL2vlan.L2vlanMode.TrunkMember.equals(l2vlanMode)) {
@@ -186,11 +183,10 @@ public final class InterfaceManagerTestUtil {
             } else {
                 ifL2vlanBuilder.setVlanId(VlanId.getDefaultInstance("0"));
             }
-            builder.addAugmentation(IfL2vlan.class, ifL2vlanBuilder.build());
+            builder.addAugmentation(ifL2vlanBuilder.build());
         } else if (ifType.equals(IfTunnel.class)) {
-            IfTunnel tunnel = new IfTunnelBuilder().setTunnelDestination(null).setTunnelGateway(null)
-                    .setTunnelSource(null).setTunnelInterfaceType(null).build();
-            builder.addAugmentation(IfTunnel.class, tunnel);
+            builder.addAugmentation(new IfTunnelBuilder().setTunnelDestination(null).setTunnelGateway(null)
+                    .setTunnelSource(null).setTunnelInterfaceType(null).build());
         }
         return builder.build();
     }
@@ -198,17 +194,23 @@ public final class InterfaceManagerTestUtil {
     static Interface buildTunnelInterface(BigInteger dpn, String ifName, String desc, boolean enabled,
                                           Class<? extends TunnelTypeBase> tunType, String remoteIpStr,
                                           String localIpStr) {
-        InterfaceBuilder builder = new InterfaceBuilder().withKey(new InterfaceKey(ifName)).setName(ifName)
-                .setDescription(desc).setEnabled(enabled).setType(Tunnel.class);
-        ParentRefs parentRefs = new ParentRefsBuilder().setDatapathNodeIdentifier(dpn).build();
-        builder.addAugmentation(ParentRefs.class, parentRefs);
         IpAddress remoteIp = new IpAddress(Ipv4Address.getDefaultInstance(remoteIpStr));
         IpAddress localIp = new IpAddress(Ipv4Address.getDefaultInstance(localIpStr));
-        IfTunnel tunnel = new IfTunnelBuilder().setTunnelDestination(remoteIp).setTunnelGateway(localIp)
-                .setTunnelSource(localIp).setTunnelInterfaceType(tunType).setInternal(true).setMonitorEnabled(false)
+        return new InterfaceBuilder()
+                .withKey(new InterfaceKey(ifName))
+                .setDescription(desc)
+                .setEnabled(enabled)
+                .setType(Tunnel.class)
+                .addAugmentation(new ParentRefsBuilder().setDatapathNodeIdentifier(dpn).build())
+                .addAugmentation(new IfTunnelBuilder()
+                        .setTunnelDestination(remoteIp)
+                        .setTunnelGateway(localIp)
+                        .setTunnelSource(localIp)
+                        .setTunnelInterfaceType(tunType)
+                        .setInternal(true)
+                        .setMonitorEnabled(false)
+                        .build())
                 .build();
-        builder.addAugmentation(IfTunnel.class, tunnel);
-        return builder.build();
     }
 
     static InstanceIdentifier<TerminationPoint> getTerminationPointId(InstanceIdentifier<?> bridgeIid,
@@ -242,15 +244,17 @@ public final class InterfaceManagerTestUtil {
     static void updateTunnelMonitoringAttributes(DataBroker dataBroker, String ifaceName)
             throws ExecutionException, InterruptedException {
         InstanceIdentifier<Interface> tunnelInstanceIdentifier = IfmUtil.buildId(ifaceName);
-        InterfaceBuilder builder = new InterfaceBuilder().withKey(new InterfaceKey(ifaceName)).setName(ifaceName);
-        IfTunnel tunnel = new IfTunnelBuilder().setMonitorProtocol(TunnelMonitoringTypeBfd.class)
-            .setMonitorEnabled(true).build();
-        builder.addAugmentation(IfTunnel.class, tunnel);
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
-        tx.merge(CONFIGURATION, tunnelInstanceIdentifier, builder.build());
+        tx.merge(CONFIGURATION, tunnelInstanceIdentifier, new InterfaceBuilder()
+                .withKey(new InterfaceKey(ifaceName))
+                .setName(ifaceName)
+                .addAugmentation(new IfTunnelBuilder()
+                        .setMonitorProtocol(TunnelMonitoringTypeBfd.class)
+                        .setMonitorEnabled(true)
+                        .build())
+                .build());
         tx.commit().get();
     }
-
 
     static void putInterfaceConfig(DataBroker dataBroker, String ifaceName, ParentRefs parentRefs,
                                           Class<? extends InterfaceType> ifType)
@@ -362,7 +366,7 @@ public final class InterfaceManagerTestUtil {
             .setInstruction(instructions);
         return new BoundServicesBuilder().withKey(new BoundServicesKey(servicePriority)).setServiceName(serviceName)
             .setServicePriority(servicePriority).setServiceType(ServiceTypeFlowBased.class)
-            .addAugmentation(StypeOpenflow.class, augBuilder.build()).build();
+            .addAugmentation(augBuilder.build()).build();
     }
 
     static InstanceIdentifier<BoundServices> buildServiceId(String vpnInterfaceName, short serviceIndex) {

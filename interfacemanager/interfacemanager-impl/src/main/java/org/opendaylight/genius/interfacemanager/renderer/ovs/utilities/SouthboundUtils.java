@@ -154,7 +154,7 @@ public class SouthboundUtils {
                 new CacheConfigBuilder<String, String>()
                         .anchor(this)
                         .id("ovsVersionCache")
-                        .cacheFunction(key -> getVersionForBridgeNodeId(key))
+                        .cacheFunction(this::getVersionForBridgeNodeId)
                         .description("BridgeNodeId to OVS Version cache")
                         .build(),
                 new CachePolicyBuilder().maxEntries(MAX_CACHE_SIZE).build());
@@ -185,7 +185,7 @@ public class SouthboundUtils {
                 if (iface != null) {
                     IfTunnel ifTunnel = iface.augmentation(IfTunnel.class);
                     if (ifTunnel != null) {
-                        if (!(interfacemgrProvider.isItmDirectTunnelsEnabled() && ifTunnel.isInternal())) {
+                        if (!interfacemgrProvider.isItmDirectTunnelsEnabled() || !ifTunnel.isInternal()) {
                             addTunnelPortToBridge(ifTunnel, bridgeIid, iface, portName);
                         }
                         if (isOfTunnel(ifTunnel)) {
@@ -281,12 +281,11 @@ public class SouthboundUtils {
         }
         LOG.debug("update bfd parameters for interface {}", tpIid);
         OvsdbTerminationPointAugmentationBuilder tpAugmentationBuilder = new OvsdbTerminationPointAugmentationBuilder();
-        List<InterfaceBfd> bfdParams = getBfdParams(ifTunnel);
-        tpAugmentationBuilder.setInterfaceBfd(bfdParams);
+        tpAugmentationBuilder.setInterfaceBfd(getBfdParams(ifTunnel));
 
         TerminationPointBuilder tpBuilder = new TerminationPointBuilder();
         tpBuilder.withKey(InstanceIdentifier.keyOf(tpIid));
-        tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
+        tpBuilder.addAugmentation(tpAugmentationBuilder.build());
 
         transaction.mergeParentStructureMerge(tpIid, tpBuilder.build());
     }
@@ -320,14 +319,13 @@ public class SouthboundUtils {
         if (isOfTunnel(ifTunnel)) {
             LOG.warn("BFD Monitoring not supported for OFTunnels");
         } else {
-            List<InterfaceBfd> bfdParams = getBfdParams(ifTunnel);
-            tpAugmentationBuilder.setInterfaceBfd(bfdParams);
+            tpAugmentationBuilder.setInterfaceBfd(getBfdParams(ifTunnel));
         }
         TerminationPointBuilder tpBuilder = new TerminationPointBuilder();
         InstanceIdentifier<TerminationPoint> tpIid = createTerminationPointInstanceIdentifier(
                 InstanceIdentifier.keyOf(bridgeIid.firstIdentifierOf(Node.class)), portName);
         tpBuilder.withKey(InstanceIdentifier.keyOf(tpIid));
-        tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
+        tpBuilder.addAugmentation(tpAugmentationBuilder.build());
 
         batchingUtils.write(tpIid, tpBuilder.build(), BatchingUtils.EntityType.TOPOLOGY_CONFIG);
     }

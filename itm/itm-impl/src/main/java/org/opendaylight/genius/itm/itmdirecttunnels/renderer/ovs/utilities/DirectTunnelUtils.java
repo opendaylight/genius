@@ -538,7 +538,7 @@ public final class DirectTunnelUtils {
 
         TerminationPointBuilder tpBuilder = new TerminationPointBuilder();
         tpBuilder.withKey(InstanceIdentifier.keyOf(tpIid));
-        tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
+        tpBuilder.addAugmentation(tpAugmentationBuilder.build());
 
         ITMBatchingUtils.write(tpIid, tpBuilder.build(), ITMBatchingUtils.EntityType.TOPOLOGY_CONFIG);
     }
@@ -601,7 +601,7 @@ public final class DirectTunnelUtils {
         LOG.debug("OvsdbTerminationPointAugmentation: {}", tpAugmentationBuilder);
         TerminationPointBuilder tpBuilder = new TerminationPointBuilder();
         tpBuilder.withKey(InstanceIdentifier.keyOf(tpIid));
-        tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
+        tpBuilder.addAugmentation(tpAugmentationBuilder.build());
         ITMBatchingUtils.update(tpIid, tpBuilder.build(), ITMBatchingUtils.EntityType.TOPOLOGY_CONFIG);
     }
 

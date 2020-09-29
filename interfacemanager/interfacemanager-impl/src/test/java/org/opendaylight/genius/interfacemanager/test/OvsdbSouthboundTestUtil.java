@@ -49,7 +49,6 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.re
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeAugmentationBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbBridgeName;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbNodeAugmentation;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentation;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.OvsdbTerminationPointAugmentationBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.bridge.attributes.ControllerEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.params.xml.ns.yang.ovsdb.rev150105.ovsdb.bridge.attributes.ControllerEntryBuilder;
@@ -111,7 +110,7 @@ public class OvsdbSouthboundTestUtil {
         OvsdbBridgeAugmentationBuilder bridgeCreateAugmentationBuilder = new OvsdbBridgeAugmentationBuilder();
         bridgeCreateAugmentationBuilder.setBridgeName(ovsdbBridgeName)
                 .setDatapathId(new DatapathId("00:00:00:00:00:00:00:01"));
-        bridgeCreateNodeBuilder.addAugmentation(OvsdbBridgeAugmentation.class, bridgeCreateAugmentationBuilder.build());
+        bridgeCreateNodeBuilder.addAugmentation(bridgeCreateAugmentationBuilder.build());
         LOG.debug("Built with the intent to store bridge data {}", bridgeCreateAugmentationBuilder.toString());
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.mergeParentStructurePut(LogicalDatastoreType.OPERATIONAL, ovsdbBridgeIid,
@@ -131,7 +130,7 @@ public class OvsdbSouthboundTestUtil {
         OvsdbBridgeAugmentationBuilder bridgeCreateAugmentationBuilder = new OvsdbBridgeAugmentationBuilder();
         bridgeCreateAugmentationBuilder.setBridgeName(ovsdbBridgeName)
             .setDatapathId(new DatapathId(datapathId));
-        bridgeCreateNodeBuilder.addAugmentation(OvsdbBridgeAugmentation.class, bridgeCreateAugmentationBuilder.build());
+        bridgeCreateNodeBuilder.addAugmentation(bridgeCreateAugmentationBuilder.build());
         LOG.debug("Built with the intent to store bridge data {}", bridgeCreateAugmentationBuilder.toString());
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.mergeParentStructureMerge(LogicalDatastoreType.OPERATIONAL, ovsdbBridgeIid,
@@ -223,7 +222,7 @@ public class OvsdbSouthboundTestUtil {
             interfaceExternalIds.add(interfaceExternalIds1);
             tpAugmentationBuilder.setInterfaceExternalIds(interfaceExternalIds);
         }
-        tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
+        tpBuilder.addAugmentation(tpAugmentationBuilder.build());
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.mergeParentStructurePut(OPERATIONAL, tpId, tpBuilder.build());
         tx.commit().get();
@@ -249,7 +248,7 @@ public class OvsdbSouthboundTestUtil {
             .setBfdStatusKey("state").setBfdStatusValue("down").build());
 
         tpAugmentationBuilder.setInterfaceBfdStatus(interfaceBfdStatuses);
-        tpBuilder.addAugmentation(OvsdbTerminationPointAugmentation.class, tpAugmentationBuilder.build());
+        tpBuilder.addAugmentation(tpAugmentationBuilder.build());
         WriteTransaction tx = dataBroker.newWriteOnlyTransaction();
         tx.mergeParentStructureMerge(OPERATIONAL, tpId, tpBuilder.build());
         tx.commit().get();
