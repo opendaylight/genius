@@ -19,6 +19,7 @@ import org.opendaylight.mdsal.binding.util.Datastore.Configuration;
 import org.opendaylight.mdsal.binding.util.TypedWriteTransaction;
 import org.opendaylight.mdsal.common.api.ReadFailedException;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge.ref.info.BridgeRefEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceModeBase;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServices;
@@ -192,7 +193,7 @@ public interface IInterfaceManager {
 
     boolean isItmDirectTunnelsEnabled();
 
-    Map getBridgeRefEntryMap();
+    Map<Uint64, BridgeRefEntry> getBridgeRefEntryMap();
 
     boolean isItmOfTunnelsEnabled();
 
