@@ -8,6 +8,7 @@
 package org.opendaylight.genius.interfacemanager.test.xtend
 
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rpcs.rev160406.GetDpidFromInterfaceOutputBuilder
+import org.opendaylight.yangtools.yang.common.Uint64
 
 import static extension org.opendaylight.mdsal.binding.testutils.XtendBuilderExtensions.operator_doubleGreaterThan
 
@@ -15,7 +16,7 @@ class DpnFromInterfaceOutput {
 
     static def newDpnFromInterfaceOutput() {
         new GetDpidFromInterfaceOutputBuilder >> [
-            dpid = 1bi
+            dpid = Uint64.ONE
         ]
     }
 
