@@ -24,6 +24,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.MetadataBuilder
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.match.VlanMatchBuilder
 import org.opendaylight.yang.gen.v1.urn.opendaylight.model.match.types.rev131026.vlan.match.fields.VlanIdBuilder
+import org.opendaylight.yangtools.yang.common.Uint16
+import org.opendaylight.yangtools.yang.common.Uint64
+import org.opendaylight.yangtools.yang.common.Uint8
 
 import static extension org.opendaylight.mdsal.binding.testutils.XtendBuilderExtensions.operator_doubleGreaterThan
 
@@ -31,17 +34,17 @@ class ExpectedFlowEntries {
 
     static def newIngressFlow() {
         new FlowBuilder >> [
-            cookie = new FlowCookie(134217728bi)
+            cookie = new FlowCookie(Uint64.valueOf(134217728))
             flowName = "0:1:23701c04-7e58-4c65-9425-78a80d49a218"
-            hardTimeout = 0
+            hardTimeout = Uint16.ZERO
             id = new FlowId("0:1:23701c04-7e58-4c65-9425-78a80d49a218")
-            idleTimeout = 0
+            idleTimeout = Uint16.ZERO
             instructions = new InstructionsBuilder >> [
                 instruction = #[
                     new InstructionBuilder >> [
                         instruction = new GoToTableCaseBuilder >> [
                             goToTable = new GoToTableBuilder >> [
-                                tableId = 17 as short
+                                tableId = Uint8.valueOf(17)
                             ]
                         ]
                         order = 1
@@ -49,8 +52,8 @@ class ExpectedFlowEntries {
                     new InstructionBuilder >> [
                         instruction = new WriteMetadataCaseBuilder >> [
                             writeMetadata = new WriteMetadataBuilder >> [
-                                metadata = 1099511627776bi
-                                metadataMask = 18446742974197923841bi
+                                metadata = Uint64.valueOf(1099511627776L)
+                                metadataMask = Uint64.valueOf(18446742974197923841bi)
                             ]
                         ]
                         order = 0
@@ -61,28 +64,28 @@ class ExpectedFlowEntries {
                 inPort = new NodeConnectorId("openflow:1:2")
                 vlanMatch = new VlanMatchBuilder >> [
                     vlanId = new VlanIdBuilder >> [
-                        vlanId = new VlanId(0)
+                        vlanId = new VlanId(Uint16.ZERO)
                     ]
                 ]
             ]
-            priority = 4
-            tableId = 0 as short
+            priority = Uint16.valueOf(4)
+            tableId = Uint8.ZERO
         ]
     }
 
     static def newLportDispatcherFlow(){
         new FlowBuilder >> [
-            cookie = new FlowCookie(134479872bi)
+            cookie = new FlowCookie(Uint64.valueOf(134479872))
             flowName = "ELAN"
-            hardTimeout = 0
+            hardTimeout = Uint16.ZERO
             id = new FlowId("1.17.23701c04-7e58-4c65-9425-78a80d49a218.0")
-            idleTimeout = 0
+            idleTimeout = Uint16.ZERO
             instructions = new InstructionsBuilder >> [
                 instruction = #[
                     new InstructionBuilder >> [
                         instruction = new GoToTableCaseBuilder >> [
                             goToTable = new GoToTableBuilder >> [
-                                tableId = 48 as short
+                                tableId = Uint8.valueOf(48)
                             ]
                         ]
                         order = 3
@@ -90,8 +93,8 @@ class ExpectedFlowEntries {
                     new InstructionBuilder >> [
                         instruction = new WriteMetadataCaseBuilder >> [
                             writeMetadata = new WriteMetadataBuilder >> [
-                                metadata = 12682137650203721728bi
-                                metadataMask = 18446744073709551614bi
+                                metadata = Uint64.valueOf(12682137650203721728bi)
+                                metadataMask = Uint64.valueOf(18446744073709551614bi)
                             ]
                         ]
                         order = 4
@@ -109,12 +112,12 @@ class ExpectedFlowEntries {
             ]
             match = new MatchBuilder >> [
                 metadata = new MetadataBuilder >> [
-                    metadata = 1099511627776bi
-                    metadataMask = 18446742974197923840bi
+                    metadata = Uint64.valueOf(1099511627776L)
+                    metadataMask = Uint64.valueOf(18446742974197923840bi)
                 ]
             ]
-            priority = 10
-            tableId = 17 as short
+            priority = Uint16.TEN
+            tableId = Uint8.valueOf(17)
         ]
     }
 }

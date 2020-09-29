@@ -10,7 +10,6 @@ package org.opendaylight.genius.interfacemanager.test;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.CONFIGURATION;
 import static org.opendaylight.mdsal.common.api.LogicalDatastoreType.OPERATIONAL;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -74,7 +73,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.TopologyId;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.node.TerminationPoint;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
+import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint64;
+import org.opendaylight.yangtools.yang.common.Uint8;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -177,13 +178,15 @@ public final class InterfaceManagerTestUtil {
                 .setDescription(desc).setEnabled(enabled).setType((Class<? extends InterfaceType>) ifType);
         builder.addAugmentation(new ParentRefsBuilder().setParentInterface(parentInterface).build());
         if (ifType.equals(L2vlan.class)) {
-            IfL2vlanBuilder ifL2vlanBuilder = new IfL2vlanBuilder().setL2vlanMode(l2vlanMode);
+            final Uint16 vlanId;
             if (IfL2vlan.L2vlanMode.TrunkMember.equals(l2vlanMode)) {
-                ifL2vlanBuilder.setVlanId(new VlanId(100));
+                vlanId = Uint16.valueOf(100);
             } else {
-                ifL2vlanBuilder.setVlanId(VlanId.getDefaultInstance("0"));
+                vlanId = Uint16.ZERO;
             }
-            builder.addAugmentation(ifL2vlanBuilder.build());
+            builder.addAugmentation(new IfL2vlanBuilder()
+                    .setL2vlanMode(l2vlanMode)
+                    .setVlanId(new VlanId(vlanId)).build());
         } else if (ifType.equals(IfTunnel.class)) {
             builder.addAugmentation(new IfTunnelBuilder().setTunnelDestination(null).setTunnelGateway(null)
                     .setTunnelSource(null).setTunnelInterfaceType(null).build());
@@ -191,7 +194,7 @@ public final class InterfaceManagerTestUtil {
         return builder.build();
     }
 
-    static Interface buildTunnelInterface(BigInteger dpn, String ifName, String desc, boolean enabled,
+    static Interface buildTunnelInterface(Uint64 dpn, String ifName, String desc, boolean enabled,
                                           Class<? extends TunnelTypeBase> tunType, String remoteIpStr,
                                           String localIpStr) {
         IpAddress remoteIp = new IpAddress(Ipv4Address.getDefaultInstance(remoteIpStr));
@@ -264,7 +267,7 @@ public final class InterfaceManagerTestUtil {
             interfaceInfo = InterfaceManagerTestUtil.buildInterface(ifaceName, ifaceName, true, ifType,
                     parentRefs.getParentInterface(), IfL2vlan.L2vlanMode.Trunk);
         } else {
-            interfaceInfo = buildTunnelInterface(parentRefs.getDatapathNodeIdentifier().toJava(),ifaceName, ifaceName,
+            interfaceInfo = buildTunnelInterface(parentRefs.getDatapathNodeIdentifier(), ifaceName, ifaceName,
                     true, TunnelTypeVxlan.class, "1.1.1.1", "2.2.2.2");
         }
         InstanceIdentifier<Interface> interfaceInstanceIdentifier = IfmUtil.buildId(ifaceName);
@@ -369,7 +372,7 @@ public final class InterfaceManagerTestUtil {
             .addAugmentation(augBuilder.build()).build();
     }
 
-    static InstanceIdentifier<BoundServices> buildServiceId(String vpnInterfaceName, short serviceIndex) {
+    static InstanceIdentifier<BoundServices> buildServiceId(String vpnInterfaceName, Uint8 serviceIndex) {
         return InstanceIdentifier.builder(ServiceBindings.class)
             .child(ServicesInfo.class, new ServicesInfoKey(vpnInterfaceName, ServiceModeIngress.class))
             .child(BoundServices.class, new BoundServicesKey(serviceIndex)).build();

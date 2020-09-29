@@ -17,6 +17,9 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.flow.types.rev131026.instru
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.ServiceTypeFlowBased
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.StypeOpenflowBuilder
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.servicebinding.rev160406.service.bindings.services.info.BoundServicesBuilder
+import org.opendaylight.yangtools.yang.common.Uint16
+import org.opendaylight.yangtools.yang.common.Uint64
+import org.opendaylight.yangtools.yang.common.Uint8
 
 import static extension org.opendaylight.mdsal.binding.testutils.XtendBuilderExtensions.operator_doubleGreaterThan
 
@@ -25,11 +28,11 @@ class ExpectedServicesInfo {
     static def newboundService() {
         new BoundServicesBuilder >> [
             serviceName = "default.23701c04-7e58-4c65-9425-78a80d49a218"
-            servicePriority = 9 as short
+            servicePriority = Uint8.valueOf(9)
             serviceType = ServiceTypeFlowBased
             addAugmentation(new StypeOpenflowBuilder >> [
-                flowCookie = 134217735bi
-                flowPriority = 9
+                flowCookie = Uint64.valueOf(134217735)
+                flowPriority = Uint16.valueOf(9)
                 instruction = #[
                     new InstructionBuilder >> [
                         instruction = new ApplyActionsCaseBuilder >> [
@@ -38,7 +41,7 @@ class ExpectedServicesInfo {
                                     new ActionBuilder >> [
                                         action = new OutputActionCaseBuilder >> [
                                             outputAction = new OutputActionBuilder >> [
-                                                maxLength = 0
+                                                maxLength = Uint16.ZERO
                                                 outputNodeConnector = new Uri("2")
                                             ]
                                         ]
