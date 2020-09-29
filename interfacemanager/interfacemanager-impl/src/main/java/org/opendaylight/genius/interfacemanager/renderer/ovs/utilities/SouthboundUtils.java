@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.interfacemanager.renderer.ovs.utilities;
 
+import com.google.common.collect.ImmutableMap;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -122,15 +123,12 @@ public class SouthboundUtils {
     private static final String TUNNEL_OPTIONS_VALUE_LEGACY_L3 = "legacy_l3";
 
     // To keep the mapping between Tunnel Types and Tunnel Interfaces
-    private static final Map<Class<? extends TunnelTypeBase>, Class<? extends InterfaceTypeBase>>
-        TUNNEL_TYPE_MAP = new HashMap<>() {
-            {
-                put(TunnelTypeGre.class, InterfaceTypeGre.class);
-                put(TunnelTypeMplsOverGre.class, InterfaceTypeGre.class);
-                put(TunnelTypeVxlan.class, InterfaceTypeVxlan.class);
-                put(TunnelTypeVxlanGpe.class, InterfaceTypeVxlan.class);
-            }
-        };
+    private static final Map<Class<? extends TunnelTypeBase>, Class<? extends InterfaceTypeBase>> TUNNEL_TYPE_MAP =
+            ImmutableMap.of(
+                    TunnelTypeGre.class, InterfaceTypeGre.class,
+                    TunnelTypeMplsOverGre.class, InterfaceTypeGre.class,
+                    TunnelTypeVxlan.class, InterfaceTypeVxlan.class,
+                    TunnelTypeVxlanGpe.class, InterfaceTypeVxlan.class);
 
     // OVS Detection statics
     private static final String DEFAULT_OVS_VERSION = "2.8.0";
