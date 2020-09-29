@@ -68,6 +68,7 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.con
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info.InterfaceParentEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406._interface.child.info._interface.parent.entry.InterfaceChildEntryKey;
+import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.meta.rev160406.bridge.ref.info.BridgeRefEntry;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfExternal;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfExternalBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan;
@@ -895,7 +896,7 @@ public class InterfacemgrProvider implements AutoCloseable, IInterfaceManager {
     }
 
     @Override
-    public Map getBridgeRefEntryMap() {
+    public Map<Uint64, BridgeRefEntry> getBridgeRefEntryMap() {
         return interfaceMetaUtils.getBridgeRefEntryMap();
     }
 

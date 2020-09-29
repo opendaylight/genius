@@ -448,7 +448,7 @@ public final class InterfaceMetaUtils {
         return bridgeRefEntryMap.get(dpnId);
     }
 
-    public Map getBridgeRefEntryMap() {
+    public Map<Uint64, BridgeRefEntry> getBridgeRefEntryMap() {
         return Collections.unmodifiableMap(bridgeRefEntryMap);
     }
 }
