@@ -97,6 +97,7 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.RpcError.ErrorType;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
+import org.opendaylight.yangtools.yang.common.Uint32;
 import org.opendaylight.yangtools.yang.common.Uint64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -391,7 +392,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         if (pktInReason == SendToController.class) {
             try {
                 Uint64 dpnId = extractDpnId(packetReceived);
-                int tableId = packetReceived.getTableId().getValue().toJava();
+                Uint32 tableId = packetReceived.getTableId().getValue().toUint32();
 
                 byte[] data = packetReceived.getPayload();
                 Ethernet ethernet = new Ethernet();
@@ -499,7 +500,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     }
 
     private void fireArpRespRecvdNotification(String interfaceName, InetAddress srcInetAddr, byte[] srcMacAddressBytes,
-            Uint64 dpnId, int tableId, Uint64 metadata, InetAddress dstInetAddr, byte[] dstMacAddressBytes)
+            Uint64 dpnId, Uint32 tableId, Uint64 metadata, InetAddress dstInetAddr, byte[] dstMacAddressBytes)
                     throws InterruptedException {
         arpRespRecvd.mark();
 
@@ -513,7 +514,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         builder.setInterface(interfaceName);
         builder.setSrcIpaddress(srcIp);
         builder.setDpnId(dpnId);
-        builder.setOfTableId((long) tableId);
+        builder.setOfTableId(tableId);
         builder.setSrcMac(srcMac);
         builder.setMetadata(metadata);
         builder.setDstIpaddress(dstIp);
@@ -528,13 +529,13 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
     }
 
     private void fireArpReqRecvdNotification(String interfaceName, InetAddress srcInetAddr, byte[] srcMac,
-            InetAddress dstInetAddr, Uint64 dpnId, int tableId, Uint64 metadata) throws InterruptedException {
+            InetAddress dstInetAddr, Uint64 dpnId, Uint32 tableId, Uint64 metadata) throws InterruptedException {
         arpReqRecvd.mark();
         String macAddress = NWUtil.toStringMacAddress(srcMac);
         ArpRequestReceivedBuilder builder = new ArpRequestReceivedBuilder();
         builder.setInterface(interfaceName);
         builder.setDpnId(dpnId);
-        builder.setOfTableId((long) tableId);
+        builder.setOfTableId(tableId);
         builder.setSrcIpaddress(IetfInetUtil.INSTANCE.ipAddressFor(srcInetAddr));
         builder.setDstIpaddress(IetfInetUtil.INSTANCE.ipAddressFor(dstInetAddr));
         builder.setSrcMac(new PhysAddress(macAddress));
