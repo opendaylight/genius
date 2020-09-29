@@ -121,7 +121,6 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <dependency>
       <groupId>org.opendaylight.openflowplugin.applications</groupId>
       <artifactId>reconciliation-framework</artifactId>
-      <version>${openflowplugin.version}</version>
     </dependency>
     <!-- for infrautils metrics APIs -->
     <dependency>
