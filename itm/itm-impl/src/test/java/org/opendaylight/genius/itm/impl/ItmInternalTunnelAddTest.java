@@ -70,6 +70,8 @@ import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
 import org.opendaylight.yangtools.yang.common.OperationFailedException;
 import org.opendaylight.yangtools.yang.common.RpcResult;
 import org.opendaylight.yangtools.yang.common.RpcResultBuilder;
+import org.opendaylight.yangtools.yang.common.Uint16;
+import org.opendaylight.yangtools.yang.common.Uint32;
 import org.opendaylight.yangtools.yang.common.Uint64;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -85,7 +87,7 @@ public class ItmInternalTunnelAddTest {
     String portName1 = "phy0";
     String portName2 = "phy1" ;
     int vlanId = 100 ;
-    int interval = 1000;
+    Uint16 interval = Uint16.valueOf(1000);
     String tepIp1 = "192.168.56.101";
     String tepIp2 = "192.168.56.102";
     String gwyIp1 = "0.0.0.0";
@@ -140,10 +142,10 @@ public class ItmInternalTunnelAddTest {
     InstanceIdentifier<InternalTunnel> internalTunnelIdentifierGre2 = InstanceIdentifier.create(
             TunnelList.class).child(InternalTunnel.class, new InternalTunnelKey(dpId1, dpId2, tunnelType2));
 
-    AllocateIdOutput expectedId1 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("100")).build();
-    AllocateIdOutput expectedId2 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("200")).build();
-    AllocateIdOutput expectedDstID1 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("1")).build();
-    AllocateIdOutput expectedDstID2 = new AllocateIdOutputBuilder().setIdValue(Long.valueOf("2")).build();
+    AllocateIdOutput expectedId1 = new AllocateIdOutputBuilder().setIdValue(Uint32.valueOf(100)).build();
+    AllocateIdOutput expectedId2 = new AllocateIdOutputBuilder().setIdValue(Uint32.valueOf(200)).build();
+    AllocateIdOutput expectedDstID1 = new AllocateIdOutputBuilder().setIdValue(Uint32.ONE).build();
+    AllocateIdOutput expectedDstID2 = new AllocateIdOutputBuilder().setIdValue(Uint32.TWO).build();
 
     Future<RpcResult<AllocateIdOutput>> idOutputOptional1;
     Future<RpcResult<AllocateIdOutput>> idOutputOptional2;
