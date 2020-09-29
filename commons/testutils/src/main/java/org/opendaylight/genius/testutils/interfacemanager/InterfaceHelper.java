@@ -7,7 +7,6 @@
  */
 package org.opendaylight.genius.testutils.interfacemanager;
 
-import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 import org.opendaylight.genius.datastoreutils.ExpectedDataObjectNotFoundException;
 import org.opendaylight.genius.datastoreutils.SingleTransactionDataBroker;
@@ -22,9 +21,7 @@ import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.Interface;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceBuilder;
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceKey;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnel;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfTunnelBuilder;
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefsBuilder;
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.TunnelTypeVxlan;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
@@ -53,37 +50,21 @@ public final class InterfaceHelper {
     }
 
     public static Interface buildVlanInterfaceFromInfo(InterfaceInfo interfaceInfo) {
-        ParentRefs parentRefs = new ParentRefsBuilder()
-                .setDatapathNodeIdentifier(interfaceInfo.getDpId())
-                .setParentInterface(interfaceInfo.getInterfaceName())
-                .build();
-
         return new InterfaceBuilder()
                 .withKey(new InterfaceKey(interfaceInfo.getInterfaceName()))
                 .setName(interfaceInfo.getInterfaceName())
                 .setDescription("Vlan interface")
                 .setEnabled(true)
                 .setType(L2vlan.class)
-                .addAugmentation(ParentRefs.class, parentRefs)
+                .addAugmentation(new ParentRefsBuilder()
+                        .setDatapathNodeIdentifier(interfaceInfo.getDpId())
+                        .setParentInterface(interfaceInfo.getInterfaceName())
+                        .build())
                 .build();
     }
 
     public static Interface buildVxlanTunnelInterfaceFromInfo(TunnelInterfaceDetails tunnelInterfaceDetails) {
         InterfaceInfo interfaceInfo = tunnelInterfaceDetails.getInterfaceInfo();
-        ParentRefs parentRefs = new ParentRefsBuilder()
-                .setDatapathNodeIdentifier(interfaceInfo.getDpId())
-                .setParentInterface(interfaceInfo.getInterfaceName())
-                .build();
-
-        IfTunnel tunnel = new IfTunnelBuilder()
-                .setTunnelDestination(new IpAddress(new Ipv4Address(tunnelInterfaceDetails.getDstIp())))
-                .setTunnelGateway(new IpAddress(new Ipv4Address(DEFAULT_GW)))
-                .setTunnelSource(new IpAddress(new Ipv4Address(tunnelInterfaceDetails.getSrcIp())))
-                .setTunnelInterfaceType(TunnelTypeVxlan.class)
-                .setInternal(!tunnelInterfaceDetails.isExternal())
-                .setTunnelRemoteIpFlow(false)
-                .setTunnelOptions(Collections.emptyList())
-                .build();
 
         return new InterfaceBuilder()
                 .withKey(new InterfaceKey(interfaceInfo.getInterfaceName()))
@@ -91,8 +72,18 @@ public final class InterfaceHelper {
                 .setDescription("Tunnel interface")
                 .setEnabled(true)
                 .setType(Tunnel.class)
-                .addAugmentation(ParentRefs.class, parentRefs)
-                .addAugmentation(IfTunnel.class, tunnel)
+                .addAugmentation(new ParentRefsBuilder()
+                        .setDatapathNodeIdentifier(interfaceInfo.getDpId())
+                        .setParentInterface(interfaceInfo.getInterfaceName())
+                        .build())
+                .addAugmentation(new IfTunnelBuilder()
+                        .setTunnelDestination(new IpAddress(new Ipv4Address(tunnelInterfaceDetails.getDstIp())))
+                        .setTunnelGateway(new IpAddress(new Ipv4Address(DEFAULT_GW)))
+                        .setTunnelSource(new IpAddress(new Ipv4Address(tunnelInterfaceDetails.getSrcIp())))
+                        .setTunnelInterfaceType(TunnelTypeVxlan.class)
+                        .setInternal(!tunnelInterfaceDetails.isExternal())
+                        .setTunnelRemoteIpFlow(false)
+                        .build())
                 .build();
     }
 }

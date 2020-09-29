@@ -440,7 +440,7 @@ public final class FlowBasedServicesUtils {
                 .setInstruction(instructions);
         return new BoundServicesBuilder().withKey(new BoundServicesKey(servicePriority)).setServiceName(serviceName)
                 .setServicePriority(servicePriority).setServiceType(ServiceTypeFlowBased.class)
-                .addAugmentation(StypeOpenflow.class, augBuilder.build()).build();
+                .addAugmentation(augBuilder.build()).build();
     }
 
     public static InstanceIdentifier<BoundServices> buildServiceId(String interfaceName, short serviceIndex) {

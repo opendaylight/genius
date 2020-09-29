@@ -9,12 +9,9 @@ package org.opendaylight.genius.interfacemanager.test.xtend
 
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.iana._if.type.rev170119.L2vlan
 import org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508.interfaces.InterfaceBuilder
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfExternal
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfExternalBuilder
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlan.L2vlanMode
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.IfL2vlanBuilder
-import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefs
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.interfacemanager.rev160406.ParentRefsBuilder
 import org.opendaylight.yang.gen.v1.urn.opendaylight.l2.types.rev130827.VlanId
 
@@ -26,9 +23,9 @@ class ExpectedInterfaceConfig {
             description = interfaceName
             name = interfaceName
             type = L2vlan
-            addAugmentation(ParentRefs, new ParentRefsBuilder >> [
+            addAugmentation(new ParentRefsBuilder >> [
                 parentInterface = "tap23701c04-7e"
-            ])addAugmentation(IfL2vlan, new IfL2vlanBuilder >> [
+            ])addAugmentation(new IfL2vlanBuilder >> [
                 l2vlanMode = L2vlanMode.Trunk
                 vlanId = new VlanId(0)
             ])
@@ -40,9 +37,9 @@ class ExpectedInterfaceConfig {
             description = interfaceName
             name = interfaceName
             type = L2vlan
-            addAugmentation(IfL2vlan, new IfL2vlanBuilder >> [
+            addAugmentation(new IfL2vlanBuilder >> [
                 l2vlanMode = L2vlanMode.Trunk
-            ])addAugmentation(ParentRefs, new ParentRefsBuilder >> [
+            ])addAugmentation(new ParentRefsBuilder >> [
                 parentInterface = parentRef
             ])
         ]
@@ -53,12 +50,12 @@ class ExpectedInterfaceConfig {
             description = interfaceName
             name = interfaceName
             type = L2vlan
-            addAugmentation(IfExternal, new IfExternalBuilder >> [
+            addAugmentation(new IfExternalBuilder >> [
                 external = true
             ])
-            addAugmentation(IfL2vlan, new IfL2vlanBuilder >> [
+            addAugmentation(new IfL2vlanBuilder >> [
                 l2vlanMode = L2vlanMode.Trunk
-            ])addAugmentation(ParentRefs, new ParentRefsBuilder >> [
+            ])addAugmentation(new ParentRefsBuilder >> [
                 parentInterface = parentRefs
             ])
         ]
@@ -70,10 +67,10 @@ class ExpectedInterfaceConfig {
                 description = interfaceName
                 name = interfaceName
                 type = L2vlan
-                addAugmentation(IfL2vlan, new IfL2vlanBuilder >> [
+                addAugmentation(new IfL2vlanBuilder >> [
                     l2vlanMode = L2vlanMode.Trunk
                     vlanId = new VlanId(0)
-                ])addAugmentation(ParentRefs, new ParentRefsBuilder >> [
+                ])addAugmentation(new ParentRefsBuilder >> [
                     parentInterface = parentRefs
                 ])
             ]

@@ -57,9 +57,7 @@ public abstract class EricMatchInfoHelper<T extends DataObject, B extends Builde
             EricAugMatchNodesNodeTableFlow ericAugMatch = ericAugMatchBuilder.build();
             GeneralAugMatchNodesNodeTableFlow existingAugmentations = matchBuilder
                     .augmentation(GeneralAugMatchNodesNodeTableFlow.class);
-            GeneralAugMatchNodesNodeTableFlow genAugMatch = generalAugMatchBuilder(existingAugmentations,
-                    ericAugMatch, keyClass);
-            matchBuilder.addAugmentation(GeneralAugMatchNodesNodeTableFlow.class, genAugMatch);
+            matchBuilder.addAugmentation(generalAugMatchBuilder(existingAugmentations, ericAugMatch, keyClass));
         }
     }
 
@@ -74,9 +72,7 @@ public abstract class EricMatchInfoHelper<T extends DataObject, B extends Builde
             extensions = new HashMap<>();
         }
         ExtensionList extensionList = new ExtensionListBuilder().setExtensionKey(extentionKey)
-                .setExtension(
-                        new ExtensionBuilder().addAugmentation(EricAugMatchNodesNodeTableFlow.class, ericAugMatch)
-                                .build())
+                .setExtension(new ExtensionBuilder().addAugmentation(ericAugMatch).build())
                 .build();
         extensions.put(extensionList.key(),extensionList);
         return new GeneralAugMatchNodesNodeTableFlowBuilder().setExtensionList(extensions).build();
