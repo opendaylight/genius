@@ -13,7 +13,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import edu.umd.cs.findbugs.annotations.CheckReturnValue;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Future;
-import org.opendaylight.infrautils.utils.concurrent.ListenableFutures;
+import org.opendaylight.infrautils.utils.concurrent.LoggingFutures;
 import org.opendaylight.infrautils.utils.function.InterruptibleCheckedConsumer;
 import org.opendaylight.infrautils.utils.function.InterruptibleCheckedFunction;
 import org.opendaylight.mdsal.binding.api.DataBroker;
@@ -72,9 +72,8 @@ public interface ManagedTransactionFactory {
      * or pending;
      * calling code therefore <b>must</b> handle the returned future, e.g. by passing it onwards (return),
      * or by itself adding callback listeners to it using {@link Futures}' methods, or by transforming it into a
-     * {@link CompletionStage} using {@link ListenableFutures#toCompletionStage(ListenableFuture)} and chaining on
-     * that, or at the very least simply by using
-     * {@link ListenableFutures#addErrorLogging(ListenableFuture, org.slf4j.Logger, String)}
+     * {@link CompletionStage} and chaining on that, or at the very least simply by using
+     * {@link LoggingFutures#addErrorLogging(ListenableFuture, org.slf4j.Logger, String)}
      * (but better NOT by using the blocking {@link Future#get()} on it).
      *
      * @param datastoreType the {@link Datastore} type that will be accessed
@@ -131,9 +130,8 @@ public interface ManagedTransactionFactory {
      * or pending;
      * calling code therefore <b>must</b> handle the returned future, e.g. by passing it onwards (return),
      * or by itself adding callback listeners to it using {@link Futures}' methods, or by transforming it into a
-     * {@link CompletionStage} using {@link ListenableFutures#toCompletionStage(ListenableFuture)} and chaining on
-     * that, or at the very least simply by using
-     * {@link ListenableFutures#addErrorLogging(ListenableFuture, org.slf4j.Logger, String)}
+     * {@link CompletionStage} and chaining on that, or at the very least simply by using
+     * {@link LoggingFutures#addErrorLogging(ListenableFuture, org.slf4j.Logger, String)}
      * (but better NOT by using the blocking {@link Future#get()} on it).
      *
      * @param datastoreType the {@link Datastore} type that will be accessed
@@ -166,9 +164,8 @@ public interface ManagedTransactionFactory {
      * or pending;
      * calling code therefore <b>must</b> handle the returned future, e.g. by passing it onwards (return),
      * or by itself adding callback listeners to it using {@link Futures}' methods, or by transforming it into a
-     * {@link CompletionStage} using {@link ListenableFutures#toCompletionStage(ListenableFuture)} and chaining on
-     * that, or at the very least simply by using
-     * {@link ListenableFutures#addErrorLogging(ListenableFuture, org.slf4j.Logger, String)}
+     * {@link CompletionStage} using and chaining on that, or at the very least simply by using
+     * {@link LoggingFutures#addErrorLogging(ListenableFuture, org.slf4j.Logger, String)}
      * (but better NOT by using the blocking {@link Future#get()} on it).
      *
      * @param datastoreType the {@link Datastore} type that will be accessed
