@@ -5,12 +5,11 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.genius.interfacemanager;
 
+import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.util.Datastore.CONFIGURATION;
 
-import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.ExecutionException;
@@ -66,8 +65,7 @@ public class FrmNodeAndTablesBuilder implements ReconciliationNotificationListen
                                    ReconciliationManager reconciliationManager) {
         this.dataBroker = dataBroker;
         this.txRunner = new ManagedNewTransactionRunnerImpl(dataBroker);
-        reconciliationManager = Preconditions.checkNotNull(reconciliationManager,
-                "ReconciliationManager cannot be null!");
+        reconciliationManager = requireNonNull(reconciliationManager, "ReconciliationManager cannot be null!");
         reconciliationManager.registerService(this);
         LOGGER.info("FrmNodeAndTablesBuilder has started successfully.");
     }

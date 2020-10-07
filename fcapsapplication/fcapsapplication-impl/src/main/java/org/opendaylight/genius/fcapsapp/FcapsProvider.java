@@ -7,7 +7,8 @@
  */
 package org.opendaylight.genius.fcapsapp;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -52,11 +53,10 @@ public class FcapsProvider implements AutoCloseable {
                          @Reference final NotificationService notificationService,
                          final PacketInCounterHandler packetInCounterHandler,
                          final NodeEventListener nodeEventListener) {
-        this.dataBroker = Preconditions.checkNotNull(dataBroker, "DataBroker can not be null!");
+        this.dataBroker = requireNonNull(dataBroker, "DataBroker can not be null!");
         LOG.info("FcapsProvider dataBroker is set");
 
-        this.notificationService = Preconditions.checkNotNull(notificationService,
-                "notificationService can not be null!");
+        this.notificationService = requireNonNull(notificationService, "notificationService can not be null!");
         LOG.info("FcapsProvider notificationProviderService is set");
 
         this.packetInCounterHandler = packetInCounterHandler;

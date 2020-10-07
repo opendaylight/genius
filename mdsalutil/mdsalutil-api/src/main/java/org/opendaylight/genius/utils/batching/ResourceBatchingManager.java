@@ -7,7 +7,8 @@
  */
 package org.opendaylight.genius.utils.batching;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -110,8 +111,8 @@ public class ResourceBatchingManager implements AutoCloseable {
 
     public void registerBatchableResource(final String resourceType,
             final BlockingQueue<ActionableResource<?>> resQueue, final ResourceHandler resHandler) {
-        Preconditions.checkNotNull(resQueue, "ResourceQueue to use for batching cannot not be null.");
-        Preconditions.checkNotNull(resHandler, "ResourceHandler cannot not be null.");
+        requireNonNull(resQueue, "ResourceQueue to use for batching cannot not be null.");
+        requireNonNull(resHandler, "ResourceHandler cannot not be null.");
 
         resourceHandlerMapper.put(resourceType, new ImmutablePair<>(resQueue, resHandler));
         ScheduledExecutorService resDelegatorService =

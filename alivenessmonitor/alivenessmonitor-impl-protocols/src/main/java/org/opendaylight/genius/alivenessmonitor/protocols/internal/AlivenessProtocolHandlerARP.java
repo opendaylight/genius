@@ -7,9 +7,9 @@
  */
 package org.opendaylight.genius.alivenessmonitor.protocols.internal;
 
+import static java.util.Objects.requireNonNull;
 import static org.opendaylight.genius.alivenessmonitor.protocols.AlivenessMonitorAndProtocolsConstants.SEPERATOR;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -131,16 +131,16 @@ public class AlivenessProtocolHandlerARP extends AbstractAlivenessProtocolHandle
             return;
         }
         EndpointType source = monitorInfo.getSource().getEndpointType();
-        final String sourceInterface = Preconditions.checkNotNull(AlivenessMonitorUtil.getInterfaceName(source),
+        final String sourceInterface = requireNonNull(AlivenessMonitorUtil.getInterfaceName(source),
                 "Source interface is required to send ARP Packet for monitoring");
 
-        final String srcIp = Preconditions.checkNotNull(AlivenessMonitorUtil.getIpAddress(source),
+        final String srcIp = requireNonNull(AlivenessMonitorUtil.getIpAddress(source),
                 "Source Ip address is required to send ARP Packet for monitoring");
         final Optional<PhysAddress> srcMacAddressOptional = getMacAddress(source);
         if (srcMacAddressOptional.isPresent()) {
             PhysAddress srcMacAddress = srcMacAddressOptional.get();
             EndpointType target = monitorInfo.getDestination().getEndpointType();
-            final String targetIp = Preconditions.checkNotNull(AlivenessMonitorUtil.getIpAddress(target),
+            final String targetIp = requireNonNull(AlivenessMonitorUtil.getIpAddress(target),
                     "Target Ip address is required to send ARP Packet for monitoring");
             if (LOG.isTraceEnabled()) {
                 LOG.trace("sendArpRequest interface {}, senderIPAddress {}, targetAddress {}", sourceInterface, srcIp,

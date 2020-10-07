@@ -7,7 +7,8 @@
  */
 package org.opendaylight.genius.fcapsapp.performancecounter;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
@@ -62,7 +63,7 @@ public class FlowNodeConnectorInventoryTranslatorImpl extends NodeConnectorEvent
     public FlowNodeConnectorInventoryTranslatorImpl(@Reference final DataBroker dataBroker,
                                                     final EntityOwnershipUtils entityOwnershipUtils,
                                                     @Reference MetricProvider metricProvider) {
-        Preconditions.checkNotNull(dataBroker, "DataBroker can not be null!");
+        requireNonNull(dataBroker, "DataBroker can not be null!");
         this.entityOwnershipUtils = entityOwnershipUtils;
         packetInCounter =  metricProvider.newCounter(MetricDescriptor.builder().anchor(this)
                 .project("genius").module("fcapsapplication")

@@ -9,6 +9,7 @@ package org.opendaylight.genius.ipv6util.nd;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.requireNonNull;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.concurrent.ExecutionException;
@@ -73,7 +74,7 @@ public class Ipv6NdUtilServiceImpl implements Ipv6NdUtilService {
                 srcIpv6Address = interfaceAddress.getSrcIpAddress();
 
                 GetPortFromInterfaceOutput portResult = getPortFromInterface(interfaceName);
-                checkNotNull(portResult);
+                requireNonNull(portResult);
                 dpnId = portResult.getDpid();
                 Long portid = portResult.getPortno().toJava();
                 checkArgument(null != dpnId && Uint64.ZERO != dpnId, DPN_NOT_FOUND_ERROR, interfaceName);

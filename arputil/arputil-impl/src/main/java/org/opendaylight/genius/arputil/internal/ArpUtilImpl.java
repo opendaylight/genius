@@ -9,6 +9,7 @@ package org.opendaylight.genius.arputil.internal;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.util.Objects.requireNonNull;
 import static org.opendaylight.mdsal.binding.util.Datastore.OPERATIONAL;
 
 import com.google.common.util.concurrent.FutureCallback;
@@ -240,7 +241,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
                 srcIpBytes = getIpAddressBytes(interfaceAddress.getIpAddress());
 
                 GetPortFromInterfaceOutput portResult = getPortFromInterface(interfaceName);
-                checkNotNull(portResult);
+                requireNonNull(portResult);
                 dpnId = portResult.getDpid();
                 Long portid = portResult.getPortno().toJava();
                 checkArgument(null != dpnId && !Uint64.ZERO.equals(dpnId),
@@ -346,7 +347,7 @@ public class ArpUtilImpl extends AbstractLifecycle implements OdlArputilService,
         try {
             String interfaceName = input.getInterface();
             GetPortFromInterfaceOutput portResult = getPortFromInterface(interfaceName);
-            checkNotNull(portResult);
+            requireNonNull(portResult);
             dpnId = portResult.getDpid();
             Long portid = portResult.getPortno().toJava();
             NodeConnectorRef ref = MDSALUtil.getNodeConnRef(dpnId, portid.toString());

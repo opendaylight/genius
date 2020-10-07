@@ -7,6 +7,7 @@
  */
 package org.opendaylight.genius.alivenessmonitor.internal;
 
+import static java.util.Objects.requireNonNull;
 import static org.opendaylight.genius.alivenessmonitor.utils.AlivenessMonitorUtil.getInterfaceMonitorMapId;
 import static org.opendaylight.genius.alivenessmonitor.utils.AlivenessMonitorUtil.getMonitorMapId;
 import static org.opendaylight.genius.alivenessmonitor.utils.AlivenessMonitorUtil.getMonitorProfileId;
@@ -14,8 +15,6 @@ import static org.opendaylight.genius.alivenessmonitor.utils.AlivenessMonitorUti
 import static org.opendaylight.genius.alivenessmonitor.utils.AlivenessMonitorUtil.getMonitoringInfoId;
 import static org.opendaylight.mdsal.binding.util.Datastore.OPERATIONAL;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -40,6 +39,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -360,7 +360,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
             }
         }
 
-        Preconditions.checkNotNull(monitorKey, "Monitor Key required to process the state");
+        requireNonNull(monitorKey, "Monitor Key required to process the state");
 
         LOG.debug("Processing monitorKey: {} for received packet", monitorKey);
 
@@ -1230,7 +1230,7 @@ public class AlivenessMonitor extends AbstractClusteredSyncDataTreeChangeListene
         FluentFuture<? extends CommitInfo> writeResult = readResult.transformAsync(optState -> {
             if (optState.isPresent()) {
                 MonitoringState state = optState.get();
-                if (isValidStatus.apply(state.getStatus())) {
+                if (isValidStatus.test(state.getStatus())) {
                     MonitoringState updatedState = new MonitoringStateBuilder().setMonitorKey(monitorKey)
                                 .setStatus(newStatus).build();
                     tx.merge(LogicalDatastoreType.OPERATIONAL, getMonitorStateId(monitorKey), updatedState);

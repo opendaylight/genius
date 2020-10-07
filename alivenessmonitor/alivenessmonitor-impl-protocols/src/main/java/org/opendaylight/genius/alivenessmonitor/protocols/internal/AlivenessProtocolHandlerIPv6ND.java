@@ -7,9 +7,9 @@
  */
 package org.opendaylight.genius.alivenessmonitor.protocols.internal;
 
+import static java.util.Objects.requireNonNull;
 import static org.opendaylight.genius.alivenessmonitor.protocols.AlivenessMonitorAndProtocolsConstants.SEPERATOR;
 
-import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -133,15 +133,15 @@ public class AlivenessProtocolHandlerIPv6ND extends AbstractAlivenessProtocolHan
     @Override
     public void startMonitoringTask(MonitoringInfo monitorInfo) {
         EndpointType source = monitorInfo.getSource().getEndpointType();
-        final String sourceInterface = Preconditions.checkNotNull(AlivenessMonitorUtil.getInterfaceName(source),
+        final String sourceInterface = requireNonNull(AlivenessMonitorUtil.getInterfaceName(source),
                 "Source interface is required to send Ipv6 ND Packet for monitoring");
-        final String srcIp = Preconditions.checkNotNull(AlivenessMonitorUtil.getIpAddress(source),
+        final String srcIp = requireNonNull(AlivenessMonitorUtil.getIpAddress(source),
                 "Source IP address is required to send Ipv6 ND Packet for monitoring");
-        final PhysAddress srcMacAddress = Preconditions.checkNotNull(AlivenessMonitorUtil.getMacAddress(source),
+        final PhysAddress srcMacAddress = requireNonNull(AlivenessMonitorUtil.getMacAddress(source),
                 "Source MAC address is required to send Ipv6 ND Packet for monitoring");
 
         EndpointType target = monitorInfo.getDestination().getEndpointType();
-        final String targetIp = Preconditions.checkNotNull(AlivenessMonitorUtil.getIpAddress(target),
+        final String targetIp = requireNonNull(AlivenessMonitorUtil.getIpAddress(target),
                 "Target Ip address is required to send ipv6 ND Packet for monitoring");
         LOG.trace("sendNA interface {}, senderIPAddress {}, targetAddress {}", sourceInterface, srcIp, targetIp);
 

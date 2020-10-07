@@ -208,8 +208,8 @@ public class AlivenessMonitorTest {
     public void testMonitorProfileCreate()
             throws InterruptedException, ExecutionException {
         MonitorProfileCreateInput input = new MonitorProfileCreateInputBuilder()
-                .setProfile(new ProfileBuilder().setFailureThreshold(10L)
-                        .setMonitorInterval(10000L).setMonitorWindow(10L)
+                .setProfile(new ProfileBuilder().setFailureThreshold(Uint32.TEN)
+                        .setMonitorInterval(10000L).setMonitorWindow(Uint32.TEN)
                         .setProtocolType(MonitorProtocolType.Arp).build())
                 .build();
         doReturn(FluentFutures.immediateFluentFuture(Optional.empty()))
@@ -227,8 +227,8 @@ public class AlivenessMonitorTest {
     public void testMonitorProfileCreateAlreadyExist()
             throws InterruptedException, ExecutionException {
         MonitorProfileCreateInput input = new MonitorProfileCreateInputBuilder()
-                .setProfile(new ProfileBuilder().setFailureThreshold(10L)
-                        .setMonitorInterval(10000L).setMonitorWindow(10L)
+                .setProfile(new ProfileBuilder().setFailureThreshold(Uint32.TEN)
+                        .setMonitorInterval(10000L).setMonitorWindow(Uint32.TEN)
                         .setProtocolType(MonitorProtocolType.Arp).build())
                 .build();
         doReturn(FluentFutures.immediateFluentFuture(Optional.of(input))).when(readWriteTx).read(
@@ -280,7 +280,7 @@ public class AlivenessMonitorTest {
     public void testMonitorPause()
             throws InterruptedException, ExecutionException {
         MonitorPauseInput input = new MonitorPauseInputBuilder()
-                .setMonitorId(2L).build();
+                .setMonitorId(Uint32.TWO).build();
         Optional<MonitorProfile> optProfile = Optional
                 .of(getTestMonitorProfile());
         when(readTx.read(eq(LogicalDatastoreType.OPERATIONAL),
@@ -292,13 +292,13 @@ public class AlivenessMonitorTest {
                 argThat(isType(MonitoringInfo.class))))
                         .thenReturn(FluentFutures.immediateFluentFuture(optInfo));
         Optional<MonitoringState> optState = Optional
-                .of(new MonitoringStateBuilder()
+                .of(new MonitoringStateBuilder().setMonitorKey("foo")
                         .setStatus(MonitorStatus.Started).build());
         when(readWriteTx.read(eq(LogicalDatastoreType.OPERATIONAL),
                 argThat(isType(MonitoringState.class))))
                         .thenReturn(FluentFutures.immediateFluentFuture(optState));
         Optional<MonitoridKeyEntry> optMap = Optional
-                .of(new MonitoridKeyEntryBuilder().setMonitorId(2L)
+                .of(new MonitoridKeyEntryBuilder().setMonitorId(Uint32.TWO)
                         .setMonitorKey("Test monitor Key").build());
         when(readTx.read(eq(LogicalDatastoreType.OPERATIONAL),
                 argThat(isType(MonitoridKeyEntry.class))))
@@ -313,15 +313,15 @@ public class AlivenessMonitorTest {
     public void testMonitorUnpause()
             throws InterruptedException, ExecutionException {
         MonitorUnpauseInput input = new MonitorUnpauseInputBuilder()
-                .setMonitorId(2L).build();
+                .setMonitorId(Uint32.TWO).build();
         Optional<MonitoringState> optState = Optional
-                .of(new MonitoringStateBuilder().setStatus(MonitorStatus.Paused)
+                .of(new MonitoringStateBuilder().setMonitorKey("foo").setStatus(MonitorStatus.Paused)
                         .build());
         when(readWriteTx.read(eq(LogicalDatastoreType.OPERATIONAL),
                 argThat(isType(MonitoringState.class))))
                         .thenReturn(FluentFutures.immediateFluentFuture(optState));
         Optional<MonitoringInfo> optInfo = Optional.of(
-                new MonitoringInfoBuilder().setId(2L).setProfileId(1L).build());
+                new MonitoringInfoBuilder().setId(Uint32.TWO).setProfileId(Uint32.ONE).build());
         when(readTx.read(eq(LogicalDatastoreType.OPERATIONAL),
                 argThat(isType(MonitoringInfo.class))))
                         .thenReturn(FluentFutures.immediateFluentFuture(optInfo));
@@ -331,7 +331,7 @@ public class AlivenessMonitorTest {
                 argThat(isType(MonitorProfile.class))))
                         .thenReturn(FluentFutures.immediateFluentFuture(optProfile));
         Optional<MonitoridKeyEntry> optMap = Optional
-                .of(new MonitoridKeyEntryBuilder().setMonitorId(2L)
+                .of(new MonitoridKeyEntryBuilder().setMonitorId(Uint32.TWO)
                         .setMonitorKey("Test monitor Key").build());
         when(readTx.read(eq(LogicalDatastoreType.OPERATIONAL),
                 argThat(isType(MonitoridKeyEntry.class))))
@@ -346,18 +346,17 @@ public class AlivenessMonitorTest {
     @Test
     public void testMonitorStop()
             throws InterruptedException, ExecutionException {
-        MonitorStopInput input = new MonitorStopInputBuilder().setMonitorId(2L)
+        MonitorStopInput input = new MonitorStopInputBuilder().setMonitorId(Uint32.TWO)
                 .build();
         Optional<MonitoringInfo> optInfo = Optional
-                .of(new MonitoringInfoBuilder().setSource(new SourceBuilder()
-                        .setEndpointType(
-                                getInterface("testInterface", "10.1.1.1"))
-                        .build()).build());
+                .of(new MonitoringInfoBuilder().setId(Uint32.MAX_VALUE).setSource(new SourceBuilder()
+                        .setEndpointType(getInterface("testInterface", "10.1.1.1"))
+                        .build()).setProfileId(Uint32.ZERO).build());
         FluentFuture<Optional<MonitoringInfo>> outFuture = FluentFutures.immediateFluentFuture(optInfo);
         when(readTx.read(eq(LogicalDatastoreType.OPERATIONAL),
                 argThat(isType(MonitoringInfo.class)))).thenReturn(outFuture);
         Optional<MonitoridKeyEntry> optMap = Optional
-                .of(new MonitoridKeyEntryBuilder().setMonitorId(2L)
+                .of(new MonitoridKeyEntryBuilder().setMonitorId(Uint32.TWO)
                         .setMonitorKey("Test monitor Key").build());
         when(readTx.read(eq(LogicalDatastoreType.OPERATIONAL),
                 argThat(isType(MonitoridKeyEntry.class))))
@@ -383,7 +382,7 @@ public class AlivenessMonitorTest {
     public void testMonitorProfileDelete()
             throws InterruptedException, ExecutionException {
         MonitorProfileDeleteInput input = new MonitorProfileDeleteInputBuilder()
-                .setProfileId(1L).build();
+                .setProfileId(Uint32.ONE).build();
         Optional<MonitorProfile> optProfile = Optional
                 .of(getTestMonitorProfile());
         when(readWriteTx.read(eq(LogicalDatastoreType.OPERATIONAL),
@@ -401,8 +400,8 @@ public class AlivenessMonitorTest {
     private long createProfile()
             throws InterruptedException, ExecutionException {
         MonitorProfileCreateInput input = new MonitorProfileCreateInputBuilder()
-                .setProfile(new ProfileBuilder().setFailureThreshold(10L)
-                        .setMonitorInterval(10000L).setMonitorWindow(10L)
+                .setProfile(new ProfileBuilder().setFailureThreshold(Uint32.TEN)
+                        .setMonitorInterval(10000L).setMonitorWindow(Uint32.TEN)
                         .setProtocolType(MonitorProtocolType.Arp).build())
                 .build();
         doReturn(FluentFutures.immediateFluentFuture(Optional.empty()))
@@ -415,8 +414,8 @@ public class AlivenessMonitorTest {
     }
 
     private MonitorProfile getTestMonitorProfile() {
-        return new MonitorProfileBuilder().setFailureThreshold(10L)
-                .setMonitorInterval(10000L).setMonitorWindow(10L)
+        return new MonitorProfileBuilder().setId(Uint32.MAX_VALUE).setFailureThreshold(Uint32.TEN)
+                .setMonitorInterval(10000L).setMonitorWindow(Uint32.TEN)
                 .setProtocolType(MonitorProtocolType.Arp).build();
     }
 

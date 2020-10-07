@@ -133,7 +133,7 @@ public class LockManagerTest extends AbstractConcurrentDataBrokerTest {
     @Test
     public void testEternalTransactionCommitFailedExceptionOnLock()
             throws InterruptedException, ExecutionException, TimeoutException {
-        logCaptureRule.expectError("RPC lock() failed; input = LockInput{_lockName=testLock, augmentation=[]}");
+        logCaptureRule.expectError("RPC lock() failed; input = LockInput{lockName=testLock, augmentation=[]}");
         dbFailureSimulator.failSubmits(new TransactionCommitFailedException("bada boum bam!"));
         LockInput lockInput = new LockInputBuilder().setLockName("testLock").build();
         assertRpcErrorCause(lockManager.lock(lockInput), TransactionCommitFailedException.class, "bada boum bam!");

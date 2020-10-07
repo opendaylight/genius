@@ -11,7 +11,6 @@ import static org.opendaylight.mdsal.binding.util.Datastore.CONFIGURATION;
 import static org.opendaylight.serviceutils.tools.rpc.FutureRpcResults.fromListenableFuture;
 import static org.opendaylight.yangtools.yang.common.RpcResultBuilder.failed;
 
-import com.google.common.base.Objects;
 import com.google.common.util.concurrent.FluentFuture;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
@@ -1139,7 +1138,7 @@ public class ItmManagerRpcService implements ItmRpcService {
         long retVal;
 
         if (!dcGatewayIpList.isEmpty()
-                && dcGatewayIpList.values().stream().anyMatch(gwIp -> Objects.equal(gwIp.getIpAddress(), dcgwIpAddr))) {
+                && dcGatewayIpList.values().stream().anyMatch(gwIp -> dcgwIpAddr.equals(gwIp.getIpAddress()))) {
             //Match found
             retVal = 1;
             IsDcgwPresentOutputBuilder output = new IsDcgwPresentOutputBuilder().setRetVal(retVal);
