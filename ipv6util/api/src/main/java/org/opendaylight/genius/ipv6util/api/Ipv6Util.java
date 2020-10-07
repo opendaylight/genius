@@ -5,10 +5,10 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.genius.ipv6util.api;
 
-import com.google.common.base.Preconditions;
+import static java.util.Objects.requireNonNull;
+
 import com.google.common.net.InetAddresses;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -256,7 +256,7 @@ public final class Ipv6Util {
      * @return the formatted IP address
      */
     public static String getFormattedIpAddress(IpAddress ipAddress) {
-        Preconditions.checkNotNull(ipAddress, "ipAddress is null");
+        requireNonNull(ipAddress, "ipAddress is null");
         if (ipAddress.getIpv4Address() != null) {
             // No formatting required for IPv4 address.
             return ipAddress.getIpv4Address().getValue();

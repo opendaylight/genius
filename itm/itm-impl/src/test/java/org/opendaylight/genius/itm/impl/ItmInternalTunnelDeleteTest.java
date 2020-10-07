@@ -100,17 +100,21 @@ public class ItmInternalTunnelDeleteTest {
     List<DPNTEPsInfo> cfgdDpnListVxlan = new ArrayList<>() ;
     List<TunnelEndPoints> tunnelEndPointsListVxlan = new ArrayList<>();
     List<TunnelEndPoints> tunnelEndPointsListVxlanNew = new ArrayList<>();
-    java.lang.Class<? extends TunnelTypeBase> tunnelType1 = TunnelTypeVxlan.class;
+    Class<? extends TunnelTypeBase> tunnelType1 = TunnelTypeVxlan.class;
     TunnelMonitorParams tunnelMonitorParams = null;
     TunnelMonitorInterval tunnelMonitorInterval = null;
-    InternalTunnel internalTunnel = new InternalTunnelBuilder().build();
+    InternalTunnel internalTunnel = new InternalTunnelBuilder()
+            .setDestinationDPN(Uint64.ONE)
+            .setSourceDPN(Uint64.TWO)
+            .setTransportType(tunnelType1)
+            .build();
     InstanceIdentifier<TunnelMonitorParams> tunnelMonitorParamsInstanceIdentifier =
             InstanceIdentifier.create(TunnelMonitorParams.class);
     InstanceIdentifier<TunnelMonitorInterval> tunnelMonitorIntervalIdentifier =
             InstanceIdentifier.create(TunnelMonitorInterval.class);
     Class<? extends TunnelMonitoringTypeBase> monitorProtocol = TunnelMonitoringTypeBfd.class;
     InstanceIdentifier<InternalTunnel> internalTunnelIdentifier = InstanceIdentifier.builder(TunnelList.class)
-            .child(InternalTunnel.class, new InternalTunnelKey(Uint64.ONE, Uint64.valueOf(2), tunnelType1))
+            .child(InternalTunnel.class, new InternalTunnelKey(Uint64.ONE, Uint64.TWO, tunnelType1))
             .build();
 
     @Mock DataBroker dataBroker;

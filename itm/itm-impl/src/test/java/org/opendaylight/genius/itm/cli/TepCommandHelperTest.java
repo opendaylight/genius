@@ -207,7 +207,7 @@ public class TepCommandHelperTest {
                 .setNodeId(sourceDevice).setTopologyId(destinationDevice).build();
         vteps = new VtepsBuilder().setDpnId(dpId2)
                 .setIpAddress(ipAddress1).withKey(new VtepsKey(dpId2)).build();
-        vtepsTest = new VtepsBuilder().build();
+        vtepsTest = new VtepsBuilder().setDpnId(Uint64.TEN).build();
         deviceVtepsList.add(deviceVteps);
         vtepsList.add(vteps);
         transportZone = new TransportZoneBuilder().setZoneName(transportZone1).setTunnelType(tunnelType1).withKey(new
@@ -243,7 +243,7 @@ public class TepCommandHelperTest {
                 .setOperState(TunnelOperStatus.Up).build();
         stateTunnelList.add(stateTunnelListTest);
         lowerLayerIfList.add(dpId1.toString());
-        interfaceTest = new InterfaceBuilder().setOperStatus(Interface.OperStatus.Up)
+        interfaceTest = new InterfaceBuilder().setName("foo").setOperStatus(Interface.OperStatus.Up)
                 .setAdminStatus(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.interfaces.rev140508
                         .interfaces.state.Interface.AdminStatus.Up)
                 .setPhysAddress(org.opendaylight.yang.gen.v1.urn.ietf.params.xml.ns.yang.ietf.yang.types.rev130715

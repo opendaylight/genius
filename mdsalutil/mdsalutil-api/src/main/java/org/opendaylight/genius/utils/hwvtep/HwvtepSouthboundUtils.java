@@ -5,12 +5,10 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.genius.utils.hwvtep;
 
 import static java.util.Objects.requireNonNull;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableBiMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -323,7 +321,7 @@ public final class HwvtepSouthboundUtils {
     }
 
     public static Class<? extends EncapsulationTypeBase> createEncapsulationType(String type) {
-        Preconditions.checkNotNull(type);
+        requireNonNull(type);
         if (type.isEmpty()) {
             return EncapsulationTypeVxlanOverIpv4.class;
         } else {
