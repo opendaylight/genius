@@ -1,0 +1,523 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "81dd18c2_332d23ce",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/confighelpers/ItmMonitorIntervalWorker.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-10-08T11:43:43Z",
+      "side": 1,
+      "message": "Can you change the constructor to Uint32 interval from int internal?",
+      "range": {
+        "startLine": 37,
+        "startChar": 11,
+        "endLine": 37,
+        "endChar": 35
+      },
+      "revId": "c450ce74032c35fd1ba7e86f27f0feabfe0ece8d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "105acf76_4a2ceed2",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 315,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-10-08T11:43:43Z",
+      "side": 1,
+      "message": "Can u change it to Uint32?",
+      "range": {
+        "startLine": 315,
+        "startChar": 56,
+        "endLine": 315,
+        "endChar": 71
+      },
+      "revId": "c450ce74032c35fd1ba7e86f27f0feabfe0ece8d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dc8db5ab_c8cb02b9",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 970,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-10-08T11:43:43Z",
+      "side": 1,
+      "message": "This will create a different key object. Later comparison will fail. Need to change it to optionsBuilder.key() as key.",
+      "range": {
+        "startLine": 970,
+        "startChar": 47,
+        "endLine": 970,
+        "endChar": 49
+      },
+      "revId": "c450ce74032c35fd1ba7e86f27f0feabfe0ece8d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2ec42761_17cbdd33",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 978,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-10-08T11:43:43Z",
+      "side": 1,
+      "message": "Same comment as above",
+      "range": {
+        "startLine": 978,
+        "startChar": 31,
+        "endLine": 978,
+        "endChar": 47
+      },
+      "revId": "c450ce74032c35fd1ba7e86f27f0feabfe0ece8d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5942ca24_c22a12da",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/impl/ItmUtils.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 1106,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-10-08T11:43:43Z",
+      "side": 1,
+      "message": "Change this to tzMembership.key()",
+      "range": {
+        "startLine": 1106,
+        "startChar": 32,
+        "endLine": 1106,
+        "endChar": 47
+      },
+      "revId": "c450ce74032c35fd1ba7e86f27f0feabfe0ece8d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e08f0830_9bb56279",
+        "filename": "itm/itm-impl/src/main/java/org/opendaylight/genius/itm/itmdirecttunnels/workers/TunnelStateAddWorker.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-10-08T11:43:43Z",
+      "side": 1,
+      "message": "allocateId can return Uint32. We can get rid of 1 conversion",
+      "range": {
+        "startLine": 150,
+        "startChar": 40,
+        "endLine": 150,
+        "endChar": 50
+      },
+      "revId": "c450ce74032c35fd1ba7e86f27f0feabfe0ece8d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5cd2af82_9c4e5680",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/cli/TepCommandHelperTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 215,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-10-08T11:43:43Z",
+      "side": 1,
+      "message": "Same comment as before",
+      "range": {
+        "startLine": 215,
+        "startChar": 47,
+        "endLine": 215,
+        "endChar": 57
+      },
+      "revId": "c450ce74032c35fd1ba7e86f27f0feabfe0ece8d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "02f9b3c7_9f0af5ca",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/impl/ItmExternalTunnelAddTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 226,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-10-08T11:43:43Z",
+      "side": 1,
+      "message": "same comment as before",
+      "range": {
+        "startLine": 226,
+        "startChar": 48,
+        "endLine": 226,
+        "endChar": 53
+      },
+      "revId": "c450ce74032c35fd1ba7e86f27f0feabfe0ece8d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a7751591_a8da79ab",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/impl/ItmExternalTunnelAddTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 229,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-10-08T11:43:43Z",
+      "side": 1,
+      "message": "same comment as before",
+      "revId": "c450ce74032c35fd1ba7e86f27f0feabfe0ece8d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9ab72081_70f53991",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/impl/ItmExternalTunnelAddTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 230,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-10-08T11:43:43Z",
+      "side": 1,
+      "message": "same as before",
+      "range": {
+        "startLine": 230,
+        "startChar": 32,
+        "endLine": 230,
+        "endChar": 46
+      },
+      "revId": "c450ce74032c35fd1ba7e86f27f0feabfe0ece8d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a642cf7b_71d52e43",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/impl/ItmExternalTunnelAddTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-10-08T11:43:43Z",
+      "side": 1,
+      "message": "same as before",
+      "revId": "c450ce74032c35fd1ba7e86f27f0feabfe0ece8d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a674a921_84dd8e00",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/impl/ItmExternalTunnelDeleteTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 182,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-10-08T11:43:43Z",
+      "side": 1,
+      "message": "same as before",
+      "revId": "c450ce74032c35fd1ba7e86f27f0feabfe0ece8d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f703f30b_c6c2df10",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/impl/ItmExternalTunnelDeleteTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 183,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-10-08T11:43:43Z",
+      "side": 1,
+      "message": "same as before",
+      "revId": "c450ce74032c35fd1ba7e86f27f0feabfe0ece8d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "a3c06217_dd0a2988",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/impl/ItmExternalTunnelDeleteTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-10-08T11:43:43Z",
+      "side": 1,
+      "message": "same as before",
+      "revId": "c450ce74032c35fd1ba7e86f27f0feabfe0ece8d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b33c8c45_a2f03455",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/impl/ItmInternalTunnelAddTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 246,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-10-08T11:43:43Z",
+      "side": 1,
+      "message": "same as before",
+      "revId": "c450ce74032c35fd1ba7e86f27f0feabfe0ece8d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "1da38d87_58ad9022",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/impl/ItmInternalTunnelAddTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-10-08T11:43:43Z",
+      "side": 1,
+      "message": "same as before",
+      "range": {
+        "startLine": 248,
+        "startChar": 31,
+        "endLine": 248,
+        "endChar": 45
+      },
+      "revId": "c450ce74032c35fd1ba7e86f27f0feabfe0ece8d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5ea9b2ce_839f37d7",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/impl/ItmInternalTunnelAddTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 287,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-10-08T11:43:43Z",
+      "side": 1,
+      "message": "generics of the arraylist should be specified",
+      "revId": "c450ce74032c35fd1ba7e86f27f0feabfe0ece8d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f01def08_eede56a8",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/impl/ItmInternalTunnelAddTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 326,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-10-08T11:43:43Z",
+      "side": 1,
+      "message": "generics needed",
+      "revId": "c450ce74032c35fd1ba7e86f27f0feabfe0ece8d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "60cbae62_fefbe838",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/impl/ItmInternalTunnelAddTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 365,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-10-08T11:43:43Z",
+      "side": 1,
+      "message": "generics needed",
+      "revId": "c450ce74032c35fd1ba7e86f27f0feabfe0ece8d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ae2119f6_78e71301",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/impl/ItmInternalTunnelDeleteTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 210,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-10-08T11:43:43Z",
+      "side": 1,
+      "message": "new object not needed for key",
+      "revId": "c450ce74032c35fd1ba7e86f27f0feabfe0ece8d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "142e8803_c4396695",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/impl/ItmInternalTunnelDeleteTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 239,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-10-08T11:43:43Z",
+      "side": 1,
+      "message": "generics needed",
+      "revId": "c450ce74032c35fd1ba7e86f27f0feabfe0ece8d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ebeeabdd_7af0e441",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 959,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-10-08T11:43:43Z",
+      "side": 1,
+      "message": "same as before",
+      "revId": "c450ce74032c35fd1ba7e86f27f0feabfe0ece8d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e4a1befe_38f2c2a1",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/ItmTepAutoConfigTest.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 1043,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-10-08T11:43:43Z",
+      "side": 1,
+      "message": "new object not needed",
+      "revId": "c450ce74032c35fd1ba7e86f27f0feabfe0ece8d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b6999fea_2014e968",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/OvsdbTestUtil.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-10-08T11:43:43Z",
+      "side": 1,
+      "message": "you can create the builder.build() separately. Then use object.key() as key and object as value. This will prohibit from creating multiple objects.",
+      "revId": "c450ce74032c35fd1ba7e86f27f0feabfe0ece8d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3994928d_9efeb678",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/OvsdbTestUtil.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-10-08T11:43:43Z",
+      "side": 1,
+      "message": "same as above",
+      "revId": "c450ce74032c35fd1ba7e86f27f0feabfe0ece8d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "7e7486a4_fc6884e3",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/OvsdbTestUtil.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 168,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-10-08T11:43:43Z",
+      "side": 1,
+      "message": "same as above",
+      "revId": "c450ce74032c35fd1ba7e86f27f0feabfe0ece8d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "66d626d7_8f0f22e0",
+        "filename": "itm/itm-impl/src/test/java/org/opendaylight/genius/itm/tests/OvsdbTestUtil.java",
+        "patchSetId": 10
+      },
+      "lineNbr": 179,
+      "author": {
+        "id": 8425
+      },
+      "writtenOn": "2020-10-08T11:43:43Z",
+      "side": 1,
+      "message": "same as above",
+      "revId": "c450ce74032c35fd1ba7e86f27f0feabfe0ece8d",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": true
+    }
+  ]
+}
