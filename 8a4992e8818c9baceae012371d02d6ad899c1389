@@ -16,6 +16,24 @@
       "revId": "8a4992e8818c9baceae012371d02d6ad899c1389",
       "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "89740ca9_547f20db",
+        "filename": "interfacemanager/interfacemanager-impl/src/test/java/org/opendaylight/genius/interfacemanager/test/InterfaceManagerTestUtil.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 199,
+      "author": {
+        "id": 649
+      },
+      "writtenOn": "2020-10-12T12:27:11Z",
+      "side": 1,
+      "message": "yes, because it is derived from the provided key.",
+      "parentUuid": "8a35b48b_a19cab4c",
+      "revId": "8a4992e8818c9baceae012371d02d6ad899c1389",
+      "serverId": "7fc14799-209e-464c-9743-7a06c2c21a81",
+      "unresolved": false
     }
   ]
 }
