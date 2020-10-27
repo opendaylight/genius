@@ -140,6 +140,10 @@ specified in parent-interface.
 
 **URL:** /restconf/config/ietf-interfaces:interfaces
 
+or
+
+**RFC8040 URL:** /rests/data/ietf-interfaces:interfaces
+
 **Sample JSON data**
 
 ::
@@ -172,6 +176,10 @@ corresponding VLAN tag and sends the packet out of the parent L2 port.
 
 **URL:** /restconf/config/ietf-interfaces:interfaces
 
+or
+
+**RFC8040 URL:** /rests/data/ietf-interfaces:interfaces
+
 **Sample JSON data**
 
 ::
@@ -199,6 +207,10 @@ addresses. Currently supported tunnel interface types are VxLAN, GRE and
 MPLSoverGRE.
 
 **URL:** /restconf/config/ietf-interfaces:interfaces
+
+or
+
+**RFC8040 URL:** /rests/data/ietf-interfaces:interfaces
 
 **Sample JSON data**
 
@@ -240,6 +252,10 @@ responsible for sending the packet back (if not consumed) to service
 dispatcher table, for next service to process the packet.
 
 **URL:**/restconf/config/interface-service-bindings:service-bindings/
+
+or
+
+**RFC8040 URL:** /rests/data/interface-service-bindings:service-bindings/
 
 **Sample JSON data**
 
