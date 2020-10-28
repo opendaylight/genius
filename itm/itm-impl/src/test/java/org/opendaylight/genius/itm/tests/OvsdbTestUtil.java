@@ -44,7 +44,7 @@ public final class OvsdbTestUtil {
 
     }
 
-    /* methods */
+    /* methods defination*/
     public static ConnectionInfo getConnectionInfo(int port, String strIpAddress) {
         IpAddress ipAddress = IpAddressBuilder.getDefaultInstance(strIpAddress);
         PortNumber portNumber = new PortNumber(port);
