@@ -106,13 +106,12 @@ import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.R
 import org.opendaylight.yang.gen.v1.urn.opendaylight.genius.itm.rpcs.rev160406.RemoveTerminatingServiceActionsInputBuilder;
 import org.opendaylight.yangtools.util.concurrent.FluentFutures;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.common.Uint16;
 import org.opendaylight.yangtools.yang.common.Uint64;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ItmManagerRpcServiceTest {
 
-    Uint16 vlanId = Uint16.valueOf(100);
+    int vlanId = 100 ;
     String portName1 = "phy0";
     String sourceDevice = "abc";
     String destinationDevice = "xyz";

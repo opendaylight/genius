@@ -38,7 +38,6 @@ import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeBuilder;
 import org.opendaylight.yang.gen.v1.urn.tbd.params.xml.ns.yang.network.topology.rev131021.network.topology.topology.NodeKey;
 import org.opendaylight.yangtools.yang.binding.InstanceIdentifier;
-import org.opendaylight.yangtools.yang.common.Uint16;
 
 public final class OvsdbTestUtil {
     private OvsdbTestUtil() {
@@ -48,7 +47,7 @@ public final class OvsdbTestUtil {
     /* methods */
     public static ConnectionInfo getConnectionInfo(int port, String strIpAddress) {
         IpAddress ipAddress = IpAddressBuilder.getDefaultInstance(strIpAddress);
-        PortNumber portNumber = new PortNumber(Uint16.valueOf(port));
+        PortNumber portNumber = new PortNumber(port);
 
         ConnectionInfo connectionInfo =
             new ConnectionInfoBuilder().setRemoteIp(ipAddress).setRemotePort(portNumber).build();
