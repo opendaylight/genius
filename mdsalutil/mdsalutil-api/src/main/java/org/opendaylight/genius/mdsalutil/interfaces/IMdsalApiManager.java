@@ -29,7 +29,6 @@ public interface IMdsalApiManager {
      *
      * @param flowEntity The flow entity.
      * @deprecated Use {@link #addFlow(TypedWriteTransaction, FlowEntity)}.
-     * @return
      */
     @Deprecated
     FluentFuture<?> installFlow(FlowEntity flowEntity);
@@ -40,7 +39,6 @@ public interface IMdsalApiManager {
      * @param dpId The DPN identifier.
      * @param flowEntity The flow entity.
      * @deprecated Use {@link #addFlow(TypedWriteTransaction, Uint64, Flow)}.
-     * @return
      */
     @Deprecated
     FluentFuture<?> installFlow(Uint64 dpId, Flow flowEntity);
@@ -51,7 +49,6 @@ public interface IMdsalApiManager {
      * @param dpId The DPN identifier.
      * @param flowEntity The flow entity.
      * @deprecated Use {@link #addFlow(TypedWriteTransaction, FlowEntity)}.
-     * @return
      */
     @Deprecated
     FluentFuture<?> installFlow(Uint64 dpId, FlowEntity flowEntity);
@@ -80,7 +77,6 @@ public interface IMdsalApiManager {
      * @param tableId The table identifier.
      * @param flowId The flow identifier.
      * @deprecated Use {@link #removeFlow(TypedReadWriteTransaction, Uint64, String, short)}.
-     * @return
      */
     @Deprecated
     ListenableFuture<?> removeFlow(Uint64 dpId, short tableId, FlowId flowId);
@@ -90,7 +86,6 @@ public interface IMdsalApiManager {
      *
      * @param flowEntity The flow entity.
      * @deprecated Use {@link #removeFlow(TypedReadWriteTransaction, FlowEntity)}.
-     * @return
      */
     @Deprecated
     FluentFuture<?> removeFlow(FlowEntity flowEntity);
