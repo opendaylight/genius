@@ -5,13 +5,13 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.opendaylight.genius.mdsalutil.packet;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Supplier;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.opendaylight.openflowplugin.libraries.liblldp.BitBufferHelper;
@@ -31,27 +31,27 @@ public class Ethernet extends Packet {
     // TODO: This has to be outside and it should be possible for osgi
     // to add new coming packet classes
     @SuppressWarnings("checkstyle:ConstantName") // public constant is used in other projects; too late to rename easily
-    public static final Map<Short, Class<? extends Packet>> etherTypeClassMap = new ConcurrentHashMap<>();
+    public static final Map<Short, Supplier<Packet>> etherTypeClassMap = new ConcurrentHashMap<>();
 
     static {
-        etherTypeClassMap.put(EtherTypes.ARP.shortValue(), ARP.class);
-        etherTypeClassMap.put(EtherTypes.LLDP.shortValue(), LLDP.class);
-        etherTypeClassMap.put(EtherTypes.IPv4.shortValue(), IPv4.class);
+        etherTypeClassMap.put(EtherTypes.ARP.shortValue(), ARP::new);
+        etherTypeClassMap.put(EtherTypes.LLDP.shortValue(), LLDP::new);
+        etherTypeClassMap.put(EtherTypes.IPv4.shortValue(), IPv4::new);
         // TODO: Add support for more classes here
-        etherTypeClassMap.put(EtherTypes.VLANTAGGED.shortValue(), IEEE8021Q.class);
-        // etherTypeClassMap.put(EtherTypes.OLDQINQ.shortValue(), IEEE8021Q.class);
-        // etherTypeClassMap.put(EtherTypes.QINQ.shortValue(), IEEE8021Q.class);
-        // etherTypeClassMap.put(EtherTypes.CISCOQINQ.shortValue(), IEEE8021Q.class);
+        etherTypeClassMap.put(EtherTypes.VLANTAGGED.shortValue(), IEEE8021Q::new);
+        // etherTypeClassMap.put(EtherTypes.OLDQINQ.shortValue(), IEEE8021Q::new);
+        // etherTypeClassMap.put(EtherTypes.QINQ.shortValue(), IEEE8021Q::new);
+        // etherTypeClassMap.put(EtherTypes.CISCOQINQ.shortValue(), IEEE8021Q::new);
     }
 
     @SuppressWarnings("serial")
-    private static Map<String, Pair<Integer, Integer>> fieldCoordinates
-        = new LinkedHashMap<String, Pair<Integer, Integer>>() { {
+    private static Map<String, Pair<Integer, Integer>> fieldCoordinates = new LinkedHashMap<>() { {
                 put(DMAC, new ImmutablePair<>(0, 48));
                 put(SMAC, new ImmutablePair<>(48, 48));
                 put(ETHT, new ImmutablePair<>(96, 16));
             }
         };
+
     private final Map<String, byte[]> fieldValues;
 
     /**
@@ -78,8 +78,7 @@ public class Ethernet extends Packet {
     @Override
     public void setHeaderField(String headerField, byte[] readValue) {
         if (headerField.equals(ETHT)) {
-            payloadClass = etherTypeClassMap.get(BitBufferHelper
-                    .getShort(readValue));
+            payloadFactory = etherTypeClassMap.get(BitBufferHelper.getShort(readValue));
         }
         hdrFieldsMap.put(headerField, readValue);
     }

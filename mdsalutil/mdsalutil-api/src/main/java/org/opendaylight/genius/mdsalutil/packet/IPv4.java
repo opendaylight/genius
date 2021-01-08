@@ -7,11 +7,13 @@
  */
 package org.opendaylight.genius.mdsalutil.packet;
 
+import com.google.common.collect.ImmutableMap;
 import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Supplier;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.opendaylight.openflowplugin.libraries.liblldp.BitBufferHelper;
@@ -47,18 +49,13 @@ public class IPv4 extends Packet {
     private static final int UNIT_SIZE = 1 << UNIT_SIZE_SHIFT;
     private static final int MIN_HEADER_SIZE = 20;
 
-    private static final Map<Byte, Class<? extends Packet>> PROTOCOL_CLASS_MAP;
-
-    static {
-        PROTOCOL_CLASS_MAP = new HashMap<>();
-        PROTOCOL_CLASS_MAP.put(IPProtocols.ICMP.byteValue(), ICMP.class);
-        PROTOCOL_CLASS_MAP.put(IPProtocols.UDP.byteValue(), UDP.class);
-        PROTOCOL_CLASS_MAP.put(IPProtocols.TCP.byteValue(), TCP.class);
-    }
+    private static final Map<Byte, Supplier<Packet>> PROTOCOL_CLASS_MAP = ImmutableMap.of(
+        IPProtocols.ICMP.byteValue(), ICMP::new,
+        IPProtocols.UDP.byteValue(), UDP::new,
+        IPProtocols.TCP.byteValue(), TCP::new);
 
     @SuppressWarnings("serial")
-    private static final Map<String, Pair<Integer, Integer>> FIELD_COORDINATES
-        = new LinkedHashMap<>() { {
+    private static final Map<String, Pair<Integer, Integer>> FIELD_COORDINATES = new LinkedHashMap<>() { {
                 put(VERSION, new ImmutablePair<>(0, 4));
                 put(HEADERLENGTH, new ImmutablePair<>(4, 4));
                 put(DIFFSERV, new ImmutablePair<>(8, 6));
@@ -260,13 +257,13 @@ public class IPv4 extends Packet {
             // Don't set payloadClass if framgment offset is not zero.
             byte[] fragoff = hdrFieldsMap.get(FRAGOFFSET);
             if (fragoff == null || BitBufferHelper.getShort(fragoff) == 0) {
-                payloadClass = PROTOCOL_CLASS_MAP.get(readValue[0]);
+                payloadFactory = PROTOCOL_CLASS_MAP.get(readValue[0]);
             }
         } else if (headerField.equals(FRAGOFFSET)) {
             if (readValue != null && BitBufferHelper.getShort(readValue) != 0) {
                 // Clear payloadClass because protocol header is not present
                 // in this packet.
-                payloadClass = null;
+                payloadFactory = null;
             }
         } else if (headerField.equals(OPTIONS)
                    && (readValue == null || readValue.length == 0)) {
