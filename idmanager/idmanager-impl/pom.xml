@@ -44,7 +44,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
     <dependency>
       <groupId>org.opendaylight.daexim</groupId>
       <artifactId>daexim-model</artifactId>
-      <version>1.8.2-SNAPSHOT</version>
+      <version>1.8.3-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>javax.inject</groupId>
