@@ -17,15 +17,15 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.opendaylight.genius</groupId>
   <artifactId>binding-parent</artifactId>
-  <version>0.9.2-SNAPSHOT</version>
+  <version>0.9.2</version>
   <packaging>pom</packaging>
   <!-- <name> formatting is used by autorelease to parse and notify projects on
        build failure. Please do not modify this unless you have a good reason. -->
   <name>ODL :: genius :: ${project.artifactId}</name>
 
   <properties>
-    <openflowplugin.version>0.11.2-SNAPSHOT</openflowplugin.version>
-    <genius.ovsdb.version>1.11.2-SNAPSHOT</genius.ovsdb.version>
+    <openflowplugin.version>0.11.2</openflowplugin.version>
+    <genius.ovsdb.version>1.11.2</genius.ovsdb.version>
   </properties>
 
   <dependencyManagement>
@@ -57,7 +57,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <dependency>
         <groupId>org.opendaylight.serviceutils</groupId>
         <artifactId>serviceutils-artifacts</artifactId>
-        <version>0.6.2-SNAPSHOT</version>
+        <version>0.6.2</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -79,7 +79,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
         <groupId>org.opendaylight.genius</groupId>
         <artifactId>genius-artifacts</artifactId>
         <!-- We cannot use ${project.version} here -->
-        <version>0.9.2-SNAPSHOT</version>
+        <version>0.9.2</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
