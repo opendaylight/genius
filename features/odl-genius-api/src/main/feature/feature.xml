@@ -8,7 +8,7 @@
  -->
 <features xmlns="http://karaf.apache.org/xmlns/features/v1.4.0" name="odl-genius-api">
     <feature name="odl-genius-api">
-        <feature version="[8,9)">odl-apache-commons-net</feature>
+        <feature version="[8.1,9)">odl-apache-commons-net</feature>
         <feature version="[7,8)">odl-mdsal-model-rfc7224</feature>
     </feature>
 </features>
