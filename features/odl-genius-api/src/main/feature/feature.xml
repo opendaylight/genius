@@ -10,5 +10,7 @@
     <feature name="odl-genius-api">
         <feature version="[8.1,9)">odl-apache-commons-net</feature>
         <feature version="[7,8)">odl-mdsal-model-rfc7224</feature>
+        <feature version="[1.9,2)">odl-infrautils-caches</feature>
+        <feature version="[1.9,2)">odl-infrautils-jobcoordinator</feature>
     </feature>
 </features>
