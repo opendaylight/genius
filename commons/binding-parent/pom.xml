@@ -10,7 +10,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   <parent>
     <groupId>org.opendaylight.mdsal</groupId>
     <artifactId>binding-parent</artifactId>
-    <version>7.0.5</version>
+    <version>7.0.6</version>
     <relativePath/>
   </parent>
 
@@ -24,8 +24,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
   <name>ODL :: genius :: ${project.artifactId}</name>
 
   <properties>
-    <openflowplugin.version>0.12.0-SNAPSHOT</openflowplugin.version>
-    <genius.ovsdb.version>1.12.0-SNAPSHOT</genius.ovsdb.version>
+    <genius.ovsdb.version>1.12.0</genius.ovsdb.version>
   </properties>
 
   <dependencyManagement>
@@ -33,14 +32,14 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <dependency>
         <groupId>org.opendaylight.controller</groupId>
         <artifactId>controller-artifacts</artifactId>
-        <version>3.0.6</version>
+        <version>3.0.7</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.opendaylight.infrautils</groupId>
         <artifactId>infrautils-artifacts</artifactId>
-        <version>1.9.5</version>
+        <version>1.9.6</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -57,14 +56,14 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <dependency>
         <groupId>org.opendaylight.serviceutils</groupId>
         <artifactId>serviceutils-artifacts</artifactId>
-        <version>0.7.0-SNAPSHOT</version>
+        <version>0.7.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.opendaylight.openflowplugin</groupId>
         <artifactId>openflowplugin-artifacts</artifactId>
-        <version>${openflowplugin.version}</version>
+        <version>0.12.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -72,7 +71,7 @@ and is available at http://www.eclipse.org/legal/epl-v10.html
       <dependency>
         <groupId>org.opendaylight.openflowplugin.libraries</groupId>
         <artifactId>liblldp</artifactId>
-        <version>${openflowplugin.version}</version>
+        <version>0.12.0</version>
       </dependency>
 
       <dependency>

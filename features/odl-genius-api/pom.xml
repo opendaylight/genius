@@ -12,7 +12,7 @@
   <parent>
     <groupId>org.opendaylight.odlparent</groupId>
     <artifactId>single-feature-parent</artifactId>
-    <version>8.1.0</version>
+    <version>8.1.1</version>
     <relativePath/>
   </parent>
 
@@ -27,42 +27,42 @@
       <dependency>
         <groupId>org.opendaylight.mdsal</groupId>
         <artifactId>mdsal-artifacts</artifactId>
-        <version>7.0.5</version>
+        <version>7.0.6</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>
       <dependency>
         <groupId>org.opendaylight.infrautils</groupId>
         <artifactId>infrautils-artifacts</artifactId>
-        <version>1.9.5</version>
+        <version>1.9.6</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>
       <dependency>
         <groupId>org.opendaylight.serviceutils</groupId>
         <artifactId>serviceutils-artifacts</artifactId>
-        <version>0.7.0-SNAPSHOT</version>
+        <version>0.7.0</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>
       <dependency>
         <groupId>org.opendaylight.openflowplugin</groupId>
         <artifactId>openflowplugin-artifacts</artifactId>
-        <version>0.12.0-SNAPSHOT</version>
+        <version>0.12.0</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>
       <dependency>
         <groupId>org.opendaylight.ovsdb</groupId>
         <artifactId>hwvtepsouthbound-artifacts</artifactId>
-        <version>1.12.0-SNAPSHOT</version>
+        <version>1.12.0</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>
       <dependency>
         <groupId>org.opendaylight.ovsdb</groupId>
         <artifactId>southbound-artifacts</artifactId>
-        <version>1.12.0-SNAPSHOT</version>
+        <version>1.12.0</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>
@@ -147,9 +147,8 @@
     <dependency>
       <groupId>org.opendaylight.ovsdb</groupId>
       <artifactId>odl-ovsdb-utils</artifactId>
-      <!-- FIXME: remove this version declaration once ovsdb
-                  provides proper ovsdb-artifacts -->
-      <version>1.12.0-SNAPSHOT</version>
+      <!-- FIXME: remove this version declaration once ovsdb provides proper ovsdb-artifacts -->
+      <version>1.12.0</version>
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>

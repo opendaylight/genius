@@ -12,7 +12,7 @@
   <parent>
     <groupId>org.opendaylight.odlparent</groupId>
     <artifactId>single-feature-parent</artifactId>
-    <version>8.1.0</version>
+    <version>8.1.1</version>
     <relativePath/>
   </parent>
 
@@ -27,7 +27,14 @@
       <dependency>
         <groupId>org.opendaylight.infrautils</groupId>
         <artifactId>infrautils-artifacts</artifactId>
-        <version>1.9.5</version>
+        <version>1.9.6</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.opendaylight.openflowplugin</groupId>
+        <artifactId>openflowplugin-artifacts</artifactId>
+        <version>0.12.0</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>
@@ -39,21 +46,18 @@
     <dependency>
       <groupId>org.opendaylight.openflowplugin</groupId>
       <artifactId>odl-openflowplugin-southbound</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>
     <dependency>
       <groupId>org.opendaylight.openflowplugin</groupId>
       <artifactId>odl-openflowplugin-app-forwardingrules-manager</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>
     <dependency>
       <groupId>org.opendaylight.openflowplugin</groupId>
       <artifactId>odl-openflowplugin-app-reconciliation-framework</artifactId>
-      <version>0.12.0-SNAPSHOT</version>
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>
@@ -66,7 +70,7 @@
     <dependency>
       <groupId>org.opendaylight.genius</groupId>
       <artifactId>odl-genius-api</artifactId>
-      <version>0.10.0-SNAPSHOT</version>
+      <version>${project.version}</version>
       <type>xml</type>
       <classifier>features</classifier>
     </dependency>
