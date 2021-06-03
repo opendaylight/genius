@@ -18,7 +18,7 @@
 
   <groupId>org.opendaylight.genius</groupId>
   <artifactId>odl-genius</artifactId>
-  <version>0.9.4-SNAPSHOT</version>
+  <version>0.9.4</version>
   <packaging>feature</packaging>
   <name>OpenDaylight :: genius :: Impls</name>
 
@@ -34,35 +34,35 @@
       <dependency>
         <groupId>org.opendaylight.serviceutils</groupId>
         <artifactId>serviceutils-artifacts</artifactId>
-        <version>0.6.4-SNAPSHOT</version>
+        <version>0.6.4</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.opendaylight.daexim</groupId>
         <artifactId>daexim-artifacts</artifactId>
-        <version>1.8.5-SNAPSHOT</version>
+        <version>1.8.5</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.opendaylight.ovsdb</groupId>
         <artifactId>southbound-artifacts</artifactId>
-        <version>1.11.4-SNAPSHOT</version>
+        <version>1.11.4</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.opendaylight.ovsdb</groupId>
         <artifactId>hwvtepsouthbound-artifacts</artifactId>
-        <version>1.11.4-SNAPSHOT</version>
+        <version>1.11.4</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.opendaylight.openflowplugin</groupId>
         <artifactId>openflowplugin-artifacts</artifactId>
-        <version>0.11.4-SNAPSHOT</version>
+        <version>0.11.4</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
